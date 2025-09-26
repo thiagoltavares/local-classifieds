@@ -1,0 +1,200 @@
+# Project Architecture
+
+## Overview
+
+Local Classifieds is a monorepo that uses a modern architecture with clear separation of responsibilities between frontend, backend, and data layer.
+
+## Technology Stack
+
+### Backend (apps/api)
+
+- **Framework**: NestJS
+- **Linguagem**: TypeScript
+- **ORM**: Prisma
+- **Validation**: Zod
+- **Testes**: Jest
+
+### Frontend (apps/frontend)
+
+- **Framework**: Next.js 14
+- **Linguagem**: TypeScript
+- **Styling**: TailwindCSS
+- **Validation**: Zod (compartilhado)
+
+### Database
+
+- **SGBD**: PostgreSQL 15
+- **ORM**: Prisma
+- **Cache**: Redis 7
+
+### Infraestrutura
+
+- **Containerização**: Docker & Docker Compose
+- **CI/CD**: GitHub Actions
+- **Gerenciamento de Pacotes**: npm workspaces
+
+## Project Structure
+
+```
+/
+├── apps/                    # Aplicações principais
+│   ├── api/                # Backend NestJS
+│   │   ├── src/
+│   │   │   ├── modules/    # Módulos da aplicação
+│   │   │   ├── controllers/
+│   │   │   ├── services/
+│   │   │   └── main.ts
+│   │   └── package.json
+│   └── frontend/           # Frontend Next.js
+│       ├── src/
+│       │   ├── app/        # App Router (Next.js 13+)
+│       │   ├── components/
+│       │   └── lib/
+│       └── package.json
+├── libs/                   # Bibliotecas compartilhadas
+│   ├── database/           # Camada de dados
+│   │   ├── prisma/         # Schema e migrações
+│   │   ├── src/
+│   │   │   ├── database.service.ts
+│   │   │   └── types.ts
+│   │   └── package.json
+│   └── shared/             # Utilitários compartilhados
+│       ├── src/
+│       │   ├── types/      # Tipos TypeScript
+│       │   ├── dto/        # DTOs com Zod
+│       │   ├── constants/  # Constantes
+│       │   └── utils/      # Funções utilitárias
+│       └── package.json
+├── docs/                   # Documentação
+├── .github/                # GitHub Actions
+└── docker-compose.yml      # Serviços de desenvolvimento
+```
+
+## Data Flow
+
+```mermaid
+graph TB
+    A[Frontend Next.js] --> B[API NestJS]
+    B --> C[Prisma ORM]
+    C --> D[PostgreSQL]
+    B --> E[Redis Cache]
+
+    F[libs/shared] --> A
+    F --> B
+    G[libs/database] --> B
+```
+
+## Development Patterns
+
+### 1. Monorepo with Workspaces
+
+- Cada aplicação e biblioteca tem seu próprio `package.json`
+- Dependências compartilhadas são gerenciadas no root
+- Scripts centralizados para facilitar o desenvolvimento
+
+### 2. Shared Typing
+
+- Tipos TypeScript definidos em `libs/shared`
+- DTOs com validação Zod reutilizados entre frontend e backend
+- Interfaces consistentes em toda a aplicação
+
+### 3. Data Layer
+
+- Prisma como ORM principal
+- Schema centralizado em `libs/database`
+- Migrações versionadas
+- Cliente Prisma gerado automaticamente
+
+### 4. Data Validation
+
+- Zod para validação runtime
+- DTOs tipados e validados
+- Mensagens de erro consistentes
+
+## Development Configuration
+
+### Environment Variables
+
+- `.env` para cada aplicação
+- `env.example` como template
+- Secrets gerenciados via GitHub
+
+### Docker for Development
+
+- PostgreSQL e Redis via Docker Compose
+- Volumes persistentes para dados
+- Health checks configurados
+
+### Hot Reload
+
+- Backend: NestJS com `--watch`
+- Frontend: Next.js com Fast Refresh
+- Bibliotecas: TypeScript com `--watch`
+
+## Deploy and Production
+
+### CI/CD Pipeline
+
+1. **CI**: Testes, lint e build em PRs
+2. **Deploy**: Deploy automático em push para main
+3. **Migrations**: Executadas automaticamente no deploy
+
+### Deploy Strategy
+
+- Backend: Container ou serverless
+- Frontend: CDN (Vercel, Netlify)
+- Database: PostgreSQL gerenciado
+- Cache: Redis gerenciado
+
+## Security
+
+### Authentication (Futuro)
+
+- JWT tokens
+- Refresh tokens
+- Middleware de autenticação
+
+### Validation
+
+- Input validation com Zod
+- Sanitização de dados
+- Rate limiting
+
+### CORS
+
+- Configuração específica por ambiente
+- Headers de segurança
+
+## Monitoring
+
+### Logs
+
+- Estruturados com contexto
+- Diferentes níveis (debug, info, warn, error)
+- Correlação de requests
+
+### Métricas
+
+- Health checks
+- Performance monitoring
+- Error tracking
+
+## Scalability
+
+### Backend
+
+- Stateless design
+- Connection pooling
+- Caching strategies
+
+### Frontend
+
+- Static generation onde possível
+- Image optimization
+- Code splitting
+
+### Database
+
+- Índices otimizados
+- Query optimization
+- Read replicas (futuro)

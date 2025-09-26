@@ -1,0 +1,32 @@
+{
+  "name": "@local-classifieds/database",
+  "version": "1.0.0",
+  "description": "Database layer with Prisma ORM",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src",
+    "type-check": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:deploy": "prisma migrate deploy",
+    "db:reset": "prisma migrate reset",
+    "db:seed": "ts-node prisma/seed.ts",
+    "test": "echo 'No tests configured yet'"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.7.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.7.0",
+    "typescript": "^5.3.0",
+    "ts-node": "^10.9.0",
+    "@types/node": "^20.10.0"
+  }
+}
