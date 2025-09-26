@@ -17,6 +17,10 @@ pkill -f "next dev" 2>/dev/null || echo "   No Next.js processes found"
 echo "⚙️  Stopping Node.js processes..."
 pkill -f "node.*main" 2>/dev/null || echo "   No Node.js main processes found"
 
+# Stop Prisma Studio processes
+echo "🗄️  Stopping Prisma Studio..."
+pkill -f "prisma studio" 2>/dev/null || echo "   No Prisma Studio processes found"
+
 # Stop Docker services (optional - uncomment if needed)
 # echo "🐳 Stopping Docker services..."
 # docker-compose down 2>/dev/null || echo "   No Docker services running"
@@ -39,6 +43,17 @@ if lsof -i :3001 >/dev/null 2>&1; then
 else
     echo "   ✅ Port 3001 is free"
 fi
+
+# Check Prisma Studio ports (5555-5559 range)
+echo "🔍 Checking Prisma Studio ports..."
+for port in {5555..5559}; do
+    if lsof -i :$port >/dev/null 2>&1; then
+        echo "   ⚠️  Port $port (Prisma Studio) still in use"
+        lsof -i :$port
+    else
+        echo "   ✅ Port $port is free"
+    fi
+done
 
 echo ""
 echo "🎉 Stop script completed!"

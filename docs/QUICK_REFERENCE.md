@@ -12,6 +12,7 @@ npm run start:dev    # Start Docker + Backend + Frontend
 
 ```bash
 npm run stop         # Stop all processes
+npm run stop:studio  # Stop Prisma Studio instances
 ```
 
 ### 🔧 Development
@@ -49,7 +50,7 @@ npm run stop:all     # Stop with detailed status
 
 - **Frontend**: http://localhost:3001
 - **Backend**: http://localhost:3000
-- **Prisma Studio**: http://localhost:5555 (when running)
+- **Prisma Studio**: http://localhost:5556 (when running)
 
 ## 🆘 Troubleshooting
 

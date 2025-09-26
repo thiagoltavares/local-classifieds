@@ -62,6 +62,7 @@
     "stop:api": "pkill -f 'nest start'",
     "stop:frontend": "pkill -f 'next dev'",
     "stop:docker": "docker-compose down",
+    "stop:studio": "pkill -f 'prisma studio'",
     "// === CLEANUP ===": "",
     "clean": "npm run clean --workspaces",
     "clean:api": "npm run clean --workspace=apps/api",

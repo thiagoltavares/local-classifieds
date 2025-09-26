@@ -53,6 +53,7 @@ npm run dev
 | `npm run stop:api`      | Stop backend only                       |
 | `npm run stop:frontend` | Stop frontend only                      |
 | `npm run stop:docker`   | Stop Docker services only               |
+| `npm run stop:studio`   | Stop Prisma Studio instances            |
 
 ### Docker Management
 
@@ -110,7 +111,7 @@ npm run dev:api
 npm run dev:frontend
 
 # Database management
-npm run db:studio
+npm run db:studio    # Open Prisma Studio (visual database browser)
 ```
 
 ## 🐛 Troubleshooting
@@ -128,6 +129,7 @@ npm run stop
 # Or stop specific service
 npm run stop:api
 npm run stop:frontend
+npm run stop:studio
 ```
 
 ### Docker Issues
