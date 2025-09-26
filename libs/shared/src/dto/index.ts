@@ -46,6 +46,9 @@ export const PaginationDto = z.object({
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
+// Category DTOs - Import from dedicated file
+export * from './category.dto';
+
 // Type exports
 export type CreateUserDtoType = z.infer<typeof CreateUserDto>;
 export type UpdateUserDtoType = z.infer<typeof UpdateUserDto>;

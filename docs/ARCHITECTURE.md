@@ -27,6 +27,54 @@ Local Classifieds is a monorepo that uses a modern architecture with clear separ
 - **ORM**: Prisma
 - **Cache**: Redis 7
 
+## Data Models
+
+### Category Model
+
+The Category model represents service categories with hierarchical support and soft delete functionality.
+
+#### Schema Structure
+
+```typescript
+model Category {
+  id            String     @id @default(uuid()) @db.Uuid
+  name          String     @db.VarChar(120)
+  slug          String     @unique @db.VarChar(140)
+  description   String?    @db.Text
+  parentId      String?    @db.Uuid
+  parent        Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  children      Category[] @relation("CategoryHierarchy")
+  active        Boolean    @default(true)
+  displayOrder  Int        @default(0)
+  createdAt     DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime   @default(now()) @updatedAt @db.Timestamptz(6)
+
+  @@map("categories")
+}
+```
+
+#### Key Features
+
+- **Hierarchical Structure**: Self-referencing relationship for parent-child categories
+- **Soft Delete**: Uses `active` boolean field instead of physical deletion
+- **Unique Slugs**: URL-friendly identifiers for categories
+- **Display Ordering**: Configurable ordering for UI presentation
+- **Cycle Prevention**: Business logic prevents circular references
+
+#### Database Constraints
+
+- Primary Key: `id` (UUID)
+- Unique Index: `slug` for fast lookups
+- Foreign Key: `parentId` references `categories(id)`
+- Indexes: `parentId`, `active` for performance
+
+#### Business Rules
+
+1. **Slug Uniqueness**: Each category must have a unique slug
+2. **Hierarchy Validation**: Categories cannot be their own parent or create cycles
+3. **Soft Delete**: Categories with active children cannot be deleted
+4. **Slug Generation**: Automatic generation from name (lowercase, no accents, hyphens for spaces)
+
 ### Infraestrutura
 
 - **Containerização**: Docker & Docker Compose

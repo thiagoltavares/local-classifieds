@@ -12,3 +12,19 @@ datasource db {
 }
 
 // Add your models here
+
+model Category {
+  id            String     @id @default(uuid()) @db.Uuid
+  name          String     @db.VarChar(120)
+  slug          String     @unique @db.VarChar(140)
+  description   String?    @db.Text
+  parentId      String?    @db.Uuid
+  parent        Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  children      Category[] @relation("CategoryHierarchy")
+  active        Boolean    @default(true)
+  displayOrder  Int        @default(0)
+  createdAt     DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime   @default(now()) @updatedAt @db.Timestamptz(6)
+
+  @@map("categories")
+}
