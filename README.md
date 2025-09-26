@@ -52,7 +52,13 @@ cd local-classifieds
 npm install
 ```
 
-### 3. Configure environment
+### 3. Setup VS Code (Recommended)
+
+Open the project in VS Code and install recommended extensions for the best development experience:
+
+> 💡 **VS Code Setup**: See [VS Code Setup Guide](docs/VSCODE_SETUP.md) for detailed configuration including auto-open markdown preview.
+
+### 4. Configure environment
 
 ```bash
 # Copy database example file
@@ -62,17 +68,17 @@ cp libs/database/env.example libs/database/.env
 # DATABASE_URL="postgresql://local_user:local_pass@localhost:5432/local_db?schema=public"
 ```
 
-### 4. Start database services
+### 5. Start database services
 
 ```bash
-# Inicie PostgreSQL e Redis via Docker
+# Start PostgreSQL and Redis via Docker
 npm run docker:up
 
 # Check if services are running
 npm run docker:logs
 ```
 
-### 5. Configure database
+### 6. Configure database
 
 ```bash
 # Generate Prisma client
@@ -85,33 +91,44 @@ npm run db:migrate
 npm run db:studio
 ```
 
-### 6. Start development
+### 7. Start development
 
 ```bash
-# Start backend and frontend in parallel
+# Start everything (Docker + Backend + Frontend)
+npm run start:dev
+
+# Or start backend and frontend only (if Docker is already running)
 npm run dev
 
-# Ou inicie individualmente:
+# Or start individually:
 npm run dev:api      # Backend on port 3000
 npm run dev:frontend # Frontend on port 3001
 ```
+
+> 📚 \*\*For detailed running instructions, see [docs/RUNNING.md](docs/RUNNING.md)
 
 ## 📋 Available Scripts
 
 ### Monorepo Scripts
 
 ```bash
-npm run dev              # Inicia backend e frontend em paralelo
-npm run build            # Build de todas as aplicações
-npm run lint             # Lint de todos os workspaces
-npm run lint:fix         # Lint com correção automática
-npm run format           # Formata código com Prettier
-npm run format:check     # Verifica formatação sem alterar
-npm run type-check       # Verificação de tipos TypeScript
-npm run test             # Tests de todos os workspaces
-npm run docker:up        # Inicia serviços Docker
-npm run docker:down      # Para serviços Docker
-npm run docker:logs      # Visualiza logs dos serviços
+npm run dev              # Start backend and frontend in parallel
+npm run start:dev        # Start everything (Docker + backend + frontend)
+npm run build            # Build all applications
+npm run lint             # Lint all workspaces
+npm run lint:fix         # Lint with automatic fixes
+npm run format           # Format code with Prettier
+npm run format:check     # Check formatting without changes
+npm run type-check       # TypeScript type checking
+npm run test             # Run tests for all workspaces
+npm run docker:up        # Start Docker services
+npm run docker:down      # Stop Docker services
+npm run docker:logs      # View Docker service logs
+npm run stop             # Stop all development processes
+npm run stop:all         # Stop all development processes (detailed)
+npm run stop:api         # Stop backend only
+npm run stop:frontend    # Stop frontend only
+npm run stop:docker      # Stop Docker services only
 ```
 
 ### Backend Scripts (apps/api)
@@ -274,6 +291,15 @@ Configure the following secrets in GitHub:
 - `FRONTEND_URL`: Production frontend URL
 
 ## 📚 Additional Documentation
+
+### Project Documentation
+
+- [Quick Reference](docs/QUICK_REFERENCE.md) - Most common commands at a glance
+- [Running the Project](docs/RUNNING.md) - Comprehensive guide for running the project
+- [VS Code Setup](docs/VSCODE_SETUP.md) - Configure VS Code for optimal development experience
+- [Architecture Overview](docs/ARCHITECTURE.md) - Project structure and design decisions
+
+### External Documentation
 
 - [NestJS Documentation](https://docs.nestjs.com/)
 - [Next.js Documentation](https://nextjs.org/docs)
