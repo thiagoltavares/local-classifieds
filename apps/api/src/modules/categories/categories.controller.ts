@@ -22,13 +22,16 @@ export class CategoriesController {
   }
 
   @Get()
-  findAll(@Query() query: Record<string, unknown>) {
-    return this.categoryService.findAll(query);
+  findAll(
+    @Query() query: Record<string, unknown>,
+    @Query('lang') lang?: string,
+  ) {
+    return this.categoryService.findAll(query, lang);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoryService.findOne(id);
+  findOne(@Param('id') id: string, @Query('lang') lang?: string) {
+    return this.categoryService.findOne(id, lang);
   }
 
   @Patch(':id')

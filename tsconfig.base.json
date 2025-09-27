@@ -14,9 +14,12 @@
     // Aliases for shared libs
     "baseUrl": ".",
     "paths": {
-      "@services/database/*": ["apps/api/libs/database/src/*"],
-      "@services/shared/*": ["apps/api/libs/shared/src/*"],
-      "@frontend/shared/*": ["apps/frontend/libs/shared/src/*"]
+      "@services/database": ["apps/api/libs/database/dist"],
+      "@services/database/*": ["apps/api/libs/database/dist/*"],
+      "@services/shared": ["apps/api/libs/shared/dist"],
+      "@services/shared/*": ["apps/api/libs/shared/dist/*"],
+      "@frontend/shared": ["apps/frontend/libs/shared/dist"],
+      "@frontend/shared/*": ["apps/frontend/libs/shared/dist/*"]
     }
   }
 }

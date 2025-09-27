@@ -64,6 +64,48 @@
           "response": []
         },
         {
+          "name": "Get All Categories (Portuguese)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories?lang=pt",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "pt",
+                  "description": "Filter translations to Portuguese only"
+                }
+              ]
+            },
+            "description": "Get all active categories with Portuguese translations only"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Categories (English)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories?lang=en",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "en",
+                  "description": "Filter translations to English only"
+                }
+              ]
+            },
+            "description": "Get all active categories with English translations only"
+          },
+          "response": []
+        },
+        {
           "name": "Get Category by ID",
           "request": {
             "method": "GET",
@@ -74,6 +116,48 @@
               "path": ["categories", "{{categoryId}}"]
             },
             "description": "Get a specific category by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by ID (Portuguese)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}?lang=pt",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "pt",
+                  "description": "Filter translations to Portuguese only"
+                }
+              ]
+            },
+            "description": "Get a specific category by ID with Portuguese translations only"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by ID (English)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}?lang=en",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "en",
+                  "description": "Filter translations to English only"
+                }
+              ]
+            },
+            "description": "Get a specific category by ID with English translations only"
           },
           "response": []
         },
