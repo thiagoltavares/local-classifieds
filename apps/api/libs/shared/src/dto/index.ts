@@ -47,7 +47,7 @@ export const PaginationDto = z.object({
 });
 
 // Category DTOs - Import from dedicated file
-export * from './category.dto';
+export * from './common.dto';
 
 // Type exports
 export type CreateUserDtoType = z.infer<typeof CreateUserDto>;
