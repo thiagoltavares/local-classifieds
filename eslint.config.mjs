@@ -4,7 +4,7 @@ import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
 
-export default tseslint.config(
+export default [
   {
     ignores: [
       'node_modules/',
@@ -62,5 +62,5 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
     },
-  }
-);
+  },
+];
