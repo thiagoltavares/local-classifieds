@@ -85,6 +85,7 @@ export default [
       parserOptions: {
         project: ['./apps/frontend/tsconfig.json'],
         tsconfigRootDir: import.meta.dirname,
+        allowDefaultProject: true,
       },
     },
     rules: {
