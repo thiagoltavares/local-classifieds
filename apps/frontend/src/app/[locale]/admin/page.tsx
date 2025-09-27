@@ -15,23 +15,28 @@ import {
   CardContent,
   Badge,
   Input,
-  Textarea,
   Modal,
   Sidebar,
 } from '../../../components/ui';
 
 interface Category {
   id: string;
-  name: string;
   slug: string;
-  description?: string;
+  parentId?: string | null;
+  parent?: Category | null;
+  children?: Category[];
   active: boolean;
   displayOrder: number;
   createdAt: string;
+  updatedAt: string;
   translations?: Array<{
+    id: string;
+    categoryId: string;
     language: string;
     name: string;
     description?: string;
+    createdAt: string;
+    updatedAt: string;
   }>;
 }
 
@@ -41,69 +46,134 @@ export default function AdminPage() {
   const [categories, setCategories] = useState<Category[]>([
     {
       id: '1',
-      name: 'Eletrônicos',
       slug: 'eletronicos',
-      description: 'Produtos eletrônicos e tecnologia',
+      parentId: null,
+      parent: null,
+      children: [
+        {
+          id: '4',
+          slug: 'smartphones',
+          parentId: '1',
+          parent: null,
+          children: [],
+          active: true,
+          displayOrder: 1,
+          createdAt: '2024-01-15',
+          updatedAt: '2024-01-15',
+          translations: [
+            {
+              id: 't4-pt',
+              categoryId: '4',
+              language: 'pt',
+              name: 'Smartphones',
+              description: 'Telefones inteligentes',
+              createdAt: '2024-01-15',
+              updatedAt: '2024-01-15',
+            },
+            {
+              id: 't4-en',
+              categoryId: '4',
+              language: 'en',
+              name: 'Smartphones',
+              description: 'Smart phones',
+              createdAt: '2024-01-15',
+              updatedAt: '2024-01-15',
+            },
+          ],
+        },
+      ],
       active: true,
       displayOrder: 1,
       createdAt: '2024-01-15',
+      updatedAt: '2024-01-15',
       translations: [
         {
+          id: 't1-pt',
+          categoryId: '1',
           language: 'pt',
           name: 'Eletrônicos',
           description: 'Produtos eletrônicos e tecnologia',
+          createdAt: '2024-01-15',
+          updatedAt: '2024-01-15',
         },
         {
+          id: 't1-en',
+          categoryId: '1',
           language: 'en',
           name: 'Electronics',
           description: 'Electronic products and technology',
+          createdAt: '2024-01-15',
+          updatedAt: '2024-01-15',
         },
       ],
     },
     {
       id: '2',
-      name: 'Casa e Jardim',
       slug: 'casa-jardim',
-      description: 'Produtos para casa e jardim',
+      parentId: null,
+      parent: null,
+      children: [],
       active: true,
       displayOrder: 2,
       createdAt: '2024-01-16',
+      updatedAt: '2024-01-16',
       translations: [
         {
+          id: 't2-pt',
+          categoryId: '2',
           language: 'pt',
           name: 'Casa e Jardim',
           description: 'Produtos para casa e jardim',
+          createdAt: '2024-01-16',
+          updatedAt: '2024-01-16',
         },
         {
+          id: 't2-en',
+          categoryId: '2',
           language: 'en',
           name: 'Home & Garden',
           description: 'Home and garden products',
+          createdAt: '2024-01-16',
+          updatedAt: '2024-01-16',
         },
       ],
     },
     {
       id: '3',
-      name: 'Moda',
       slug: 'moda',
-      description: 'Roupas e acessórios',
+      parentId: null,
+      parent: null,
+      children: [],
       active: false,
       displayOrder: 3,
       createdAt: '2024-01-17',
+      updatedAt: '2024-01-17',
       translations: [
-        { language: 'pt', name: 'Moda', description: 'Roupas e acessórios' },
         {
+          id: 't3-pt',
+          categoryId: '3',
+          language: 'pt',
+          name: 'Moda',
+          description: 'Roupas e acessórios',
+          createdAt: '2024-01-17',
+          updatedAt: '2024-01-17',
+        },
+        {
+          id: 't3-en',
+          categoryId: '3',
           language: 'en',
           name: 'Fashion',
           description: 'Clothing and accessories',
+          createdAt: '2024-01-17',
+          updatedAt: '2024-01-17',
         },
       ],
     },
   ]);
 
   const [formData, setFormData] = useState({
-    name: '',
     slug: '',
-    description: '',
+    parentId: null as string | null,
     displayOrder: 0,
     active: true,
     translations: [
@@ -140,20 +210,29 @@ export default function AdminPage() {
 
     const newCategory: Category = {
       id: Date.now().toString(),
-      name: formData.name,
       slug: formData.slug,
-      description: formData.description,
+      parentId: formData.parentId,
+      parent: null,
+      children: [],
       active: formData.active,
       displayOrder: formData.displayOrder,
       createdAt: new Date().toISOString().split('T')[0],
-      translations: formData.translations,
+      updatedAt: new Date().toISOString().split('T')[0],
+      translations: formData.translations.map((trans, _index) => ({
+        id: `t${Date.now()}-${trans.language}`,
+        categoryId: Date.now().toString(),
+        language: trans.language,
+        name: trans.name,
+        description: trans.description,
+        createdAt: new Date().toISOString().split('T')[0],
+        updatedAt: new Date().toISOString().split('T')[0],
+      })),
     };
 
     setCategories(prev => [...prev, newCategory]);
     setFormData({
-      name: '',
       slug: '',
-      description: '',
+      parentId: null,
       displayOrder: 0,
       active: true,
       translations: [
@@ -236,22 +315,58 @@ export default function AdminPage() {
                       <div className='flex justify-between items-start'>
                         <Stack spacing={2} className='flex-1'>
                           <div className='flex items-center space-x-3'>
-                            <H3>{category.name}</H3>
+                            <H3>
+                              {category.translations?.[0]?.name ||
+                                category.slug}
+                            </H3>
                             <Badge
                               variant={category.active ? 'success' : 'default'}
                               size='sm'
                             >
                               {category.active ? 'Ativa' : 'Inativa'}
                             </Badge>
+                            {category.parentId && (
+                              <Badge variant='info' size='sm'>
+                                Subcategoria
+                              </Badge>
+                            )}
                           </div>
                           <Body className='text-neutral-text-secondary'>
-                            {category.description}
+                            {category.translations?.[0]?.description ||
+                              'Sem descrição'}
                           </Body>
                           <div className='flex items-center space-x-4 text-sm text-neutral-text-secondary'>
                             <span>Slug: {category.slug}</span>
                             <span>Ordem: {category.displayOrder}</span>
                             <span>Criado em: {category.createdAt}</span>
+                            {category.parentId && (
+                              <span>
+                                Pai:{' '}
+                                {category.parent?.translations?.[0]?.name ||
+                                  'N/A'}
+                              </span>
+                            )}
                           </div>
+                          {category.children &&
+                            category.children.length > 0 && (
+                              <div className='mt-2'>
+                                <Small className='text-neutral-text-secondary mb-2 block'>
+                                  Subcategorias:
+                                </Small>
+                                <div className='flex flex-wrap gap-2'>
+                                  {category.children.map(child => (
+                                    <Badge
+                                      key={child.id}
+                                      variant='info'
+                                      size='sm'
+                                    >
+                                      {child.translations?.[0]?.name ||
+                                        child.slug}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
                           {category.translations && (
                             <div className='flex flex-wrap gap-2'>
                               {category.translations.map((trans, index) => (
@@ -295,28 +410,32 @@ export default function AdminPage() {
           <Stack spacing={4}>
             <Stack direction='row' spacing={4}>
               <Input
-                label='Nome da Categoria'
-                placeholder='Ex: Eletrônicos'
-                value={formData.name}
-                onChange={e => handleInputChange('name', e.target.value)}
-                required
-              />
-              <Input
                 label='Slug'
                 placeholder='Ex: eletronicos'
                 value={formData.slug}
                 onChange={e => handleInputChange('slug', e.target.value)}
                 required
               />
+              <div className='w-full'>
+                <label className='block text-sm font-medium text-neutral-text-primary mb-2'>
+                  Categoria Pai
+                </label>
+                <select
+                  value={formData.parentId || ''}
+                  onChange={e =>
+                    handleInputChange('parentId', e.target.value || '')
+                  }
+                  className='flex h-10 w-full rounded-md border border-neutral-border bg-neutral-bg-card px-3 py-2 text-sm text-neutral-text-primary focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent'
+                >
+                  <option value=''>Nenhuma (Categoria Principal)</option>
+                  {categories.map(category => (
+                    <option key={category.id} value={category.id}>
+                      {category.translations?.[0]?.name || category.slug}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </Stack>
-
-            <Textarea
-              label='Descrição'
-              placeholder='Descrição da categoria...'
-              value={formData.description}
-              onChange={e => handleInputChange('description', e.target.value)}
-              rows={3}
-            />
 
             <Stack direction='row' spacing={4}>
               <Input

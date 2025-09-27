@@ -1,7 +1,7 @@
-// /Users/thiagotavares/Projects/Services/libs/database/src/category.service.ts
+// /Users/thiagotavares/Projects/Services/apps/api/src/modules/categories/categories.service.ts
 
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
+import { PrismaService } from '../../../libs/database/src/prisma.service';
 import type { Category } from '@prisma/client';
 import {
   CategoryWithChildren,
@@ -9,10 +9,10 @@ import {
   CreateCategoryData,
   UpdateCategoryData,
   CategoryQueryOptions,
-} from './types';
+} from '../../../libs/database/src/types';
 
 @Injectable()
-export class CategoryService {
+export class CategoriesService {
   constructor(private prisma: PrismaService) {}
 
   /**

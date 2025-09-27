@@ -23,12 +23,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "clean": "rm -rf dist coverage",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:studio": "prisma studio",
-    "db:deploy": "prisma migrate deploy",
-    "db:reset": "prisma migrate reset",
-    "db:seed": "ts-node prisma/seed.ts"
+    "db:generate": "prisma generate --schema=libs/database/prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema=libs/database/prisma/schema.prisma",
+    "db:studio": "prisma studio --schema=libs/database/prisma/schema.prisma",
+    "db:deploy": "prisma migrate deploy --schema=libs/database/prisma/schema.prisma",
+    "db:reset": "prisma migrate reset --schema=libs/database/prisma/schema.prisma",
+    "db:seed": "ts-node libs/database/prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
