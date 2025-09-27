@@ -4,8 +4,7 @@
   "description": "Monorepo for Local Classifieds project",
   "private": true,
   "workspaces": [
-    "apps/*",
-    "libs/*"
+    "apps/*"
   ],
   "scripts": {
     "// === DEVELOPMENT ===": "",
@@ -25,19 +24,13 @@
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
     "lint:api": "npm run lint --workspace=apps/api",
     "lint:frontend": "npm run lint --workspace=apps/frontend",
-    "lint:database": "npm run lint --workspace=libs/database",
-    "lint:shared": "npm run lint --workspace=libs/shared",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "format:api": "npm run format --workspace=apps/api",
     "format:frontend": "npm run format --workspace=apps/frontend",
-    "format:database": "npm run format --workspace=libs/database",
-    "format:shared": "npm run format --workspace=libs/shared",
     "type-check": "tsc --noEmit",
     "type-check:api": "npm run type-check --workspace=apps/api",
     "type-check:frontend": "npm run type-check --workspace=apps/frontend",
-    "type-check:database": "npm run type-check --workspace=libs/database",
-    "type-check:shared": "npm run type-check --workspace=libs/shared",
     "// === TESTING ===": "",
     "test": "npm run test --workspaces",
     "test:watch": "npm run test:watch --workspaces",
@@ -46,11 +39,11 @@
     "test:frontend": "npm run test --workspace=apps/frontend",
     "test:e2e": "npm run test:e2e --workspace=apps/api",
     "// === DATABASE ===": "",
-    "db:generate": "npm run db:generate --workspace=libs/database",
-    "db:migrate": "npm run db:migrate --workspace=libs/database",
-    "db:studio": "npm run db:studio --workspace=libs/database",
-    "db:reset": "npm run db:reset --workspace=libs/database",
-    "db:deploy": "npm run db:deploy --workspace=libs/database",
+    "db:generate": "npm run db:generate --workspace=apps/api",
+    "db:migrate": "npm run db:migrate --workspace=apps/api",
+    "db:studio": "npm run db:studio --workspace=apps/api",
+    "db:reset": "npm run db:reset --workspace=apps/api",
+    "db:deploy": "npm run db:deploy --workspace=apps/api",
     "// === DOCKER ===": "",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
@@ -67,8 +60,6 @@
     "clean": "npm run clean --workspaces",
     "clean:api": "npm run clean --workspace=apps/api",
     "clean:frontend": "npm run clean --workspace=apps/frontend",
-    "clean:database": "npm run clean --workspace=libs/database",
-    "clean:shared": "npm run clean --workspace=libs/shared",
     "// === GIT HOOKS ===": "",
     "prepare": "husky",
     "postinstall": "npm run db:generate",
@@ -104,14 +95,6 @@
       "prettier --write"
     ],
     "apps/frontend/**/*.{ts,tsx,js,jsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "libs/database/**/*.{ts,js}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "libs/shared/**/*.{ts,js}": [
       "eslint --fix",
       "prettier --write"
     ],

@@ -4,7 +4,7 @@ import { ApiResponse, PaginatedResponse, PaginationParams } from '../types';
 export function createApiResponse<T>(
   data?: T,
   message?: string,
-  success: boolean = true
+  success: boolean = true,
 ): ApiResponse<T> {
   return {
     success,
@@ -15,7 +15,7 @@ export function createApiResponse<T>(
 
 export function createErrorResponse(
   error: string,
-  message?: string
+  message?: string,
 ): ApiResponse {
   return {
     success: false,
@@ -26,7 +26,7 @@ export function createErrorResponse(
 
 export function createPaginatedResponse<T>(
   data: T[],
-  pagination: PaginationParams & { total: number }
+  pagination: PaginationParams & { total: number },
 ): PaginatedResponse<T> {
   const page = pagination.page || 1;
   const limit = pagination.limit || 10;
@@ -46,7 +46,7 @@ export function createPaginatedResponse<T>(
 }
 
 export function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export function isValidEmail(email: string): boolean {

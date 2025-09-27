@@ -8,7 +8,7 @@ const CategoryNameSchema = z
   .min(3, 'Category name must be at least 3 characters')
   .max(120, 'Category name cannot exceed 120 characters')
   .trim()
-  .refine(name => name.length > 0, 'Category name cannot be empty');
+  .refine((name) => name.length > 0, 'Category name cannot be empty');
 
 const CategorySlugSchema = z
   .string()
@@ -16,15 +16,15 @@ const CategorySlugSchema = z
   .max(140, 'Slug cannot exceed 140 characters')
   .regex(
     /^[a-z0-9-]+$/,
-    'Slug must contain only lowercase letters, numbers, and hyphens'
+    'Slug must contain only lowercase letters, numbers, and hyphens',
   )
   .refine(
-    slug => !slug.startsWith('-') && !slug.endsWith('-'),
-    'Slug cannot start or end with a hyphen'
+    (slug) => !slug.startsWith('-') && !slug.endsWith('-'),
+    'Slug cannot start or end with a hyphen',
   )
   .refine(
-    slug => !slug.includes('--'),
-    'Slug cannot contain consecutive hyphens'
+    (slug) => !slug.includes('--'),
+    'Slug cannot contain consecutive hyphens',
   );
 
 const CategoryDescriptionSchema = z
@@ -73,7 +73,7 @@ export const CreateCategoryDto = z
     {
       message: 'Invalid category hierarchy',
       path: ['parentId'],
-    }
+    },
   );
 
 // Update Category DTO
@@ -86,16 +86,16 @@ export const UpdateCategoryDto = z
     translations: z.array(CategoryTranslationDto).optional(),
   })
   .refine(
-    data => {
+    (data) => {
       // Ensure at least one field is provided for update
       const hasUpdateFields = Object.keys(data).some(
-        key => data[key as keyof typeof data] !== undefined
+        (key) => data[key as keyof typeof data] !== undefined,
       );
       return hasUpdateFields;
     },
     {
       message: 'At least one field must be provided for update',
-    }
+    },
   );
 
 // Category Parameters DTO (for URL params)
@@ -199,7 +199,7 @@ export const CategoryWithChildrenResponseDto: z.ZodType<CategoryWithChildrenType
     CategoryResponseDto.extend({
       children: z.array(CategoryWithChildrenResponseDto).optional(),
       parent: CategoryResponseDto.optional(),
-    })
+    }),
   );
 
 // Category List Response DTO
@@ -291,13 +291,13 @@ export const CategoryDtoUtils = {
    */
   getTranslatedName: (
     translations: Array<{ language: string; name: string }>,
-    language: string = 'pt'
+    language: string = 'pt',
   ): string => {
-    const translation = translations.find(t => t.language === language);
+    const translation = translations.find((t) => t.language === language);
     if (!translation) {
       // Fallback to first available translation or 'pt'
       const fallback =
-        translations.find(t => t.language === 'pt') || translations[0];
+        translations.find((t) => t.language === 'pt') || translations[0];
       return fallback?.name || 'Untitled';
     }
     return translation.name;
@@ -308,13 +308,13 @@ export const CategoryDtoUtils = {
    */
   getTranslatedDescription: (
     translations: Array<{ language: string; description?: string | null }>,
-    language: string = 'pt'
+    language: string = 'pt',
   ): string | null => {
-    const translation = translations.find(t => t.language === language);
+    const translation = translations.find((t) => t.language === language);
     if (!translation) {
       // Fallback to first available translation or 'pt'
       const fallback =
-        translations.find(t => t.language === 'pt') || translations[0];
+        translations.find((t) => t.language === 'pt') || translations[0];
       return fallback?.description || null;
     }
     return translation.description || null;

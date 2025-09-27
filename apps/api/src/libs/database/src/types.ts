@@ -1,6 +1,6 @@
 // /Users/thiagotavares/Projects/Services/libs/database/src/types.ts
 
-import type { Category, CategoryTranslation } from '../dist/generated/client';
+import type { Category, CategoryTranslation } from '@prisma/client';
 
 // Re-export Prisma types
 export type { Category, CategoryTranslation };
@@ -27,17 +27,13 @@ export interface CategoryHierarchyValidation {
 
 // Category creation/update data
 export interface CreateCategoryData {
-  name: string;
   slug: string;
-  description?: string;
   parentId?: string;
   displayOrder?: number;
 }
 
 export interface UpdateCategoryData {
-  name?: string;
   slug?: string;
-  description?: string;
   parentId?: string;
   active?: boolean;
   displayOrder?: number;

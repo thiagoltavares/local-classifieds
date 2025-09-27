@@ -19,7 +19,7 @@ Local Classifieds is a monorepo that uses a modern architecture with clear separ
 - **Framework**: Next.js 14
 - **Linguagem**: TypeScript
 - **Styling**: TailwindCSS
-- **Validation**: Zod (compartilhado)
+- **Validation**: Zod (internal library)
 
 ### Database
 
@@ -88,30 +88,22 @@ model Category {
 ├── apps/                    # Aplicações principais
 │   ├── api/                # Backend NestJS
 │   │   ├── src/
+│   │   │   ├── libs/       # Bibliotecas internas
+│   │   │   │   ├── database/ # Camada de dados
+│   │   │   │   └── shared/  # Utilitários compartilhados
 │   │   │   ├── modules/    # Módulos da aplicação
 │   │   │   ├── controllers/
 │   │   │   ├── services/
 │   │   │   └── main.ts
+│   │   ├── prisma/         # Schema e migrações
 │   │   └── package.json
 │   └── frontend/           # Frontend Next.js
 │       ├── src/
+│       │   ├── libs/       # Bibliotecas internas
+│       │   │   └── shared/  # Utilitários compartilhados
 │       │   ├── app/        # App Router (Next.js 13+)
 │       │   ├── components/
 │       │   └── lib/
-│       └── package.json
-├── libs/                   # Bibliotecas compartilhadas
-│   ├── database/           # Camada de dados
-│   │   ├── prisma/         # Schema e migrações
-│   │   ├── src/
-│   │   │   ├── database.service.ts
-│   │   │   └── types.ts
-│   │   └── package.json
-│   └── shared/             # Utilitários compartilhados
-│       ├── src/
-│       │   ├── types/      # Tipos TypeScript
-│       │   ├── dto/        # DTOs com Zod
-│       │   ├── constants/  # Constantes
-│       │   └── utils/      # Funções utilitárias
 │       └── package.json
 ├── docs/                   # Documentação
 ├── .github/                # GitHub Actions
@@ -127,9 +119,9 @@ graph TB
     C --> D[PostgreSQL]
     B --> E[Redis Cache]
 
-    F[libs/shared] --> A
-    F --> B
-    G[libs/database] --> B
+    F[apps/frontend/src/libs/shared] --> A
+    G[apps/api/src/libs/shared] --> B
+    H[apps/api/src/libs/database] --> B
 ```
 
 ## Development Patterns
@@ -140,16 +132,17 @@ graph TB
 - Dependências compartilhadas são gerenciadas no root
 - Scripts centralizados para facilitar o desenvolvimento
 
-### 2. Shared Typing
+### 2. Internal Libraries
 
-- Tipos TypeScript definidos em `libs/shared`
-- DTOs com validação Zod reutilizados entre frontend e backend
-- Interfaces consistentes em toda a aplicação
+- Tipos TypeScript definidos em `apps/*/src/libs/shared`
+- DTOs com validação Zod reutilizados dentro de cada aplicação
+- Interfaces consistentes em cada aplicação
+- Cada projeto mantém suas próprias bibliotecas
 
 ### 3. Data Layer
 
 - Prisma como ORM principal
-- Schema centralizado em `libs/database`
+- Schema centralizado em `apps/api/prisma`
 - Migrações versionadas
 - Cliente Prisma gerado automaticamente
 
@@ -177,7 +170,7 @@ graph TB
 
 - Backend: NestJS com `--watch`
 - Frontend: Next.js com Fast Refresh
-- Bibliotecas: TypeScript com `--watch`
+- Internal libraries: TypeScript com `--watch`
 
 ## Deploy and Production
 

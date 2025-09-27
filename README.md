@@ -20,10 +20,9 @@ This project uses a monorepo architecture with the following technologies:
 /
 ├── apps/
 │   ├── api/           # Backend NestJS
+│   │   └── src/libs/  # Internal libraries (database, shared)
 │   └── frontend/      # Frontend Next.js
-├── libs/
-│   ├── database/      # Prisma ORM and database configurations
-│   └── shared/        # Shared types, DTOs and utilities
+│       └── src/libs/  # Internal libraries (shared)
 ├── docs/              # Project documentation
 ├── docker/            # Docker configurations
 ├── .github/           # GitHub Actions (CI/CD)
@@ -62,7 +61,7 @@ Open the project in VS Code and install recommended extensions for the best deve
 
 ```bash
 # Copy database example file
-cp libs/database/env.example libs/database/.env
+cp apps/api/prisma/.env.example apps/api/prisma/.env
 
 # Edit variables if necessary
 # DATABASE_URL="postgresql://local_user:local_pass@localhost:5432/local_db?schema=public"
@@ -147,14 +146,14 @@ npm run build:frontend   # Build for production
 npm run start:frontend   # Start in production
 ```
 
-### Database Scripts (libs/database)
+### Database Scripts (apps/api)
 
 ```bash
-npm run db:generate      # Gera cliente Prisma
-npm run db:migrate       # Executa migrações
-npm run db:studio        # Abre Prisma Studio
-npm run db:deploy        # Deploy de migrações (produção)
-npm run db:reset         # Reset database (desenvolvimento)
+npm run db:generate      # Generate Prisma client
+npm run db:migrate       # Run migrations
+npm run db:studio        # Open Prisma Studio
+npm run db:deploy        # Deploy migrations (production)
+npm run db:reset         # Reset database (development)
 ```
 
 ## 🗄️ Banco de Dados
@@ -168,10 +167,10 @@ npm run db:reset         # Reset database (desenvolvimento)
 
 ```bash
 # Create new migration
-cd libs/database
-npx prisma migrate dev --name nome_da_migracao
+cd apps/api
+npx prisma migrate dev --name migration_name
 
-# Reset database (desenvolvimento)
+# Reset database (development)
 npm run db:reset
 
 # View data

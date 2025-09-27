@@ -1,7 +1,7 @@
 // /Users/thiagotavares/Projects/Services/libs/database/src/category.service.ts
 
 import { PrismaClient } from '@prisma/client';
-import type { Category } from '../dist/generated/client';
+import type { Category } from '@prisma/client';
 import {
   CategoryWithChildren,
   CategoryHierarchyValidation,
@@ -36,10 +36,8 @@ export class CategoryService {
 
     return this.prisma.category.create({
       data: {
-        name: data.name,
         slug: data.slug,
-        description: data.description,
-        parentId: data.parentId,
+        parentId: data.parentId || null,
         displayOrder: data.displayOrder || 0,
       },
     });
@@ -50,14 +48,12 @@ export class CategoryService {
    */
   async findById(
     id: string,
-    options: CategoryQueryOptions = {}
+    options: CategoryQueryOptions = {},
   ): Promise<CategoryWithChildren | null> {
     const include: {
       children?: {
         where?: { active?: boolean };
-        orderBy: Array<
-          { displayOrder: 'asc' | 'desc' } | { name: 'asc' | 'desc' }
-        >;
+        orderBy: Array<{ displayOrder: 'asc' | 'desc' }>;
       };
       translations?: boolean;
     } = {
@@ -67,7 +63,7 @@ export class CategoryService {
     if (options.includeChildren) {
       include.children = {
         where: options.includeInactive ? {} : { active: true },
-        orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }],
+        orderBy: [{ displayOrder: 'asc' }],
       };
     }
 
@@ -82,14 +78,12 @@ export class CategoryService {
    */
   async findBySlug(
     slug: string,
-    options: CategoryQueryOptions = {}
+    options: CategoryQueryOptions = {},
   ): Promise<CategoryWithChildren | null> {
     const include: {
       children?: {
         where?: { active?: boolean };
-        orderBy: Array<
-          { displayOrder: 'asc' | 'desc' } | { name: 'asc' | 'desc' }
-        >;
+        orderBy: Array<{ displayOrder: 'asc' | 'desc' }>;
       };
       translations?: boolean;
     } = {
@@ -99,7 +93,7 @@ export class CategoryService {
     if (options.includeChildren) {
       include.children = {
         where: options.includeInactive ? {} : { active: true },
-        orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }],
+        orderBy: [{ displayOrder: 'asc' }],
       };
     }
 
@@ -113,7 +107,7 @@ export class CategoryService {
    * Find all categories with optional filtering
    */
   async findAll(
-    options: CategoryQueryOptions = {}
+    options: CategoryQueryOptions = {},
   ): Promise<CategoryWithChildren[]> {
     const where: {
       active?: boolean;
@@ -131,9 +125,7 @@ export class CategoryService {
     const include: {
       children?: {
         where?: { active?: boolean };
-        orderBy: Array<
-          { displayOrder: 'asc' | 'desc' } | { name: 'asc' | 'desc' }
-        >;
+        orderBy: Array<{ displayOrder: 'asc' | 'desc' }>;
       };
       translations?: boolean;
     } = {
@@ -143,14 +135,14 @@ export class CategoryService {
     if (options.includeChildren) {
       include.children = {
         where: options.includeInactive ? {} : { active: true },
-        orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }],
+        orderBy: [{ displayOrder: 'asc' }],
       };
     }
 
     return this.prisma.category.findMany({
       where,
       include,
-      orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }],
+      orderBy: [{ displayOrder: 'asc' }],
       take: options.limit,
       skip: options.offset,
     });
@@ -205,7 +197,7 @@ export class CategoryService {
 
     if (childrenCount > 0) {
       throw new Error(
-        'Cannot delete category with active children. Please deactivate children first.'
+        'Cannot delete category with active children. Please deactivate children first.',
       );
     }
 
@@ -235,13 +227,13 @@ export class CategoryService {
    * Get category hierarchy tree
    */
   async getHierarchyTree(
-    includeInactive = false
+    includeInactive = false,
   ): Promise<CategoryWithChildren[]> {
     const where = includeInactive ? {} : { active: true };
 
     const categories = await this.prisma.category.findMany({
       where,
-      orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }],
+      orderBy: [{ displayOrder: 'asc' }],
     });
 
     return this.buildHierarchyTree(categories);
@@ -252,7 +244,7 @@ export class CategoryService {
    */
   async validateHierarchy(
     parentId: string | null,
-    excludeId: string | null
+    excludeId: string | null,
   ): Promise<CategoryHierarchyValidation> {
     if (!parentId) {
       return { isValid: true };
@@ -302,7 +294,7 @@ export class CategoryService {
         };
       }
 
-      currentId = category.parentId;
+      currentId = category.parentId || '';
     }
 
     return { isValid: true };
@@ -316,7 +308,7 @@ export class CategoryService {
     const rootCategories: CategoryWithChildren[] = [];
 
     // Create map of all categories
-    categories.forEach(category => {
+    categories.forEach((category) => {
       categoryMap.set(category.id, { ...category, children: [] });
     });
 

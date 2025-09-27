@@ -49,12 +49,7 @@ The project includes optimized settings in `.vscode/settings.json`:
 
 ```json
 {
-  "eslint.workingDirectories": [
-    "apps/api",
-    "apps/frontend",
-    "libs/database",
-    "libs/shared"
-  ]
+  "eslint.workingDirectories": ["apps/api", "apps/frontend"]
 }
 ```
 
