@@ -85,29 +85,45 @@ model Category {
 
 ```
 /
-├── apps/                    # Aplicações principais
-│   ├── api/                # Backend NestJS
+├── apps/                          # Applications
+│   ├── api/                      # NestJS Backend
 │   │   ├── src/
-│   │   │   ├── libs/       # Bibliotecas internas
-│   │   │   │   ├── database/ # Camada de dados
-│   │   │   │   └── shared/  # Utilitários compartilhados
-│   │   │   ├── modules/    # Módulos da aplicação
-│   │   │   ├── controllers/
-│   │   │   ├── services/
+│   │   │   ├── modules/          # NestJS feature modules
+│   │   │   │   └── categories/   # Categories module
+│   │   │   ├── app.controller.ts
+│   │   │   ├── app.module.ts
+│   │   │   ├── app.service.ts
 │   │   │   └── main.ts
-│   │   ├── prisma/         # Schema e migrações
-│   │   └── package.json
-│   └── frontend/           # Frontend Next.js
+│   │   └── libs/                 # Internal libraries (npm packages)
+│   │       ├── database/         # @services/database
+│   │       │   ├── src/          # Database services & Prisma
+│   │       │   ├── prisma/       # Schema & migrations
+│   │       │   ├── package.json  # @services/database
+│   │       │   └── tsconfig.json
+│   │       └── shared/           # @services/shared
+│   │           ├── src/          # DTOs, types, utils
+│   │           ├── package.json  # @services/shared
+│   │           └── tsconfig.json
+│   └── frontend/                 # Next.js Frontend
 │       ├── src/
-│       │   ├── libs/       # Bibliotecas internas
-│       │   │   └── shared/  # Utilitários compartilhados
-│       │   ├── app/        # App Router (Next.js 13+)
-│       │   ├── components/
-│       │   └── lib/
-│       └── package.json
-├── docs/                   # Documentação
-├── .github/                # GitHub Actions
-└── docker-compose.yml      # Serviços de desenvolvimento
+│       │   └── app/              # Next.js App Router
+│       └── libs/                 # Internal libraries
+│           └── shared/           # @frontend/shared
+│               ├── src/          # Frontend utilities
+│               ├── package.json  # @frontend/shared
+│               └── tsconfig.json
+├── docs/                         # Documentation
+│   ├── ARCHITECTURE.md
+│   ├── QUICK_REFERENCE.md
+│   ├── RUNNING.md
+│   ├── VSCODE_SETUP.md
+│   └── postman/                  # API Testing collections
+├── docker/                       # Docker configurations
+├── scripts/                      # Utility scripts
+├── docker-compose.yml            # Development services
+├── tsconfig.base.json            # Shared TypeScript config
+├── eslint.config.mjs             # Unified ESLint config
+└── package.json                  # Monorepo with workspaces
 ```
 
 ## Data Flow
@@ -119,38 +135,53 @@ graph TB
     C --> D[PostgreSQL]
     B --> E[Redis Cache]
 
-    F[apps/frontend/src/libs/shared] --> A
-    G[apps/api/src/libs/shared] --> B
-    H[apps/api/src/libs/database] --> B
+    F[@frontend/shared] --> A
+    G[@services/shared] --> B
+    H[@services/database] --> B
+```
+
+### Import System
+
+The project uses clean import aliases for better maintainability:
+
+```typescript
+// Backend imports
+import { PrismaService } from '@services/database';
+import { CreateCategoryDto } from '@services/shared';
+
+// Frontend imports
+import { formatDate } from '@frontend/shared';
 ```
 
 ## Development Patterns
 
-### 1. Monorepo with Workspaces
+### 1. Monorepo with NPM Workspaces
 
-- Cada aplicação e biblioteca tem seu próprio `package.json`
-- Dependências compartilhadas são gerenciadas no root
-- Scripts centralizados para facilitar o desenvolvimento
+- Each application and library has its own `package.json`
+- Shared dependencies are managed at the root level
+- Centralized scripts for easier development
+- Automatic linking between workspace packages
 
-### 2. Internal Libraries
+### 2. Internal Libraries as NPM Packages
 
-- Tipos TypeScript definidos em `apps/*/src/libs/shared`
-- DTOs com validação Zod reutilizados dentro de cada aplicação
-- Interfaces consistentes em cada aplicação
-- Cada projeto mantém suas próprias bibliotecas
+- Each library is a proper npm package with `@services/*` and `@frontend/*` naming
+- TypeScript types defined in `apps/*/libs/shared/src`
+- DTOs with Zod validation reused within each application
+- Consistent interfaces within each application
+- Each project maintains its own libraries without cross-dependencies
 
 ### 3. Data Layer
 
-- Prisma como ORM principal
-- Schema centralizado em `apps/api/prisma`
-- Migrações versionadas
-- Cliente Prisma gerado automaticamente
+- Prisma as main ORM
+- Schema centralized in `apps/api/libs/database/prisma`
+- Versioned migrations
+- Prisma client generated automatically
 
 ### 4. Data Validation
 
-- Zod para validação runtime
-- DTOs tipados e validados
-- Mensagens de erro consistentes
+- Zod for runtime validation
+- Typed and validated DTOs
+- Consistent error messages
 
 ## Development Configuration
 

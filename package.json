@@ -4,7 +4,9 @@
   "description": "Monorepo for Local Classifieds project",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "apps/api/libs/*",
+    "apps/frontend/libs/*"
   ],
   "scripts": {
     "// === DEVELOPMENT ===": "",

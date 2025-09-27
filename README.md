@@ -19,16 +19,53 @@ This project uses a monorepo architecture with the following technologies:
 ```
 /
 ├── apps/
-│   ├── api/           # Backend NestJS
-│   │   └── src/libs/  # Internal libraries (database, shared)
-│   └── frontend/      # Frontend Next.js
-│       └── src/libs/  # Internal libraries (shared)
-├── docs/              # Project documentation
-├── docker/            # Docker configurations
-├── .github/           # GitHub Actions (CI/CD)
-├── docker-compose.yml # Development services
-└── package.json       # Monorepo configuration
+│   ├── api/                          # NestJS Backend
+│   │   ├── src/
+│   │   │   ├── modules/              # NestJS feature modules
+│   │   │   │   └── categories/       # Categories module
+│   │   │   ├── app.controller.ts
+│   │   │   ├── app.module.ts
+│   │   │   ├── app.service.ts
+│   │   │   └── main.ts
+│   │   └── libs/                     # Internal libraries (npm packages)
+│   │       ├── database/             # @services/database
+│   │       │   ├── src/              # Database services & Prisma
+│   │       │   ├── prisma/           # Schema & migrations
+│   │       │   ├── package.json      # @services/database
+│   │       │   └── tsconfig.json
+│   │       └── shared/               # @services/shared
+│   │           ├── src/              # DTOs, types, utils
+│   │           ├── package.json      # @services/shared
+│   │           └── tsconfig.json
+│   └── frontend/                     # Next.js Frontend
+│       ├── src/
+│       │   └── app/                  # Next.js App Router
+│       └── libs/                     # Internal libraries
+│           └── shared/               # @frontend/shared
+│               ├── src/              # Frontend utilities
+│               ├── package.json      # @frontend/shared
+│               └── tsconfig.json
+├── docs/                             # Project documentation
+│   ├── ARCHITECTURE.md
+│   ├── QUICK_REFERENCE.md
+│   ├── RUNNING.md
+│   ├── VSCODE_SETUP.md
+│   └── postman/                      # API Testing collections
+├── docker/                           # Docker configurations
+├── scripts/                          # Utility scripts
+├── docker-compose.yml                # Development services
+├── tsconfig.base.json                # Shared TypeScript config
+├── eslint.config.mjs                 # Unified ESLint config
+└── package.json                      # Monorepo with workspaces
 ```
+
+### 🎯 Key Features
+
+- **Clean Imports**: Use `@services/database`, `@services/shared`, `@frontend/shared` instead of relative paths
+- **NPM Workspaces**: Each library is a proper npm package with automatic linking
+- **Unified Configuration**: All TypeScript projects extend from `tsconfig.base.json`
+- **Scalable Structure**: Easy to add new modules and libraries
+- **Type-Safe**: Full TypeScript support with path aliases
 
 ## 🚀 Local Setup
 
@@ -60,8 +97,8 @@ Open the project in VS Code and install recommended extensions for the best deve
 ### 4. Configure environment
 
 ```bash
-# Copy database example file
-cp apps/api/prisma/.env.example apps/api/prisma/.env
+# Copy environment example file
+cp env.example .env
 
 # Edit variables if necessary
 # DATABASE_URL="postgresql://local_user:local_pass@localhost:5432/local_db?schema=public"

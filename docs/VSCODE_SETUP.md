@@ -49,7 +49,8 @@ The project includes optimized settings in `.vscode/settings.json`:
 
 ```json
 {
-  "eslint.workingDirectories": ["apps/api", "apps/frontend"]
+  "eslint.workingDirectories": ["apps/api", "apps/frontend"],
+  "typescript.preferences.includePackageJsonAutoImports": "on"
 }
 ```
 
@@ -84,10 +85,11 @@ The project includes optimized settings in `.vscode/settings.json`:
 
 ### 4. **Code Quality Integration**
 
-- ESLint errors shown inline
+- ESLint errors shown inline (unified configuration)
 - Prettier formatting on save
-- TypeScript error checking
+- TypeScript error checking with path aliases
 - TailwindCSS IntelliSense
+- Auto-imports for workspace packages (`@services/*`, `@frontend/*`)
 
 ## 🎮 Available Tasks
 

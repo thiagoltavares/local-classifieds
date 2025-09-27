@@ -44,6 +44,15 @@ npm run dev
 | `npm run dev:frontend` | Start frontend only                            | 3001       |
 | `npm run docker:up`    | Start Docker services only                     | 5432, 6379 |
 
+### Workspace Management
+
+| Command                  | Description                        |
+| ------------------------ | ---------------------------------- |
+| `npm install`            | Install all workspace dependencies |
+| `npm run build`          | Build all workspaces               |
+| `npm run build:api`      | Build API workspace only           |
+| `npm run build:frontend` | Build frontend workspace only      |
+
 ### Stopping Services
 
 | Command                 | Description                             |
