@@ -69,7 +69,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/categories?lang=pt",
+              "raw": "{{baseUrl}}/categories",
               "host": ["{{baseUrl}}"],
               "path": ["categories"],
               "query": [
@@ -90,7 +90,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/categories?lang=en",
+              "raw": "{{baseUrl}}/categories",
               "host": ["{{baseUrl}}"],
               "path": ["categories"],
               "query": [
@@ -125,7 +125,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/categories/{{categoryId}}?lang=pt",
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
               "host": ["{{baseUrl}}"],
               "path": ["categories", "{{categoryId}}"],
               "query": [
@@ -146,7 +146,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/categories/{{categoryId}}?lang=en",
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
               "host": ["{{baseUrl}}"],
               "path": ["categories", "{{categoryId}}"],
               "query": [
