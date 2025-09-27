@@ -1,13 +1,21 @@
 // /Users/thiagotavares/Projects/Services/libs/database/src/types.ts
 
-import type { Category } from '../dist/generated/client';
+import type { Category, CategoryTranslation } from '../dist/generated/client';
 
 // Re-export Prisma types
-export type { Category };
+export type { Category, CategoryTranslation };
 
 // Custom Category interface with additional computed properties
 export interface CategoryWithChildren extends Category {
   children?: CategoryWithChildren[];
+  translations?: CategoryTranslation[];
+}
+
+// Category with specific language translation
+export interface CategoryWithTranslation
+  extends Omit<Category, 'translations'> {
+  translation?: CategoryTranslation;
+  children?: CategoryWithTranslation[];
 }
 
 // Category hierarchy validation result

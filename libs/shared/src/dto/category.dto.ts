@@ -44,14 +44,25 @@ const CategoryDisplayOrderSchema = z
   .min(0, 'Display order cannot be negative')
   .max(9999, 'Display order cannot exceed 9999');
 
+// Translation DTO
+export const CategoryTranslationDto = z.object({
+  language: z
+    .string()
+    .min(2, 'Language code must be at least 2 characters')
+    .max(5, 'Language code too long'),
+  name: CategoryNameSchema,
+  description: CategoryDescriptionSchema,
+});
+
 // Create Category DTO
 export const CreateCategoryDto = z
   .object({
-    name: CategoryNameSchema,
     slug: CategorySlugSchema,
-    description: CategoryDescriptionSchema,
     parentId: CategoryParentIdSchema,
     displayOrder: CategoryDisplayOrderSchema.default(0),
+    translations: z
+      .array(CategoryTranslationDto)
+      .min(1, 'At least one translation is required'),
   })
   .refine(
     () => {
@@ -68,12 +79,11 @@ export const CreateCategoryDto = z
 // Update Category DTO
 export const UpdateCategoryDto = z
   .object({
-    name: CategoryNameSchema.optional(),
     slug: CategorySlugSchema.optional(),
-    description: CategoryDescriptionSchema,
     parentId: CategoryParentIdSchema,
     active: z.boolean().optional(),
     displayOrder: CategoryDisplayOrderSchema.optional(),
+    translations: z.array(CategoryTranslationDto).optional(),
   })
   .refine(
     data => {
@@ -213,6 +223,7 @@ export const CategoryStatsResponseDto = z.object({
 });
 
 // Type exports
+export type CategoryTranslationDtoType = z.infer<typeof CategoryTranslationDto>;
 export type CreateCategoryDtoType = z.infer<typeof CreateCategoryDto>;
 export type UpdateCategoryDtoType = z.infer<typeof UpdateCategoryDto>;
 export type CategoryParamsDtoType = z.infer<typeof CategoryParamsDto>;
@@ -273,5 +284,39 @@ export const CategoryDtoUtils = {
    */
   sanitizeDescription: (description: string): string => {
     return description.trim().replace(/\s+/g, ' ');
+  },
+
+  /**
+   * Get translated name for a category
+   */
+  getTranslatedName: (
+    translations: Array<{ language: string; name: string }>,
+    language: string = 'pt'
+  ): string => {
+    const translation = translations.find(t => t.language === language);
+    if (!translation) {
+      // Fallback to first available translation or 'pt'
+      const fallback =
+        translations.find(t => t.language === 'pt') || translations[0];
+      return fallback?.name || 'Untitled';
+    }
+    return translation.name;
+  },
+
+  /**
+   * Get translated description for a category
+   */
+  getTranslatedDescription: (
+    translations: Array<{ language: string; description?: string | null }>,
+    language: string = 'pt'
+  ): string | null => {
+    const translation = translations.find(t => t.language === language);
+    if (!translation) {
+      // Fallback to first available translation or 'pt'
+      const fallback =
+        translations.find(t => t.language === 'pt') || translations[0];
+      return fallback?.description || null;
+    }
+    return translation.description || null;
   },
 };
