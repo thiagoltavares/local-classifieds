@@ -30,6 +30,7 @@ export class PrismaService
       await this.$queryRaw`SELECT 1`;
       return true;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Database health check failed:', error);
       return false;
     }

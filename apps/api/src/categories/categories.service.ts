@@ -6,7 +6,7 @@ import { Injectable } from '@nestjs/common';
 export class CategoriesService {
   constructor() {}
 
-  async create(createCategoryDto: Record<string, unknown>) {
+  create(createCategoryDto: Record<string, unknown>) {
     // Mock implementation for now
     return {
       id: '123e4567-e89b-12d3-a456-426614174000',
@@ -19,7 +19,7 @@ export class CategoriesService {
     };
   }
 
-  async findAll(_query: Record<string, unknown>) {
+  findAll(_query: Record<string, unknown>) {
     // Mock implementation for now
     return {
       categories: [
@@ -51,7 +51,7 @@ export class CategoriesService {
     };
   }
 
-  async findOne(id: string) {
+  findOne(id: string) {
     // Mock implementation for now
     return {
       id,
@@ -73,7 +73,7 @@ export class CategoriesService {
     };
   }
 
-  async update(id: string, updateCategoryDto: Record<string, unknown>) {
+  update(id: string, updateCategoryDto: Record<string, unknown>) {
     // Mock implementation for now
     return {
       id,
@@ -82,7 +82,7 @@ export class CategoriesService {
     };
   }
 
-  async softDelete(id: string) {
+  softDelete(id: string) {
     // Mock implementation for now
     return {
       message: 'Category soft deleted successfully',

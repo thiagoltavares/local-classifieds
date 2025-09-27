@@ -17,22 +17,22 @@ export class CategoriesController {
   constructor(private readonly categoryService: CategoriesService) {}
 
   @Post()
-  async create(@Body() createCategoryDto: Record<string, unknown>) {
+  create(@Body() createCategoryDto: Record<string, unknown>) {
     return this.categoryService.create(createCategoryDto);
   }
 
   @Get()
-  async findAll(@Query() query: Record<string, unknown>) {
+  findAll(@Query() query: Record<string, unknown>) {
     return this.categoryService.findAll(query);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string) {
     return this.categoryService.findOne(id);
   }
 
   @Patch(':id')
-  async update(
+  update(
     @Param('id') id: string,
     @Body() updateCategoryDto: Record<string, unknown>,
   ) {
@@ -40,7 +40,7 @@ export class CategoriesController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  remove(@Param('id') id: string) {
     return this.categoryService.softDelete(id);
   }
 }

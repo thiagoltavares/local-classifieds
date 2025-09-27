@@ -312,18 +312,19 @@ export class CategoryService {
     });
 
     // Build hierarchy
-    categories.forEach(category => {
-      const categoryWithChildren = categoryMap.get(category.id)!;
+    for (const category of categories) {
+      const categoryWithChildren = categoryMap.get(category.id);
+      if (!categoryWithChildren) continue;
 
       if (category.parentId) {
         const parent = categoryMap.get(category.parentId);
-        if (parent) {
-          parent.children!.push(categoryWithChildren);
+        if (parent && parent.children) {
+          parent.children.push(categoryWithChildren);
         }
       } else {
         rootCategories.push(categoryWithChildren);
       }
-    });
+    }
 
     return rootCategories;
   }
