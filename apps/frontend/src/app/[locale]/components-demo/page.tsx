@@ -1,7 +1,16 @@
 // apps/frontend/src/app/[locale]/components-demo/page.tsx
 'use client';
 
-import { Button, H1, H2, H3, Body, Small } from '../../../components/ui';
+import {
+  Button,
+  H1,
+  H2,
+  H3,
+  Body,
+  Small,
+  Stack,
+  Divider,
+} from '../../../components/ui';
 
 export default function ComponentsDemo() {
   return (
@@ -58,6 +67,131 @@ export default function ComponentsDemo() {
               <div className='flex gap-4 items-center'>
                 <Button>Normal</Button>
                 <Button disabled>Desabilitado</Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Stack Component */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Stack Component</H2>
+          <div className='space-y-8'>
+            {/* Stack Vertical */}
+            <div>
+              <H3 className='mb-4'>Stack Vertical (padrão)</H3>
+              <Stack spacing={2}>
+                <div className='bg-brand-primary text-white p-4 rounded-lg text-center'>
+                  Item 1
+                </div>
+                <div className='bg-brand-secondary text-white p-4 rounded-lg text-center'>
+                  Item 2
+                </div>
+                <div className='bg-brand-accent text-white p-4 rounded-lg text-center'>
+                  Item 3
+                </div>
+              </Stack>
+            </div>
+
+            {/* Stack Horizontal */}
+            <div>
+              <H3 className='mb-4'>Stack Horizontal</H3>
+              <Stack direction='row' spacing={2}>
+                <div className='bg-brand-primary text-white p-4 rounded-lg text-center flex-1'>
+                  Item 1
+                </div>
+                <div className='bg-brand-secondary text-white p-4 rounded-lg text-center flex-1'>
+                  Item 2
+                </div>
+                <div className='bg-brand-accent text-white p-4 rounded-lg text-center flex-1'>
+                  Item 3
+                </div>
+              </Stack>
+            </div>
+
+            {/* Stack com Divider */}
+            <div>
+              <H3 className='mb-4'>Stack com Divider</H3>
+              <Stack
+                direction='row'
+                divider={<Divider orientation='vertical' flexItem />}
+                spacing={2}
+              >
+                <div className='bg-neutral-bg-card border border-neutral-border p-4 rounded-lg text-center flex-1'>
+                  Item 1
+                </div>
+                <div className='bg-neutral-bg-card border border-neutral-border p-4 rounded-lg text-center flex-1'>
+                  Item 2
+                </div>
+                <div className='bg-neutral-bg-card border border-neutral-border p-4 rounded-lg text-center flex-1'>
+                  Item 3
+                </div>
+              </Stack>
+            </div>
+
+            {/* Stack Responsivo */}
+            <div>
+              <H3 className='mb-4'>Stack Responsivo</H3>
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={{ xs: 1, sm: 2, md: 4 }}
+                className='flex-wrap'
+              >
+                <div className='bg-status-success text-white p-4 rounded-lg text-center flex-1 min-w-0'>
+                  Item 1
+                </div>
+                <div className='bg-status-warning text-white p-4 rounded-lg text-center flex-1 min-w-0'>
+                  Item 2
+                </div>
+                <div className='bg-status-info text-white p-4 rounded-lg text-center flex-1 min-w-0'>
+                  Item 3
+                </div>
+              </Stack>
+            </div>
+
+            {/* Stack com Alinhamento */}
+            <div>
+              <H3 className='mb-4'>Stack com Alinhamento</H3>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div>
+                  <Small className='block mb-2'>alignItems: center</Small>
+                  <Stack
+                    direction='row'
+                    alignItems='center'
+                    spacing={2}
+                    className='h-20 bg-neutral-bg-card border border-neutral-border rounded-lg p-2'
+                  >
+                    <div className='bg-brand-primary text-white p-2 rounded text-sm'>
+                      Item 1
+                    </div>
+                    <div className='bg-brand-secondary text-white p-2 rounded text-sm'>
+                      Item 2
+                    </div>
+                    <div className='bg-brand-accent text-white p-2 rounded text-sm'>
+                      Item 3
+                    </div>
+                  </Stack>
+                </div>
+                <div>
+                  <Small className='block mb-2'>
+                    justifyContent: space-between
+                  </Small>
+                  <Stack
+                    direction='row'
+                    justifyContent='space-between'
+                    spacing={2}
+                    className='h-20 bg-neutral-bg-card border border-neutral-border rounded-lg p-2'
+                  >
+                    <div className='bg-brand-primary text-white p-2 rounded text-sm'>
+                      Item 1
+                    </div>
+                    <div className='bg-brand-secondary text-white p-2 rounded text-sm'>
+                      Item 2
+                    </div>
+                    <div className='bg-brand-accent text-white p-2 rounded text-sm'>
+                      Item 3
+                    </div>
+                  </Stack>
+                </div>
               </div>
             </div>
           </div>
