@@ -1,98 +1,282 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Local Classifieds API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A NestJS-based API for the Local Classifieds platform, built with TypeScript, Prisma ORM, and PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🏗️ Architecture
 
-## Description
+This API follows a modular architecture with clear separation of concerns:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+```
+src/
+├── modules/                    # Feature modules
+│   └── categories/            # Categories module
+│       ├── categories.controller.ts
+│       ├── categories.service.ts
+│       ├── categories.module.ts
+│       ├── dto/               # Data Transfer Objects
+│       ├── entities/          # Domain entities
+│       └── __tests__/         # Unit tests
+├── database/                  # Database layer
+│   └── repositories/          # Repository pattern
+├── common/                    # Backend-only utilities
+│   ├── guards/               # Authentication & authorization
+│   ├── filters/              # Exception filters
+│   ├── interceptors/         # Request/response interceptors
+│   ├── decorators/           # Custom decorators
+│   └── pipes/                # Validation pipes
+├── config/                   # Configuration
+│   ├── app.config.ts
+│   ├── database.config.ts
+│   └── validation.config.ts
+└── libs/                     # Internal libraries
+    ├── database/             # Database infrastructure
+    └── shared/               # Cross-layer utilities
 ```
 
-## Compile and run the project
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- PostgreSQL 15+
+- npm or yarn
+
+### Installation
 
 ```bash
-# development
-$ npm run start
+# Install dependencies
+npm install
 
-# watch mode
-$ npm run start:dev
+# Generate Prisma client
+npm run db:generate
 
-# production mode
-$ npm run start:prod
+# Run database migrations
+npm run db:migrate
 ```
 
-## Run tests
+### Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+NODE_ENV=development
+PORT=3000
+DATABASE_URL=postgresql://user:password@localhost:5432/local_classifieds
+API_PREFIX=api
+CORS_ORIGIN=http://localhost:3001
+CORS_CREDENTIALS=true
+```
+
+## 🛠️ Development
 
 ```bash
-# unit tests
-$ npm run test
+# Start development server with hot reload
+npm run start:dev
 
-# e2e tests
-$ npm run test:e2e
+# Build the application
+npm run build
 
-# test coverage
-$ npm run test:cov
+# Start production server
+npm run start:prod
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 🧪 Testing
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Run unit tests
+npm run test
+
+# Run e2e tests
+npm run test:e2e
+
+# Run tests with coverage
+npm run test:cov
+
+# Run tests in watch mode
+npm run test:watch
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 🗄️ Database
 
-## Resources
+### Prisma Commands
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+# Generate Prisma client
+npm run db:generate
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Create and apply migrations
+npm run db:migrate
 
-## Support
+# Reset database
+npm run db:reset
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# Open Prisma Studio
+npm run db:studio
 
-## Stay in touch
+# Deploy migrations to production
+npm run db:deploy
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Database Schema
 
-## License
+The API uses PostgreSQL with Prisma ORM. Key models include:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- **Category**: Hierarchical categories with translations
+- **CategoryTranslation**: Multi-language support for categories
+
+## 📚 API Documentation
+
+### Categories API
+
+#### Endpoints
+
+- `GET /categories` - List all categories
+- `GET /categories/hierarchy` - Get category hierarchy tree
+- `GET /categories/stats` - Get category statistics
+- `GET /categories/:id` - Get category by ID
+- `GET /categories/slug/:slug` - Get category by slug
+- `POST /categories` - Create new category
+- `PUT /categories/:id` - Update category
+- `DELETE /categories/:id` - Soft delete category
+- `PUT /categories/:id/restore` - Restore deleted category
+
+#### Example Requests
+
+**Create Category:**
+```json
+POST /categories
+{
+  "slug": "electronics",
+  "displayOrder": 0,
+  "translations": [
+    {
+      "language": "pt",
+      "name": "Eletrônicos",
+      "description": "Produtos eletrônicos e tecnologia"
+    },
+    {
+      "language": "en", 
+      "name": "Electronics",
+      "description": "Electronic products and technology"
+    }
+  ]
+}
+```
+
+**Get Categories with Hierarchy:**
+```
+GET /categories?includeChildren=true&includeInactive=false
+```
+
+## 🏛️ Architecture Patterns
+
+### Repository Pattern
+
+The API uses the Repository pattern to abstract database operations:
+
+```typescript
+// Service layer
+constructor(private categoryRepository: CategoryRepository) {}
+
+// Repository layer
+async findById(id: string): Promise<Category | null> {
+  return this.prisma.category.findUnique({ where: { id } });
+}
+```
+
+### DTO Validation
+
+All endpoints use Zod schemas for request validation:
+
+```typescript
+export const CreateCategorySchema = z.object({
+  slug: z.string().min(1).max(140),
+  translations: z.array(CategoryTranslationSchema).min(1),
+});
+```
+
+### Error Handling
+
+Global exception filters handle errors consistently:
+
+- Validation errors return 400 with detailed messages
+- Not found errors return 404
+- Server errors return 500 with sanitized messages
+
+## 🔧 Configuration
+
+### App Configuration
+
+```typescript
+export const appConfig = {
+  port: parseInt(process.env.PORT || '3000', 10),
+  nodeEnv: process.env.NODE_ENV || 'development',
+  apiPrefix: process.env.API_PREFIX || 'api',
+  cors: {
+    origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3001'],
+    credentials: process.env.CORS_CREDENTIALS === 'true',
+  },
+};
+```
+
+### Database Configuration
+
+```typescript
+export const databaseConfig = {
+  url: process.env.DATABASE_URL,
+  maxConnections: parseInt(process.env.DATABASE_MAX_CONNECTIONS || '10', 10),
+  connectionTimeout: parseInt(process.env.DATABASE_CONNECTION_TIMEOUT || '10000', 10),
+  queryTimeout: parseInt(process.env.DATABASE_QUERY_TIMEOUT || '30000', 10),
+};
+```
+
+## 🚀 Deployment
+
+### Production Build
+
+```bash
+# Build the application
+npm run build
+
+# Start production server
+npm run start:prod
+```
+
+### Docker
+
+```bash
+# Build Docker image
+docker build -t local-classifieds-api .
+
+# Run container
+docker run -p 3000:3000 local-classifieds-api
+```
+
+## 📝 Code Style
+
+The project uses:
+
+- **ESLint** for code linting
+- **Prettier** for code formatting
+- **Husky** for git hooks
+- **lint-staged** for pre-commit checks
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+For support and questions:
+
+- Create an issue in the repository
+- Check the [NestJS documentation](https://docs.nestjs.com)
+- Join our Discord community
