@@ -1,7 +1,7 @@
 // /Users/thiagotavares/Projects/Services/apps/api/src/modules/categories/categories.service.ts
 
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../libs/database/src/prisma.service';
+import { CategoryRepository } from '../../database/repositories/category.repository';
 import type { Category } from '@prisma/client';
 import {
   CategoryWithChildren,
@@ -13,7 +13,7 @@ import {
 
 @Injectable()
 export class CategoriesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private categoryRepository: CategoryRepository) {}
 
   /**
    * Create a new category
@@ -28,21 +28,15 @@ export class CategoriesService {
     }
 
     // Check if slug already exists
-    const existingCategory = await this.prisma.category.findUnique({
-      where: { slug: data.slug },
+    const existingCategory = await this.categoryRepository.findUnique({
+      slug: data.slug,
     });
 
     if (existingCategory) {
       throw new Error(`Category with slug '${data.slug}' already exists`);
     }
 
-    return this.prisma.category.create({
-      data: {
-        slug: data.slug,
-        parentId: data.parentId || null,
-        displayOrder: data.displayOrder || 0,
-      },
-    });
+    return this.categoryRepository.create(data);
   }
 
   /**
@@ -69,10 +63,7 @@ export class CategoriesService {
       };
     }
 
-    return this.prisma.category.findUnique({
-      where: { id },
-      include,
-    });
+    return this.categoryRepository.findById(id, options);
   }
 
   /**
@@ -99,10 +90,7 @@ export class CategoriesService {
       };
     }
 
-    return this.prisma.category.findUnique({
-      where: { slug },
-      include,
-    });
+    return this.categoryRepository.findBySlug(slug, options);
   }
 
   /**
@@ -141,13 +129,7 @@ export class CategoriesService {
       };
     }
 
-    return this.prisma.category.findMany({
-      where,
-      include,
-      orderBy: [{ displayOrder: 'asc' }],
-      take: options.limit,
-      skip: options.offset,
-    });
+    return this.categoryRepository.findAll(options);
   }
 
   /**
@@ -164,11 +146,9 @@ export class CategoriesService {
 
     // Check if slug already exists (excluding current category)
     if (data.slug) {
-      const existingCategory = await this.prisma.category.findFirst({
-        where: {
-          slug: data.slug,
-          id: { not: id },
-        },
+      const existingCategory = await this.categoryRepository.findFirst({
+        slug: data.slug,
+        id: { not: id },
       });
 
       if (existingCategory) {
@@ -176,13 +156,7 @@ export class CategoriesService {
       }
     }
 
-    return this.prisma.category.update({
-      where: { id },
-      data: {
-        ...data,
-        updatedAt: new Date(),
-      },
-    });
+    return this.categoryRepository.update(id, data);
   }
 
   /**
@@ -190,11 +164,9 @@ export class CategoriesService {
    */
   async softDelete(id: string): Promise<Category> {
     // Check if category has active children
-    const childrenCount = await this.prisma.category.count({
-      where: {
-        parentId: id,
-        active: true,
-      },
+    const childrenCount = await this.categoryRepository.count({
+      parentId: id,
+      active: true,
     });
 
     if (childrenCount > 0) {
@@ -203,26 +175,14 @@ export class CategoriesService {
       );
     }
 
-    return this.prisma.category.update({
-      where: { id },
-      data: {
-        active: false,
-        updatedAt: new Date(),
-      },
-    });
+    return this.categoryRepository.softDelete(id);
   }
 
   /**
    * Restore category (set active = true)
    */
   async restore(id: string): Promise<Category> {
-    return this.prisma.category.update({
-      where: { id },
-      data: {
-        active: true,
-        updatedAt: new Date(),
-      },
-    });
+    return this.categoryRepository.restore(id);
   }
 
   /**
@@ -233,10 +193,7 @@ export class CategoriesService {
   ): Promise<CategoryWithChildren[]> {
     const where = includeInactive ? {} : { active: true };
 
-    const categories = await this.prisma.category.findMany({
-      where,
-      orderBy: [{ displayOrder: 'asc' }],
-    });
+    const categories = await this.categoryRepository.findMany(where);
 
     return this.buildHierarchyTree(categories);
   }
@@ -284,9 +241,8 @@ export class CategoriesService {
       visited.add(currentId);
       path.push(currentId);
 
-      const category = await this.prisma.category.findUnique({
-        where: { id: currentId },
-        select: { parentId: true },
+      const category = await this.categoryRepository.findUnique({
+        id: currentId,
       });
 
       if (!category) {
@@ -358,21 +314,17 @@ export class CategoriesService {
   }> {
     const [total, active, inactive, withChildren, rootCategories] =
       await Promise.all([
-        this.prisma.category.count(),
-        this.prisma.category.count({ where: { active: true } }),
-        this.prisma.category.count({ where: { active: false } }),
-        this.prisma.category.count({
-          where: {
-            children: {
-              some: {},
-            },
+        this.categoryRepository.count({}),
+        this.categoryRepository.count({ active: true }),
+        this.categoryRepository.count({ active: false }),
+        this.categoryRepository.count({
+          children: {
+            some: {},
           },
         }),
-        this.prisma.category.count({
-          where: {
-            parentId: null,
-            active: true,
-          },
+        this.categoryRepository.count({
+          parentId: null,
+          active: true,
         }),
       ]);
 
