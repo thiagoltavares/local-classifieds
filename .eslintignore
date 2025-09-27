@@ -5,6 +5,16 @@ build/
 node_modules/
 coverage/
 
+# Next.js generated files
+apps/frontend/.next/
+apps/frontend/out/
+apps/frontend/.next/static/
+apps/frontend/.next/types/
+
+# All dist directories
+**/dist/
+**/.next/
+
 # Generated files
 *.d.ts
 *.js.map
