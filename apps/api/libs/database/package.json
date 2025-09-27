@@ -5,7 +5,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generate",
+    "test": "echo 'No tests configured yet'"
   },
   "dependencies": {
     "@prisma/client": "^5.18.0"
