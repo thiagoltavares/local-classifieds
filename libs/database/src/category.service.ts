@@ -59,7 +59,10 @@ export class CategoryService {
           { displayOrder: 'asc' | 'desc' } | { name: 'asc' | 'desc' }
         >;
       };
-    } = {};
+      translations?: boolean;
+    } = {
+      translations: true,
+    };
 
     if (options.includeChildren) {
       include.children = {
@@ -88,7 +91,10 @@ export class CategoryService {
           { displayOrder: 'asc' | 'desc' } | { name: 'asc' | 'desc' }
         >;
       };
-    } = {};
+      translations?: boolean;
+    } = {
+      translations: true,
+    };
 
     if (options.includeChildren) {
       include.children = {
@@ -129,7 +135,10 @@ export class CategoryService {
           { displayOrder: 'asc' | 'desc' } | { name: 'asc' | 'desc' }
         >;
       };
-    } = {};
+      translations?: boolean;
+    } = {
+      translations: true,
+    };
 
     if (options.includeChildren) {
       include.children = {
