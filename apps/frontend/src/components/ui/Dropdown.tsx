@@ -98,14 +98,18 @@ export const Dropdown: React.FC<DropdownProps> = ({
       {isOpen && (
         <div
           className={cn(
-            'absolute z-50 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none',
+            'absolute z-[9999999] mt-2 w-56 rounded-md shadow-xl bg-white border border-neutral-200 focus:outline-none isolate',
             align === 'right' ? 'right-0' : 'left-0',
             contentClassName
           )}
           role='menu'
           aria-orientation='vertical'
         >
-          <div className='py-1' role='none'>
+          <div
+            className='py-1 bg-white rounded-md relative'
+            role='none'
+            style={{ zIndex: 999999 }}
+          >
             {items.map((item, index) => {
               if (item.divider) {
                 return (

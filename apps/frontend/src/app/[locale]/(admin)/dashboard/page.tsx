@@ -25,12 +25,16 @@ import {
   TableHead,
   TableCell,
   TableEmpty,
+  Dropdown,
+  MenuButton,
+  createDropdownItems,
 } from '../../../../components/ui';
 import {
   useCategoriesPaginated,
   useCategories,
   useCategoryStats,
   useCreateCategory,
+  useDeleteCategory,
   type Category,
 } from '../../../../services';
 import { Spinner } from '../../../../components/ui/Spinner';
@@ -42,6 +46,9 @@ export default function AdminPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [page, setPage] = useState(1);
   const limit = 10;
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+    null
+  );
 
   // Hooks para buscar dados reais da API
   const {
@@ -64,6 +71,9 @@ export default function AdminPage() {
 
   // Hook para criar categoria
   const createCategoryMutation = useCreateCategory();
+
+  // Hook para deletar categoria
+  const deleteCategoryMutation = useDeleteCategory();
 
   // Hook para notificações
   const { showSuccess, showError } = useToastNotifications();
@@ -195,6 +205,22 @@ export default function AdminPage() {
     // TODO: Implementar chamada para API para toggle de status
     // Por enquanto, apenas recarregar os dados
     void refetch();
+  };
+
+  const handleDeleteCategory = async (category: Category) => {
+    try {
+      await deleteCategoryMutation.mutateAsync(category.id);
+      showSuccess(
+        `Categoria "${category.translations?.[0]?.name || category.slug}" excluída com sucesso!`
+      );
+      setCategoryToDelete(null);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Erro ao excluir categoria:', error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Erro ao excluir categoria';
+      showError(errorMessage, 'Erro');
+    }
   };
 
   // Sidebar menu items
@@ -403,22 +429,60 @@ export default function AdminPage() {
                                 </span>
                               </TableCell>
                               <TableCell>
-                                <div className='flex items-center gap-2'>
-                                  <Button
-                                    variant={
-                                      category.active ? 'outline' : 'primary'
-                                    }
-                                    size='sm'
-                                    onClick={() =>
-                                      toggleCategoryStatus(category.id)
-                                    }
-                                  >
-                                    {category.active ? 'Desativar' : 'Ativar'}
-                                  </Button>
-                                  <Button variant='outline' size='sm'>
-                                    Editar
-                                  </Button>
-                                </div>
+                                <Dropdown
+                                  trigger={<MenuButton>⋮</MenuButton>}
+                                  items={[
+                                    createDropdownItems.edit(() => {
+                                      // TODO: Implementar edição
+                                      // eslint-disable-next-line no-console
+                                      console.log(
+                                        'Editar categoria:',
+                                        category.id
+                                      );
+                                    }),
+                                    {
+                                      id: 'toggle-status',
+                                      label: category.active
+                                        ? 'Desativar'
+                                        : 'Ativar',
+                                      icon: category.active ? (
+                                        <svg
+                                          className='w-4 h-4'
+                                          fill='none'
+                                          stroke='currentColor'
+                                          viewBox='0 0 24 24'
+                                        >
+                                          <path
+                                            strokeLinecap='round'
+                                            strokeLinejoin='round'
+                                            strokeWidth={2}
+                                            d='M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z'
+                                          />
+                                        </svg>
+                                      ) : (
+                                        <svg
+                                          className='w-4 h-4'
+                                          fill='none'
+                                          stroke='currentColor'
+                                          viewBox='0 0 24 24'
+                                        >
+                                          <path
+                                            strokeLinecap='round'
+                                            strokeLinejoin='round'
+                                            strokeWidth={2}
+                                            d='M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z'
+                                          />
+                                        </svg>
+                                      ),
+                                      onClick: () =>
+                                        toggleCategoryStatus(category.id),
+                                    },
+                                    { id: 'divider', label: '', divider: true },
+                                    createDropdownItems.delete(() => {
+                                      setCategoryToDelete(category);
+                                    }),
+                                  ]}
+                                />
                               </TableCell>
                             </TableRow>
                           ))
@@ -599,6 +663,55 @@ export default function AdminPage() {
             </Stack>
           </Stack>
         </form>
+      </Modal>
+
+      {/* Modal de confirmação de exclusão */}
+      <Modal
+        isOpen={!!categoryToDelete}
+        onClose={() => setCategoryToDelete(null)}
+        title='Confirmar Exclusão'
+        size='sm'
+      >
+        <div className='space-y-4'>
+          <Body>
+            Tem certeza que deseja excluir a categoria{' '}
+            <strong>
+              {categoryToDelete?.translations?.[0]?.name ||
+                categoryToDelete?.slug}
+            </strong>
+            ?
+          </Body>
+          <Body className='text-neutral-text-secondary'>
+            Esta ação não pode ser desfeita. Todos os dados relacionados a esta
+            categoria serão perdidos.
+          </Body>
+          <div className='flex gap-2 justify-end'>
+            <Button
+              variant='outline'
+              onClick={() => setCategoryToDelete(null)}
+              disabled={deleteCategoryMutation.isPending}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant='outline'
+              className='bg-red-600 text-white hover:bg-red-700 border-red-600'
+              onClick={() =>
+                categoryToDelete && void handleDeleteCategory(categoryToDelete)
+              }
+              disabled={deleteCategoryMutation.isPending}
+            >
+              {deleteCategoryMutation.isPending ? (
+                <>
+                  <Spinner size='sm' />
+                  <span className='ml-2'>Excluindo...</span>
+                </>
+              ) : (
+                'Excluir'
+              )}
+            </Button>
+          </div>
+        </div>
       </Modal>
     </div>
   );
