@@ -41,623 +41,621 @@ import {
 export default function ComponentsDemo() {
   return (
     <ToastProvider>
-      <div className='min-h-screen bg-neutral-bg-light'>
-        <div className='container mx-auto px-4 py-8'>
-          <H1 className='mb-8'>Componentes UI - Demonstração</H1>
+      <div className='container mx-auto px-4 py-8'>
+        <H1 className='mb-8'>Componentes UI - Demonstração</H1>
 
-          {/* Tipografia */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Tipografia</H2>
+        {/* Tipografia */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Tipografia</H2>
+          <div className='space-y-4'>
+            <H1>H1 - Título Principal</H1>
+            <H2>H2 - Título Secundário</H2>
+            <H3>H3 - Título Terciário</H3>
+            <Body>
+              Body - Este é um parágrafo de texto normal. Lorem ipsum dolor sit
+              amet, consectetur adipiscing elit. Sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
+            </Body>
+            <Small>
+              Small - Este é um texto pequeno para legendas e informações
+              secundárias.
+            </Small>
+          </div>
+        </section>
+
+        {/* Botões */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Botões</H2>
+          <div className='space-y-6'>
+            {/* Tamanhos */}
+            <div>
+              <H3 className='mb-4'>Tamanhos</H3>
+              <div className='flex gap-4 items-center'>
+                <Button size='sm'>Pequeno</Button>
+                <Button size='md'>Médio</Button>
+                <Button size='lg'>Grande</Button>
+              </div>
+            </div>
+
+            {/* Variantes */}
+            <div>
+              <H3 className='mb-4'>Variantes</H3>
+              <div className='flex gap-4 items-center'>
+                <Button variant='primary'>Primário</Button>
+                <Button variant='secondary'>Secundário</Button>
+                <Button variant='outline'>Outline</Button>
+              </div>
+            </div>
+
+            {/* Estados */}
+            <div>
+              <H3 className='mb-4'>Estados</H3>
+              <div className='flex gap-4 items-center'>
+                <Button>Normal</Button>
+                <Button disabled>Desabilitado</Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Stack Component */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Stack Component</H2>
+          <div className='space-y-8'>
+            {/* Stack Vertical */}
+            <div>
+              <H3 className='mb-4'>Stack Vertical (padrão)</H3>
+              <Stack spacing={2}>
+                <div className='bg-brand-primary text-white p-4 rounded-lg text-center'>
+                  Item 1
+                </div>
+                <div className='bg-brand-secondary text-white p-4 rounded-lg text-center'>
+                  Item 2
+                </div>
+                <div className='bg-brand-accent text-white p-4 rounded-lg text-center'>
+                  Item 3
+                </div>
+              </Stack>
+            </div>
+
+            {/* Stack Horizontal */}
+            <div>
+              <H3 className='mb-4'>Stack Horizontal</H3>
+              <Stack direction='row' spacing={2}>
+                <div className='bg-brand-primary text-white p-4 rounded-lg text-center flex-1'>
+                  Item 1
+                </div>
+                <div className='bg-brand-secondary text-white p-4 rounded-lg text-center flex-1'>
+                  Item 2
+                </div>
+                <div className='bg-brand-accent text-white p-4 rounded-lg text-center flex-1'>
+                  Item 3
+                </div>
+              </Stack>
+            </div>
+
+            {/* Stack com Divider */}
+            <div>
+              <H3 className='mb-4'>Stack com Divider</H3>
+              <Stack
+                direction='row'
+                divider={<Divider orientation='vertical' flexItem />}
+                spacing={2}
+              >
+                <div className='bg-neutral-bg-card border border-neutral-border p-4 rounded-lg text-center flex-1'>
+                  Item 1
+                </div>
+                <div className='bg-neutral-bg-card border border-neutral-border p-4 rounded-lg text-center flex-1'>
+                  Item 2
+                </div>
+                <div className='bg-neutral-bg-card border border-neutral-border p-4 rounded-lg text-center flex-1'>
+                  Item 3
+                </div>
+              </Stack>
+            </div>
+
+            {/* Stack Responsivo */}
+            <div>
+              <H3 className='mb-4'>Stack Responsivo</H3>
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={{ xs: 1, sm: 2, md: 4 }}
+                className='flex-wrap'
+              >
+                <div className='bg-status-success text-white p-4 rounded-lg text-center flex-1 min-w-0'>
+                  Item 1
+                </div>
+                <div className='bg-status-warning text-white p-4 rounded-lg text-center flex-1 min-w-0'>
+                  Item 2
+                </div>
+                <div className='bg-status-info text-white p-4 rounded-lg text-center flex-1 min-w-0'>
+                  Item 3
+                </div>
+              </Stack>
+            </div>
+
+            {/* Stack com Alinhamento */}
+            <div>
+              <H3 className='mb-4'>Stack com Alinhamento</H3>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div>
+                  <Small className='block mb-2'>alignItems: center</Small>
+                  <Stack
+                    direction='row'
+                    alignItems='center'
+                    spacing={2}
+                    className='h-20 bg-neutral-bg-card border border-neutral-border rounded-lg p-2'
+                  >
+                    <div className='bg-brand-primary text-white p-2 rounded text-sm'>
+                      Item 1
+                    </div>
+                    <div className='bg-brand-secondary text-white p-2 rounded text-sm'>
+                      Item 2
+                    </div>
+                    <div className='bg-brand-accent text-white p-2 rounded text-sm'>
+                      Item 3
+                    </div>
+                  </Stack>
+                </div>
+                <div>
+                  <Small className='block mb-2'>
+                    justifyContent: space-between
+                  </Small>
+                  <Stack
+                    direction='row'
+                    justifyContent='space-between'
+                    spacing={2}
+                    className='h-20 bg-neutral-bg-card border border-neutral-border rounded-lg p-2'
+                  >
+                    <div className='bg-brand-primary text-white p-2 rounded text-sm'>
+                      Item 1
+                    </div>
+                    <div className='bg-brand-secondary text-white p-2 rounded text-sm'>
+                      Item 2
+                    </div>
+                    <div className='bg-brand-accent text-white p-2 rounded text-sm'>
+                      Item 3
+                    </div>
+                  </Stack>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Cards */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Cards</H2>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+            <Card>
+              <CardHeader>
+                <H3>Card Padrão</H3>
+              </CardHeader>
+              <CardContent>
+                <Body>Este é um card com header e conteúdo.</Body>
+              </CardContent>
+            </Card>
+            <Card variant='outlined'>
+              <CardHeader>
+                <H3>Card Outline</H3>
+              </CardHeader>
+              <CardContent>
+                <Body>Card com borda destacada.</Body>
+              </CardContent>
+            </Card>
+            <Card variant='elevated'>
+              <CardHeader>
+                <H3>Card Elevated</H3>
+              </CardHeader>
+              <CardContent>
+                <Body>Card com sombra elevada.</Body>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Badges */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Badges</H2>
+          <div className='space-y-4'>
+            <div>
+              <H3 className='mb-4'>Variantes</H3>
+              <div className='flex gap-4 items-center'>
+                <Badge variant='default'>Default</Badge>
+                <Badge variant='success'>Success</Badge>
+                <Badge variant='warning'>Warning</Badge>
+                <Badge variant='error'>Error</Badge>
+                <Badge variant='info'>Info</Badge>
+              </div>
+            </div>
+            <div>
+              <H3 className='mb-4'>Tamanhos</H3>
+              <div className='flex gap-4 items-center'>
+                <Badge size='sm'>Pequeno</Badge>
+                <Badge size='md'>Médio</Badge>
+                <Badge size='lg'>Grande</Badge>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Inputs */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Inputs</H2>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
             <div className='space-y-4'>
-              <H1>H1 - Título Principal</H1>
-              <H2>H2 - Título Secundário</H2>
-              <H3>H3 - Título Terciário</H3>
-              <Body>
-                Body - Este é um parágrafo de texto normal. Lorem ipsum dolor
-                sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua.
-              </Body>
-              <Small>
-                Small - Este é um texto pequeno para legendas e informações
-                secundárias.
-              </Small>
+              <Input
+                label='Input Normal'
+                placeholder='Digite algo...'
+                helperText='Texto de ajuda'
+              />
+              <Input
+                label='Input com Erro'
+                placeholder='Digite algo...'
+                error='Este campo é obrigatório'
+              />
+              <Input
+                label='Input Desabilitado'
+                placeholder='Desabilitado'
+                disabled
+              />
             </div>
-          </section>
-
-          {/* Botões */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Botões</H2>
-            <div className='space-y-6'>
-              {/* Tamanhos */}
-              <div>
-                <H3 className='mb-4'>Tamanhos</H3>
-                <div className='flex gap-4 items-center'>
-                  <Button size='sm'>Pequeno</Button>
-                  <Button size='md'>Médio</Button>
-                  <Button size='lg'>Grande</Button>
-                </div>
-              </div>
-
-              {/* Variantes */}
-              <div>
-                <H3 className='mb-4'>Variantes</H3>
-                <div className='flex gap-4 items-center'>
-                  <Button variant='primary'>Primário</Button>
-                  <Button variant='secondary'>Secundário</Button>
-                  <Button variant='outline'>Outline</Button>
-                </div>
-              </div>
-
-              {/* Estados */}
-              <div>
-                <H3 className='mb-4'>Estados</H3>
-                <div className='flex gap-4 items-center'>
-                  <Button>Normal</Button>
-                  <Button disabled>Desabilitado</Button>
-                </div>
-              </div>
+            <div className='space-y-4'>
+              <Textarea
+                label='Textarea'
+                placeholder='Digite uma mensagem...'
+                rows={4}
+                helperText='Máximo 500 caracteres'
+              />
+              <Select
+                label='Select'
+                placeholder='Escolha uma opção'
+                options={[
+                  { value: '1', label: 'Opção 1' },
+                  { value: '2', label: 'Opção 2' },
+                  { value: '3', label: 'Opção 3' },
+                ]}
+              />
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Stack Component */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Stack Component</H2>
-            <div className='space-y-8'>
-              {/* Stack Vertical */}
-              <div>
-                <H3 className='mb-4'>Stack Vertical (padrão)</H3>
-                <Stack spacing={2}>
-                  <div className='bg-brand-primary text-white p-4 rounded-lg text-center'>
-                    Item 1
-                  </div>
-                  <div className='bg-brand-secondary text-white p-4 rounded-lg text-center'>
-                    Item 2
-                  </div>
-                  <div className='bg-brand-accent text-white p-4 rounded-lg text-center'>
-                    Item 3
-                  </div>
-                </Stack>
-              </div>
-
-              {/* Stack Horizontal */}
-              <div>
-                <H3 className='mb-4'>Stack Horizontal</H3>
-                <Stack direction='row' spacing={2}>
-                  <div className='bg-brand-primary text-white p-4 rounded-lg text-center flex-1'>
-                    Item 1
-                  </div>
-                  <div className='bg-brand-secondary text-white p-4 rounded-lg text-center flex-1'>
-                    Item 2
-                  </div>
-                  <div className='bg-brand-accent text-white p-4 rounded-lg text-center flex-1'>
-                    Item 3
-                  </div>
-                </Stack>
-              </div>
-
-              {/* Stack com Divider */}
-              <div>
-                <H3 className='mb-4'>Stack com Divider</H3>
-                <Stack
-                  direction='row'
-                  divider={<Divider orientation='vertical' flexItem />}
-                  spacing={2}
-                >
-                  <div className='bg-neutral-bg-card border border-neutral-border p-4 rounded-lg text-center flex-1'>
-                    Item 1
-                  </div>
-                  <div className='bg-neutral-bg-card border border-neutral-border p-4 rounded-lg text-center flex-1'>
-                    Item 2
-                  </div>
-                  <div className='bg-neutral-bg-card border border-neutral-border p-4 rounded-lg text-center flex-1'>
-                    Item 3
-                  </div>
-                </Stack>
-              </div>
-
-              {/* Stack Responsivo */}
-              <div>
-                <H3 className='mb-4'>Stack Responsivo</H3>
-                <Stack
-                  direction={{ xs: 'column', sm: 'row' }}
-                  spacing={{ xs: 1, sm: 2, md: 4 }}
-                  className='flex-wrap'
-                >
-                  <div className='bg-status-success text-white p-4 rounded-lg text-center flex-1 min-w-0'>
-                    Item 1
-                  </div>
-                  <div className='bg-status-warning text-white p-4 rounded-lg text-center flex-1 min-w-0'>
-                    Item 2
-                  </div>
-                  <div className='bg-status-info text-white p-4 rounded-lg text-center flex-1 min-w-0'>
-                    Item 3
-                  </div>
-                </Stack>
-              </div>
-
-              {/* Stack com Alinhamento */}
-              <div>
-                <H3 className='mb-4'>Stack com Alinhamento</H3>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                  <div>
-                    <Small className='block mb-2'>alignItems: center</Small>
-                    <Stack
-                      direction='row'
-                      alignItems='center'
-                      spacing={2}
-                      className='h-20 bg-neutral-bg-card border border-neutral-border rounded-lg p-2'
-                    >
-                      <div className='bg-brand-primary text-white p-2 rounded text-sm'>
-                        Item 1
-                      </div>
-                      <div className='bg-brand-secondary text-white p-2 rounded text-sm'>
-                        Item 2
-                      </div>
-                      <div className='bg-brand-accent text-white p-2 rounded text-sm'>
-                        Item 3
-                      </div>
-                    </Stack>
-                  </div>
-                  <div>
-                    <Small className='block mb-2'>
-                      justifyContent: space-between
-                    </Small>
-                    <Stack
-                      direction='row'
-                      justifyContent='space-between'
-                      spacing={2}
-                      className='h-20 bg-neutral-bg-card border border-neutral-border rounded-lg p-2'
-                    >
-                      <div className='bg-brand-primary text-white p-2 rounded text-sm'>
-                        Item 1
-                      </div>
-                      <div className='bg-brand-secondary text-white p-2 rounded text-sm'>
-                        Item 2
-                      </div>
-                      <div className='bg-brand-accent text-white p-2 rounded text-sm'>
-                        Item 3
-                      </div>
-                    </Stack>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Cards */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Cards</H2>
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-              <Card>
-                <CardHeader>
-                  <H3>Card Padrão</H3>
-                </CardHeader>
-                <CardContent>
-                  <Body>Este é um card com header e conteúdo.</Body>
-                </CardContent>
-              </Card>
-              <Card variant='outlined'>
-                <CardHeader>
-                  <H3>Card Outline</H3>
-                </CardHeader>
-                <CardContent>
-                  <Body>Card com borda destacada.</Body>
-                </CardContent>
-              </Card>
-              <Card variant='elevated'>
-                <CardHeader>
-                  <H3>Card Elevated</H3>
-                </CardHeader>
-                <CardContent>
-                  <Body>Card com sombra elevada.</Body>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-
-          {/* Badges */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Badges</H2>
+        {/* Autocomplete */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Autocomplete</H2>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
             <div className='space-y-4'>
               <div>
-                <H3 className='mb-4'>Variantes</H3>
-                <div className='flex gap-4 items-center'>
-                  <Badge variant='default'>Default</Badge>
-                  <Badge variant='success'>Success</Badge>
-                  <Badge variant='warning'>Warning</Badge>
-                  <Badge variant='error'>Error</Badge>
-                  <Badge variant='info'>Info</Badge>
-                </div>
+                <H3 className='mb-4'>Autocomplete Básico</H3>
+                <Autocomplete
+                  options={[
+                    {
+                      value: '1',
+                      label: 'React',
+                      description: 'Biblioteca JavaScript para UI',
+                    },
+                    {
+                      value: '2',
+                      label: 'Vue.js',
+                      description: 'Framework JavaScript progressivo',
+                    },
+                    {
+                      value: '3',
+                      label: 'Angular',
+                      description: 'Framework TypeScript da Google',
+                    },
+                    {
+                      value: '4',
+                      label: 'Svelte',
+                      description: 'Framework JavaScript compilado',
+                    },
+                    {
+                      value: '5',
+                      label: 'Next.js',
+                      description: 'Framework React para produção',
+                    },
+                  ]}
+                  value=''
+                  onChange={() => {}}
+                  placeholder='Buscar framework...'
+                  emptyMessage='Nenhum framework encontrado'
+                />
               </div>
               <div>
-                <H3 className='mb-4'>Tamanhos</H3>
-                <div className='flex gap-4 items-center'>
-                  <Badge size='sm'>Pequeno</Badge>
-                  <Badge size='md'>Médio</Badge>
-                  <Badge size='lg'>Grande</Badge>
-                </div>
+                <H3 className='mb-4'>Autocomplete com Categorias</H3>
+                <Autocomplete
+                  options={[
+                    {
+                      value: '',
+                      label: 'Nenhuma categoria',
+                      description: 'Categoria raiz',
+                    },
+                    {
+                      value: '1',
+                      label: 'Tecnologia',
+                      description: 'Produtos e serviços de tecnologia',
+                    },
+                    {
+                      value: '2',
+                      label: 'Casa e Jardim',
+                      description: 'Itens para casa e jardim',
+                    },
+                    {
+                      value: '3',
+                      label: 'Esportes',
+                      description: 'Equipamentos e acessórios esportivos',
+                    },
+                    {
+                      value: '4',
+                      label: 'Moda',
+                      description: 'Roupas e acessórios de moda',
+                    },
+                    {
+                      value: '5',
+                      label: 'Livros',
+                      description: 'Livros e materiais educativos',
+                    },
+                  ]}
+                  value=''
+                  onChange={() => {}}
+                  placeholder='Selecionar categoria pai...'
+                  emptyMessage='Nenhuma categoria encontrada'
+                />
               </div>
             </div>
-          </section>
-
-          {/* Inputs */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Inputs</H2>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-              <div className='space-y-4'>
-                <Input
-                  label='Input Normal'
-                  placeholder='Digite algo...'
-                  helperText='Texto de ajuda'
-                />
-                <Input
-                  label='Input com Erro'
-                  placeholder='Digite algo...'
-                  error='Este campo é obrigatório'
-                />
-                <Input
-                  label='Input Desabilitado'
-                  placeholder='Desabilitado'
-                  disabled
-                />
-              </div>
-              <div className='space-y-4'>
-                <Textarea
-                  label='Textarea'
-                  placeholder='Digite uma mensagem...'
-                  rows={4}
-                  helperText='Máximo 500 caracteres'
-                />
-                <Select
-                  label='Select'
-                  placeholder='Escolha uma opção'
+            <div className='space-y-4'>
+              <div>
+                <H3 className='mb-4'>Autocomplete Desabilitado</H3>
+                <Autocomplete
                   options={[
                     { value: '1', label: 'Opção 1' },
                     { value: '2', label: 'Opção 2' },
-                    { value: '3', label: 'Opção 3' },
                   ]}
+                  value=''
+                  onChange={() => {}}
+                  placeholder='Campo desabilitado'
+                  disabled
+                />
+              </div>
+              <div>
+                <H3 className='mb-4'>Autocomplete com Loading</H3>
+                <Autocomplete
+                  options={[]}
+                  value=''
+                  onChange={() => {}}
+                  placeholder='Carregando opções...'
+                  loading
+                  emptyMessage='Carregando...'
+                />
+              </div>
+              <div>
+                <H3 className='mb-4'>Autocomplete Não Pesquisável</H3>
+                <Autocomplete
+                  options={[
+                    {
+                      value: '1',
+                      label: 'Opção 1',
+                      description: 'Primeira opção',
+                    },
+                    {
+                      value: '2',
+                      label: 'Opção 2',
+                      description: 'Segunda opção',
+                    },
+                    {
+                      value: '3',
+                      label: 'Opção 3',
+                      description: 'Terceira opção',
+                    },
+                  ]}
+                  value=''
+                  onChange={() => {}}
+                  placeholder='Selecionar opção...'
+                  searchable={false}
                 />
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Autocomplete */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Autocomplete</H2>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+        {/* Spinner */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Spinner</H2>
+          <div className='space-y-4'>
+            <div>
+              <H3 className='mb-4'>Tamanhos</H3>
+              <div className='flex gap-4 items-center'>
+                <Spinner size='sm' />
+                <Spinner size='md' />
+                <Spinner size='lg' />
+              </div>
+            </div>
+            <div>
+              <H3 className='mb-4'>Cores</H3>
+              <div className='flex gap-4 items-center'>
+                <Spinner color='primary' />
+                <Spinner color='neutral' />
+                <div className='bg-gray-800 p-2 rounded'>
+                  <Spinner color='secondary' />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Form */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Form</H2>
+          <Card className='max-w-md'>
+            <CardContent className='p-6'>
+              <Form
+                initialValues={{ name: '', email: '', message: '' }}
+                onSubmit={() => {}}
+              >
+                <FormField name='name' label='Nome' required>
+                  <Input name='name' placeholder='Seu nome' />
+                </FormField>
+                <FormField name='email' label='Email' required>
+                  <Input
+                    name='email'
+                    type='email'
+                    placeholder='seu@email.com'
+                  />
+                </FormField>
+                <FormField name='message' label='Mensagem'>
+                  <Textarea
+                    name='message'
+                    placeholder='Sua mensagem...'
+                    rows={3}
+                  />
+                </FormField>
+                <Button type='submit' className='w-full'>
+                  Enviar
+                </Button>
+              </Form>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Table */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Table</H2>
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead sortable>Nome</TableHead>
+                  <TableHead sortable>Email</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell>João Silva</TableCell>
+                  <TableCell>joao@email.com</TableCell>
+                  <TableCell>
+                    <Badge variant='success'>Ativo</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Dropdown
+                      trigger={<MenuButton>⋮</MenuButton>}
+                      items={[
+                        createDropdownItems.edit(
+                          () => /* console.log */ 'Edit'
+                        ),
+                        createDropdownItems.delete(
+                          () => /* console.log */ 'Delete'
+                        ),
+                      ]}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Maria Santos</TableCell>
+                  <TableCell>maria@email.com</TableCell>
+                  <TableCell>
+                    <Badge variant='warning'>Pendente</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Dropdown
+                      trigger={<MenuButton>⋮</MenuButton>}
+                      items={[
+                        createDropdownItems.edit(
+                          () => /* console.log */ 'Edit'
+                        ),
+                        createDropdownItems.delete(
+                          () => /* console.log */ 'Delete'
+                        ),
+                      ]}
+                    />
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </Card>
+        </section>
+
+        {/* Dropdown */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Dropdown</H2>
+          <div className='flex gap-4 items-center'>
+            <Dropdown
+              trigger={<MenuButton>⚙️</MenuButton>}
+              items={[
+                {
+                  id: 'profile',
+                  label: 'Perfil',
+                  onClick: () => /* console.log */ 'Profile',
+                },
+                {
+                  id: 'settings',
+                  label: 'Configurações',
+                  onClick: () => /* console.log */ 'Settings',
+                },
+                { id: 'divider', label: '', divider: true },
+                {
+                  id: 'logout',
+                  label: 'Sair',
+                  onClick: () => /* console.log */ 'Logout',
+                  variant: 'danger',
+                },
+              ]}
+            />
+            <Dropdown
+              trigger={<MenuButton>⋮</MenuButton>}
+              items={[
+                createDropdownItems.edit(() => /* console.log */ 'Edit'),
+                createDropdownItems.view(() => /* console.log */ 'View'),
+                createDropdownItems.delete(() => /* console.log */ 'Delete'),
+              ]}
+            />
+          </div>
+        </section>
+
+        {/* Modal */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Modal</H2>
+          <ModalExample />
+        </section>
+
+        {/* FormLabel */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>FormLabel</H2>
+          <Card className='max-w-md'>
+            <CardContent className='p-6'>
               <div className='space-y-4'>
                 <div>
-                  <H3 className='mb-4'>Autocomplete Básico</H3>
-                  <Autocomplete
-                    options={[
-                      {
-                        value: '1',
-                        label: 'React',
-                        description: 'Biblioteca JavaScript para UI',
-                      },
-                      {
-                        value: '2',
-                        label: 'Vue.js',
-                        description: 'Framework JavaScript progressivo',
-                      },
-                      {
-                        value: '3',
-                        label: 'Angular',
-                        description: 'Framework TypeScript da Google',
-                      },
-                      {
-                        value: '4',
-                        label: 'Svelte',
-                        description: 'Framework JavaScript compilado',
-                      },
-                      {
-                        value: '5',
-                        label: 'Next.js',
-                        description: 'Framework React para produção',
-                      },
-                    ]}
-                    value=''
-                    onChange={() => {}}
-                    placeholder='Buscar framework...'
-                    emptyMessage='Nenhum framework encontrado'
-                  />
+                  <FormLabel>Label Normal</FormLabel>
+                  <Input placeholder='Campo com label normal' />
                 </div>
                 <div>
-                  <H3 className='mb-4'>Autocomplete com Categorias</H3>
-                  <Autocomplete
-                    options={[
-                      {
-                        value: '',
-                        label: 'Nenhuma categoria',
-                        description: 'Categoria raiz',
-                      },
-                      {
-                        value: '1',
-                        label: 'Tecnologia',
-                        description: 'Produtos e serviços de tecnologia',
-                      },
-                      {
-                        value: '2',
-                        label: 'Casa e Jardim',
-                        description: 'Itens para casa e jardim',
-                      },
-                      {
-                        value: '3',
-                        label: 'Esportes',
-                        description: 'Equipamentos e acessórios esportivos',
-                      },
-                      {
-                        value: '4',
-                        label: 'Moda',
-                        description: 'Roupas e acessórios de moda',
-                      },
-                      {
-                        value: '5',
-                        label: 'Livros',
-                        description: 'Livros e materiais educativos',
-                      },
-                    ]}
-                    value=''
-                    onChange={() => {}}
-                    placeholder='Selecionar categoria pai...'
-                    emptyMessage='Nenhuma categoria encontrada'
+                  <FormLabel required>Label Obrigatório</FormLabel>
+                  <Input placeholder='Campo obrigatório' />
+                </div>
+                <div>
+                  <FormLabel htmlFor='custom-input'>Label com ID</FormLabel>
+                  <Input
+                    id='custom-input'
+                    placeholder='Campo com ID customizado'
                   />
                 </div>
               </div>
-              <div className='space-y-4'>
-                <div>
-                  <H3 className='mb-4'>Autocomplete Desabilitado</H3>
-                  <Autocomplete
-                    options={[
-                      { value: '1', label: 'Opção 1' },
-                      { value: '2', label: 'Opção 2' },
-                    ]}
-                    value=''
-                    onChange={() => {}}
-                    placeholder='Campo desabilitado'
-                    disabled
-                  />
-                </div>
-                <div>
-                  <H3 className='mb-4'>Autocomplete com Loading</H3>
-                  <Autocomplete
-                    options={[]}
-                    value=''
-                    onChange={() => {}}
-                    placeholder='Carregando opções...'
-                    loading
-                    emptyMessage='Carregando...'
-                  />
-                </div>
-                <div>
-                  <H3 className='mb-4'>Autocomplete Não Pesquisável</H3>
-                  <Autocomplete
-                    options={[
-                      {
-                        value: '1',
-                        label: 'Opção 1',
-                        description: 'Primeira opção',
-                      },
-                      {
-                        value: '2',
-                        label: 'Opção 2',
-                        description: 'Segunda opção',
-                      },
-                      {
-                        value: '3',
-                        label: 'Opção 3',
-                        description: 'Terceira opção',
-                      },
-                    ]}
-                    value=''
-                    onChange={() => {}}
-                    placeholder='Selecionar opção...'
-                    searchable={false}
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
+            </CardContent>
+          </Card>
+        </section>
 
-          {/* Spinner */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Spinner</H2>
-            <div className='space-y-4'>
-              <div>
-                <H3 className='mb-4'>Tamanhos</H3>
-                <div className='flex gap-4 items-center'>
-                  <Spinner size='sm' />
-                  <Spinner size='md' />
-                  <Spinner size='lg' />
-                </div>
-              </div>
-              <div>
-                <H3 className='mb-4'>Cores</H3>
-                <div className='flex gap-4 items-center'>
-                  <Spinner color='primary' />
-                  <Spinner color='neutral' />
-                  <div className='bg-gray-800 p-2 rounded'>
-                    <Spinner color='secondary' />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+        {/* Autocomplete Interativo */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Autocomplete Interativo</H2>
+          <AutocompleteExample />
+        </section>
 
-          {/* Form */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Form</H2>
-            <Card className='max-w-md'>
-              <CardContent className='p-6'>
-                <Form
-                  initialValues={{ name: '', email: '', message: '' }}
-                  onSubmit={() => {}}
-                >
-                  <FormField name='name' label='Nome' required>
-                    <Input name='name' placeholder='Seu nome' />
-                  </FormField>
-                  <FormField name='email' label='Email' required>
-                    <Input
-                      name='email'
-                      type='email'
-                      placeholder='seu@email.com'
-                    />
-                  </FormField>
-                  <FormField name='message' label='Mensagem'>
-                    <Textarea
-                      name='message'
-                      placeholder='Sua mensagem...'
-                      rows={3}
-                    />
-                  </FormField>
-                  <Button type='submit' className='w-full'>
-                    Enviar
-                  </Button>
-                </Form>
-              </CardContent>
-            </Card>
-          </section>
-
-          {/* Table */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Table</H2>
-            <Card>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead sortable>Nome</TableHead>
-                    <TableHead sortable>Email</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>João Silva</TableCell>
-                    <TableCell>joao@email.com</TableCell>
-                    <TableCell>
-                      <Badge variant='success'>Ativo</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Dropdown
-                        trigger={<MenuButton>⋮</MenuButton>}
-                        items={[
-                          createDropdownItems.edit(
-                            () => /* console.log */ 'Edit'
-                          ),
-                          createDropdownItems.delete(
-                            () => /* console.log */ 'Delete'
-                          ),
-                        ]}
-                      />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Maria Santos</TableCell>
-                    <TableCell>maria@email.com</TableCell>
-                    <TableCell>
-                      <Badge variant='warning'>Pendente</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Dropdown
-                        trigger={<MenuButton>⋮</MenuButton>}
-                        items={[
-                          createDropdownItems.edit(
-                            () => /* console.log */ 'Edit'
-                          ),
-                          createDropdownItems.delete(
-                            () => /* console.log */ 'Delete'
-                          ),
-                        ]}
-                      />
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Card>
-          </section>
-
-          {/* Dropdown */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Dropdown</H2>
-            <div className='flex gap-4 items-center'>
-              <Dropdown
-                trigger={<MenuButton>⚙️</MenuButton>}
-                items={[
-                  {
-                    id: 'profile',
-                    label: 'Perfil',
-                    onClick: () => /* console.log */ 'Profile',
-                  },
-                  {
-                    id: 'settings',
-                    label: 'Configurações',
-                    onClick: () => /* console.log */ 'Settings',
-                  },
-                  { id: 'divider', label: '', divider: true },
-                  {
-                    id: 'logout',
-                    label: 'Sair',
-                    onClick: () => /* console.log */ 'Logout',
-                    variant: 'danger',
-                  },
-                ]}
-              />
-              <Dropdown
-                trigger={<MenuButton>⋮</MenuButton>}
-                items={[
-                  createDropdownItems.edit(() => /* console.log */ 'Edit'),
-                  createDropdownItems.view(() => /* console.log */ 'View'),
-                  createDropdownItems.delete(() => /* console.log */ 'Delete'),
-                ]}
-              />
-            </div>
-          </section>
-
-          {/* Modal */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Modal</H2>
-            <ModalExample />
-          </section>
-
-          {/* FormLabel */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>FormLabel</H2>
-            <Card className='max-w-md'>
-              <CardContent className='p-6'>
-                <div className='space-y-4'>
-                  <div>
-                    <FormLabel>Label Normal</FormLabel>
-                    <Input placeholder='Campo com label normal' />
-                  </div>
-                  <div>
-                    <FormLabel required>Label Obrigatório</FormLabel>
-                    <Input placeholder='Campo obrigatório' />
-                  </div>
-                  <div>
-                    <FormLabel htmlFor='custom-input'>Label com ID</FormLabel>
-                    <Input
-                      id='custom-input'
-                      placeholder='Campo com ID customizado'
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-
-          {/* Autocomplete Interativo */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Autocomplete Interativo</H2>
-            <AutocompleteExample />
-          </section>
-
-          {/* Toast/Snackbar */}
-          <section className='mb-12'>
-            <H2 className='mb-6'>Toast/Snackbar</H2>
-            <ToastExample />
-          </section>
-        </div>
+        {/* Toast/Snackbar */}
+        <section className='mb-12'>
+          <H2 className='mb-6'>Toast/Snackbar</H2>
+          <ToastExample />
+        </section>
       </div>
     </ToastProvider>
   );

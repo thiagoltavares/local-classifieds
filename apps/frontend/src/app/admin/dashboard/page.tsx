@@ -456,7 +456,7 @@ export default function AdminPage() {
   ];
 
   return (
-    <div className='min-h-screen bg-neutral-bg-light flex'>
+    <div className='flex'>
       {/* Sidebar */}
       <Sidebar items={sidebarItems} />
 
