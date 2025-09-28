@@ -17,7 +17,10 @@
     "baseUrl": ".",
     "paths": {
       "@local-classifieds/shared": ["libs/shared/src"],
-      "@local-classifieds/database": ["libs/database/src"]
+      "@local-classifieds/database": ["libs/database/src"],
+      "@api/database": ["apps/api/libs/database/src/index"],
+      "@api/database/*": ["apps/api/libs/database/src/*"],
+      "@api/*": ["apps/api/src/*"]
     }
   },
   "include": ["apps/**/*", "libs/**/*"],

@@ -5,7 +5,9 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@api/*": ["./src/*"]
+      "@api/*": ["./src/*"],
+      "@api/database": ["./libs/database/src/index"],
+      "@api/database/*": ["./libs/database/src/*"]
     }
   },
   "include": ["src", "libs"],
