@@ -1,4 +1,4 @@
-// apps/frontend/src/app/marketing/components-demo/page.tsx
+// apps/frontend/src/app/admin/components-demo/page.tsx
 'use client';
 
 import React from 'react';

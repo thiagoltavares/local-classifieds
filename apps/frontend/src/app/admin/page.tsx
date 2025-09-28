@@ -19,7 +19,7 @@ export default function AdminHome() {
       title: 'Demo de Componentes',
       description:
         'Demonstração de todos os componentes UI disponíveis e sistema de cores',
-      href: '/marketing/components-demo',
+      href: '/admin/components-demo',
       variant: 'secondary' as const,
     },
   ];
