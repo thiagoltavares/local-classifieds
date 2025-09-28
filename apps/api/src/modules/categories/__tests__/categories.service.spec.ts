@@ -271,6 +271,9 @@ describe('CategoriesService', () => {
         rootCategories: 5,
       };
 
+      // Reset the mock to clear previous calls
+      mockCategoryRepository.count.mockClear();
+
       mockCategoryRepository.count
         .mockResolvedValueOnce(10) // total
         .mockResolvedValueOnce(8) // active
