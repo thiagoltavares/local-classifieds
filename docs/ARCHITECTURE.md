@@ -1,272 +1,366 @@
-# Project Architecture
+# 🏗️ Local Classifieds - Arquitetura Completa
 
-## Overview
+## 📋 Visão Geral
 
-Local Classifieds is a monorepo that uses a modern architecture with clear separation of responsibilities between frontend, backend, and data layer.
+O Local Classifieds é uma plataforma de classificados locais construída com uma arquitetura moderna, escalável e profissional. O projeto utiliza um monorepo com separação clara entre frontend e backend, seguindo as melhores práticas de desenvolvimento.
 
-## Technology Stack
+## 🎯 Stack Tecnológico
 
-### Backend (apps/api)
+### Backend (API)
 
 - **Framework**: NestJS
 - **Linguagem**: TypeScript
 - **ORM**: Prisma
-- **Validation**: Zod
+- **Database**: PostgreSQL
 - **Testes**: Jest
+- **Validação**: Zod
+- **Arquitetura**: Modular Clean Architecture
 
-### Frontend (apps/frontend)
+### Frontend
 
-- **Framework**: Next.js 14
-- **Linguagem**: TypeScript
+- **Framework**: Next.js (App Router)
+- **Linguagem**: TypeScript + React
 - **Styling**: TailwindCSS
-- **Validation**: Zod (internal library)
-
-### Database
-
-- **SGBD**: PostgreSQL 15
-- **ORM**: Prisma
-- **Cache**: Redis 7
-
-## Data Models
-
-### Category Model
-
-The Category model represents service categories with hierarchical support and soft delete functionality.
-
-#### Schema Structure
-
-```typescript
-model Category {
-  id            String     @id @default(uuid()) @db.Uuid
-  name          String     @db.VarChar(120)
-  slug          String     @unique @db.VarChar(140)
-  description   String?    @db.Text
-  parentId      String?    @db.Uuid
-  parent        Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onUpdate: Cascade, onDelete: SetNull)
-  children      Category[] @relation("CategoryHierarchy")
-  active        Boolean    @default(true)
-  displayOrder  Int        @default(0)
-  createdAt     DateTime   @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime   @default(now()) @updatedAt @db.Timestamptz(6)
-
-  @@map("categories")
-}
-```
-
-#### Key Features
-
-- **Hierarchical Structure**: Self-referencing relationship for parent-child categories
-- **Soft Delete**: Uses `active` boolean field instead of physical deletion
-- **Unique Slugs**: URL-friendly identifiers for categories
-- **Display Ordering**: Configurable ordering for UI presentation
-- **Cycle Prevention**: Business logic prevents circular references
-
-#### Database Constraints
-
-- Primary Key: `id` (UUID)
-- Unique Index: `slug` for fast lookups
-- Foreign Key: `parentId` references `categories(id)`
-- Indexes: `parentId`, `active` for performance
-
-#### Business Rules
-
-1. **Slug Uniqueness**: Each category must have a unique slug
-2. **Hierarchy Validation**: Categories cannot be their own parent or create cycles
-3. **Soft Delete**: Categories with active children cannot be deleted
-4. **Slug Generation**: Automatic generation from name (lowercase, no accents, hyphens for spaces)
+- **Testes**: React Testing Library + Jest
+- **SEO**: Server Side Rendering (SSR)
+- **i18n**: Internacionalização
 
 ### Infraestrutura
 
-- **Containerização**: Docker & Docker Compose
+- **Containerização**: Docker + Docker Compose
 - **CI/CD**: GitHub Actions
-- **Gerenciamento de Pacotes**: npm workspaces
+- **Hosting**: Vercel (frontend), Railway/Render (backend)
+- **Database**: PostgreSQL via Docker
 
-## Project Structure
+## 🏛️ Arquitetura em Camadas
+
+### 1. 🌐 Frontend Layer (Next.js)
 
 ```
-/
-├── apps/                          # Applications
-│   ├── api/                      # NestJS Backend
-│   │   ├── src/
-│   │   │   ├── modules/          # NestJS feature modules
-│   │   │   │   └── categories/   # Categories module
-│   │   │   ├── app.controller.ts
-│   │   │   ├── app.module.ts
-│   │   │   ├── app.service.ts
-│   │   │   └── main.ts
-│   │   └── libs/                 # Internal libraries (npm packages)
-│   │       ├── database/         # @services/database
-│   │       │   ├── src/          # Database services & Prisma
-│   │       │   ├── prisma/       # Schema & migrations
-│   │       │   ├── package.json  # @services/database
-│   │       │   └── tsconfig.json
-│   │       └── shared/           # @services/shared
-│   │           ├── src/          # DTOs, types, utils
-│   │           ├── package.json  # @services/shared
-│   │           └── tsconfig.json
-│   └── frontend/                 # Next.js Frontend
-│       ├── src/
-│       │   └── app/              # Next.js App Router
-│       └── libs/                 # Internal libraries
-│           └── shared/           # @frontend/shared
-│               ├── src/          # Frontend utilities
-│               ├── package.json  # @frontend/shared
-│               └── tsconfig.json
-├── docs/                         # Documentation
-│   ├── ARCHITECTURE.md
-│   ├── QUICK_REFERENCE.md
-│   ├── RUNNING.md
-│   ├── VSCODE_SETUP.md
-│   └── postman/                  # API Testing collections
-├── docker/                       # Docker configurations
-├── scripts/                      # Utility scripts
-├── docker-compose.yml            # Development services
-├── tsconfig.base.json            # Shared TypeScript config
-├── eslint.config.mjs             # Unified ESLint config
-└── package.json                  # Monorepo with workspaces
+apps/frontend/src/
+├── app/                    # App Router (Next.js 13+)
+│   ├── [locale]/          # Internacionalização
+│   │   ├── admin/         # Dashboard administrativo
+│   │   ├── components-demo/ # Demonstração de componentes
+│   │   └── layout.tsx     # Layout principal
+│   └── globals.css        # Estilos globais
+├── components/            # Componentes React
+│   ├── ui/               # Design System
+│   │   ├── Button.tsx    # Botão reutilizável
+│   │   ├── Select.tsx    # Select com validação
+│   │   ├── Modal.tsx     # Modal responsivo
+│   │   ├── Spinner.tsx   # Loading states
+│   │   └── index.ts      # Exports centralizados
+│   └── LanguageSwitcher.tsx
+├── hooks/                # Custom Hooks
+│   └── useTranslations.ts
+└── utils/                # Utilitários
+    └── cn.ts            # Class name helper
 ```
 
-## Data Flow
+**Características:**
 
-```mermaid
-graph TB
-    A[Frontend Next.js] --> B[API NestJS]
-    B --> C[Prisma ORM]
-    C --> D[PostgreSQL]
-    B --> E[Redis Cache]
+- ✅ App Router com roteamento baseado em arquivos
+- ✅ Internacionalização (i18n) integrada
+- ✅ Design System consistente
+- ✅ Componentes reutilizáveis e tipados
+- ✅ Responsive design com TailwindCSS
 
-    F[@frontend/shared] --> A
-    G[@services/shared] --> B
-    H[@services/database] --> B
+### 2. 🔧 API Layer (NestJS)
+
+```
+apps/api/src/
+├── modules/              # Módulos de funcionalidades
+│   └── categories/       # Módulo de categorias
+│       ├── dto/         # Data Transfer Objects
+│       │   ├── create-category.dto.ts
+│       │   ├── update-category.dto.ts
+│       │   └── category-query.dto.ts
+│       ├── entities/    # Entidades de domínio
+│       │   └── category.entity.ts
+│       ├── __tests__/   # Testes unitários
+│       ├── categories.controller.ts
+│       ├── categories.service.ts
+│       └── categories.module.ts
+├── common/              # Utilitários compartilhados
+│   ├── guards/         # Guards de autenticação
+│   ├── filters/        # Exception filters
+│   ├── interceptors/   # Response interceptors
+│   ├── decorators/     # Custom decorators
+│   └── pipes/          # Validation pipes
+├── config/             # Configurações
+│   ├── app.config.ts
+│   ├── database.config.ts
+│   └── validation.config.ts
+└── main.ts             # Entry point
 ```
 
-### Import System
+**Características:**
 
-The project uses clean import aliases for better maintainability:
+- ✅ Arquitetura modular com separação clara
+- ✅ Repository Pattern para acesso a dados
+- ✅ DTOs com validação Zod
+- ✅ Entidades de domínio puras
+- ✅ Testes unitários abrangentes
+
+### 3. 🗄️ Data Access Layer
+
+```
+apps/api/libs/database/src/
+├── repositories/        # Repository Pattern
+│   └── category.repository.ts
+├── prisma.service.ts   # Serviço Prisma
+├── database.service.ts # Serviço de database
+├── database.module.ts  # Módulo de database
+└── types.ts           # Tipos customizados
+```
+
+**Características:**
+
+- ✅ Repository Pattern encapsulando Prisma
+- ✅ Tipos TypeScript seguros
+- ✅ Queries otimizadas
+- ✅ Transações gerenciadas
+
+### 4. 📚 Shared Libraries
+
+```
+libs/
+├── database/           # Infraestrutura de dados
+│   ├── prisma/        # Schema e migrações
+│   └── src/           # Serviços e repositories
+└── shared/            # Código compartilhado
+    └── src/
+        ├── dto/       # DTOs cross-module
+        ├── types/     # Tipos compartilhados
+        ├── constants/ # Constantes
+        └── utils/     # Utilitários
+```
+
+## 🎯 Padrões de Design Implementados
+
+### 1. **Repository Pattern**
 
 ```typescript
-// Backend imports
-import { PrismaService } from '@services/database';
-import { CreateCategoryDto } from '@services/shared';
+@Injectable()
+export class CategoryRepository {
+  async create(data: CreateCategoryData): Promise<Category> {
+    // Encapsula operações Prisma
+  }
 
-// Frontend imports
-import { formatDate } from '@frontend/shared';
+  async findById(id: string): Promise<Category | null> {
+    // Queries otimizadas
+  }
+}
 ```
 
-## Development Patterns
+### 2. **Domain Entities**
 
-### 1. Monorepo with NPM Workspaces
+```typescript
+export class CategoryDomainEntity {
+  constructor(
+    public readonly id: string,
+    public readonly slug: string
+    // ... outros campos
+  ) {}
 
-- Each application and library has its own `package.json`
-- Shared dependencies are managed at the root level
-- Centralized scripts for easier development
-- Automatic linking between workspace packages
+  get name(): string {
+    return this.translations[0]?.name || this.slug;
+  }
 
-### 2. Internal Libraries as NPM Packages
+  get isParent(): boolean {
+    return this.children.length > 0;
+  }
+}
+```
 
-- Each library is a proper npm package with `@services/*` and `@frontend/*` naming
-- TypeScript types defined in `apps/*/libs/shared/src`
-- DTOs with Zod validation reused within each application
-- Consistent interfaces within each application
-- Each project maintains its own libraries without cross-dependencies
+### 3. **DTOs com Validação**
 
-### 3. Data Layer
+```typescript
+export const CreateCategoryDto = z.object({
+  slug: z.string().min(1).max(100),
+  parentId: z.string().uuid().nullable().optional(),
+  displayOrder: z.number().int().min(0).default(0),
+  translations: z.array(translationSchema).min(1),
+});
+```
 
-- Prisma as main ORM
-- Schema centralized in `apps/api/libs/database/prisma`
-- Versioned migrations
-- Prisma client generated automatically
+### 4. **Modular Architecture**
 
-### 4. Data Validation
+```typescript
+@Module({
+  imports: [DatabaseModule],
+  controllers: [CategoriesController],
+  providers: [CategoriesService, CategoryRepository],
+  exports: [CategoriesService],
+})
+export class CategoriesModule {}
+```
 
-- Zod for runtime validation
-- Typed and validated DTOs
-- Consistent error messages
+## 🔄 Fluxo de Dados
 
-## Development Configuration
+```
+1. 📱 Frontend Request (Next.js)
+   ↓
+2. 🌐 HTTP Controller (NestJS)
+   ↓
+3. 🧠 Service (Business Logic)
+   ↓
+4. 🗄️ Repository (Data Access)
+   ↓
+5. 🐘 Database (PostgreSQL)
+   ↓
+6. 📊 Response (DTOs)
+   ↓
+7. 📱 Frontend Display
+```
 
-### Environment Variables
+## 🛠️ Scripts de Desenvolvimento
 
-- `.env` para cada aplicação
-- `env.example` como template
-- Secrets gerenciados via GitHub
+### Desenvolvimento
 
-### Docker for Development
+```bash
+# Iniciar tudo (DB + API + Frontend)
+npm run dev:all
 
-- PostgreSQL e Redis via Docker Compose
-- Volumes persistentes para dados
-- Health checks configurados
+# Iniciar apenas API
+npm run dev:api
 
-### Hot Reload
+# Iniciar apenas Frontend
+npm run dev:frontend
 
-- Backend: NestJS com `--watch`
-- Frontend: Next.js com Fast Refresh
-- Internal libraries: TypeScript com `--watch`
+# Iniciar apenas Database
+npm run dev:db
+```
 
-## Deploy and Production
+### Database
 
-### CI/CD Pipeline
+```bash
+# Gerar cliente Prisma
+npm run db:generate
 
-1. **CI**: Testes, lint e build em PRs
-2. **Deploy**: Deploy automático em push para main
-3. **Migrations**: Executadas automaticamente no deploy
+# Executar migrações
+npm run db:migrate:dev
 
-### Deploy Strategy
+# Abrir Prisma Studio
+npm run db:studio:dev
 
-- Backend: Container ou serverless
-- Frontend: CDN (Vercel, Netlify)
-- Database: PostgreSQL gerenciado
-- Cache: Redis gerenciado
+# Reset do banco
+npm run db:reset
+```
 
-## Security
+### Qualidade de Código
 
-### Authentication (Futuro)
+```bash
+# Lint
+npm run lint
 
-- JWT tokens
-- Refresh tokens
-- Middleware de autenticação
+# Formatação
+npm run format
 
-### Validation
+# Verificação de tipos
+npm run type-check
 
-- Input validation com Zod
-- Sanitização de dados
-- Rate limiting
+# Testes
+npm run test
 
-### CORS
+# Build
+npm run build
+```
 
-- Configuração específica por ambiente
-- Headers de segurança
+## 🧪 Estratégia de Testes
 
-## Monitoring
+### Backend
+
+- **Unit Tests**: Services e Controllers
+- **Integration Tests**: Repositories e Database
+- **E2E Tests**: Fluxos completos
+
+### Frontend
+
+- **Component Tests**: React Testing Library
+- **Integration Tests**: Páginas e fluxos
+- **Visual Tests**: Storybook (futuro)
+
+## 📊 Monitoramento e Observabilidade
 
 ### Logs
 
 - Estruturados com contexto
-- Diferentes níveis (debug, info, warn, error)
-- Correlação de requests
+- Níveis configuráveis
+- Integração com serviços externos
 
 ### Métricas
 
-- Health checks
-- Performance monitoring
-- Error tracking
+- Performance de queries
+- Tempo de resposta da API
+- Uso de recursos
 
-## Scalability
+### Health Checks
 
-### Backend
+- Database connectivity
+- External services
+- System resources
 
-- Stateless design
-- Connection pooling
-- Caching strategies
+## 🚀 Deploy e CI/CD
 
-### Frontend
+### Pipeline
 
-- Static generation onde possível
-- Image optimization
-- Code splitting
+1. **Lint & Format**: Verificação de código
+2. **Type Check**: Verificação de tipos
+3. **Tests**: Execução de testes
+4. **Build**: Compilação
+5. **Deploy**: Deploy automático
+
+### Ambientes
+
+- **Development**: Local com Docker
+- **Staging**: Preview deployments
+- **Production**: Deploy automático
+
+## 🔒 Segurança
+
+### API
+
+- Validação de entrada com Zod
+- Rate limiting
+- CORS configurado
+- Headers de segurança
 
 ### Database
 
-- Índices otimizados
+- Conexões seguras
+- Queries parametrizadas
+- Backup automático
+
+## 📈 Escalabilidade
+
+### Horizontal
+
+- Load balancers
+- Multiple instances
+- Database clustering
+
+### Vertical
+
+- Resource optimization
 - Query optimization
-- Read replicas (futuro)
+- Caching strategies
+
+## 🎯 Próximos Passos
+
+1. **Autenticação**: JWT + Refresh tokens
+2. **Cache**: Redis para performance
+3. **Search**: Elasticsearch para busca
+4. **File Upload**: S3 para arquivos
+5. **Real-time**: WebSockets para notificações
+6. **Monitoring**: APM e logging centralizado
+
+---
+
+## 📚 Documentação Adicional
+
+- [API Architecture](./API_ARCHITECTURE.md) - Detalhes da API
+- [Quick Reference](./QUICK_REFERENCE.md) - Comandos rápidos
+- [Running Guide](./RUNNING.md) - Como executar o projeto
+- [VS Code Setup](./VSCODE_SETUP.md) - Configuração do editor

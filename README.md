@@ -1,368 +1,408 @@
-# Local Classifieds
+# 🏠 Local Classifieds
 
-Monorepo for the Local Classifieds project - a local classifieds platform.
+> Plataforma de classificados locais construída com arquitetura moderna e escalável
 
-## 🏗️ Architecture
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)](https://www.prisma.io/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-This project uses a monorepo architecture with the following technologies:
+## 📋 Visão Geral
 
-- **Backend**: NestJS + Prisma + PostgreSQL
-- **Frontend**: Next.js + TailwindCSS + TypeScript
-- **Database**: PostgreSQL (via Docker)
-- **Cache**: Redis (via Docker)
+O Local Classifieds é uma plataforma completa de classificados locais que permite aos usuários criar, gerenciar e navegar por anúncios em sua região. O projeto é construído com uma arquitetura moderna, escalável e profissional.
+
+### ✨ Características Principais
+
+- 🎯 **Arquitetura Modular**: Separação clara entre frontend e backend
+- 🚀 **Performance**: Otimizado para velocidade e SEO
+- 🌐 **Internacionalização**: Suporte a múltiplos idiomas
+- 🎨 **Design System**: Componentes reutilizáveis e consistentes
+- 🔒 **Segurança**: Validação robusta e autenticação segura
+- 📱 **Responsivo**: Funciona perfeitamente em todos os dispositivos
+- 🧪 **Testado**: Cobertura abrangente de testes
+- 📊 **Monitoramento**: Logs estruturados e métricas de performance
+
+## 🏗️ Arquitetura
+
+### Stack Tecnológico
+
+#### Backend (API)
+
+- **Framework**: NestJS
+- **Linguagem**: TypeScript
 - **ORM**: Prisma
-- **Validation**: Zod
+- **Database**: PostgreSQL
+- **Validação**: Zod
+- **Testes**: Jest
+
+#### Frontend
+
+- **Framework**: Next.js (App Router)
+- **Linguagem**: TypeScript + React
+- **Styling**: TailwindCSS
+- **Testes**: React Testing Library
+- **i18n**: Internacionalização integrada
+
+#### Infraestrutura
+
+- **Containerização**: Docker + Docker Compose
 - **CI/CD**: GitHub Actions
+- **Hosting**: Vercel (frontend), Railway/Render (backend)
 
-## 📁 Project Structure
+### Estrutura do Projeto
 
 ```
-/
-├── apps/
-│   ├── api/                          # NestJS Backend
+Local Classifieds/
+├── 📱 apps/
+│   ├── 🔧 api/                    # NestJS Backend
 │   │   ├── src/
-│   │   │   ├── modules/              # NestJS feature modules
-│   │   │   │   └── categories/       # Categories module
-│   │   │   ├── app.controller.ts
-│   │   │   ├── app.module.ts
-│   │   │   ├── app.service.ts
-│   │   │   └── main.ts
-│   │   └── libs/                     # Internal libraries (npm packages)
-│   │       ├── database/             # @services/database
-│   │       │   ├── src/              # Database services & Prisma
-│   │       │   ├── prisma/           # Schema & migrations
-│   │       │   ├── package.json      # @services/database
-│   │       │   └── tsconfig.json
-│   │       └── shared/               # @services/shared
-│   │           ├── src/              # DTOs, types, utils
-│   │           ├── package.json      # @services/shared
-│   │           └── tsconfig.json
-│   └── frontend/                     # Next.js Frontend
+│   │   │   ├── modules/          # Módulos de funcionalidades
+│   │   │   ├── common/           # Utilitários compartilhados
+│   │   │   ├── config/           # Configurações
+│   │   │   └── main.ts           # Entry point
+│   │   └── libs/                 # Bibliotecas locais
+│   └── 🎨 frontend/              # Next.js Frontend
 │       ├── src/
-│       │   └── app/                  # Next.js App Router
-│       └── libs/                     # Internal libraries
-│           └── shared/               # @frontend/shared
-│               ├── src/              # Frontend utilities
-│               ├── package.json      # @frontend/shared
-│               └── tsconfig.json
-├── docs/                             # Project documentation
-│   ├── ARCHITECTURE.md
-│   ├── QUICK_REFERENCE.md
-│   ├── RUNNING.md
-│   ├── VSCODE_SETUP.md
-│   └── postman/                      # API Testing collections
-├── docker/                           # Docker configurations
-├── scripts/                          # Utility scripts
-├── docker-compose.yml                # Development services
-├── tsconfig.base.json                # Shared TypeScript config
-├── eslint.config.mjs                 # Unified ESLint config
-└── package.json                      # Monorepo with workspaces
+│       │   ├── app/              # App Router
+│       │   ├── components/       # Componentes React
+│       │   ├── hooks/            # Custom Hooks
+│       │   └── utils/            # Utilitários
+│       └── public/               # Arquivos estáticos
+├── 📚 libs/                      # Bibliotecas compartilhadas
+│   ├── database/                 # Infraestrutura de dados
+│   └── shared/                   # Código compartilhado
+├── 📖 docs/                      # Documentação
+├── 🐳 docker-compose.yml         # Configuração Docker
+└── 📦 package.json               # Configuração do monorepo
 ```
 
-### 🎯 Key Features
+## 🚀 Início Rápido
 
-- **Clean Imports**: Use `@services/database`, `@services/shared`, `@frontend/shared` instead of relative paths
-- **NPM Workspaces**: Each library is a proper npm package with automatic linking
-- **Unified Configuration**: All TypeScript projects extend from `tsconfig.base.json`
-- **Scalable Structure**: Easy to add new modules and libraries
-- **Type-Safe**: Full TypeScript support with path aliases
-
-## 🚀 Local Setup
-
-### Prerequisites
+### Pré-requisitos
 
 - Node.js 18+
 - npm 9+
-- Docker and Docker Compose
+- Docker e Docker Compose
+- Git
 
-### 1. Clone the repository
+### Instalação
+
+1. **Clone o repositório**
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/your-username/local-classifieds.git
 cd local-classifieds
 ```
 
-### 2. Install dependencies
+2. **Instale as dependências**
 
 ```bash
 npm install
 ```
 
-### 3. Setup VS Code (Recommended)
-
-Open the project in VS Code and install recommended extensions for the best development experience:
-
-> 💡 **VS Code Setup**: See [VS Code Setup Guide](docs/VSCODE_SETUP.md) for detailed configuration including auto-open markdown preview.
-
-### 4. Configure environment
+3. **Configure as variáveis de ambiente**
 
 ```bash
-# Copy environment example file
 cp env.example .env
-
-# Edit variables if necessary
-# DATABASE_URL="postgresql://local_user:local_pass@localhost:5432/local_db?schema=public"
+# Edite o arquivo .env com suas configurações
 ```
 
-### 5. Start database services
+4. **Inicie o banco de dados**
 
 ```bash
-# Start PostgreSQL and Redis via Docker
-npm run docker:up
-
-# Check if services are running
-npm run docker:logs
+npm run dev:db
 ```
 
-### 6. Configure database
+5. **Execute as migrações**
 
 ```bash
-# Generate Prisma client
-npm run db:generate
-
-# Execute migrations
-npm run db:migrate
-
-# (Optional) Open Prisma Studio to view data
-npm run db:studio
+npm run db:migrate:dev
 ```
 
-### 7. Start development
+6. **Inicie o desenvolvimento**
 
 ```bash
-# Start everything (Docker + Backend + Frontend)
-npm run start:dev
-
-# Or start backend and frontend only (if Docker is already running)
-npm run dev
-
-# Or start individually:
-npm run dev:api      # Backend on port 3000
-npm run dev:frontend # Frontend on port 3001
+npm run dev:all
 ```
 
-> 📚 \*\*For detailed running instructions, see [docs/RUNNING.md](docs/RUNNING.md)
+### URLs de Desenvolvimento
 
-## 📋 Available Scripts
-
-### Monorepo Scripts
-
-```bash
-npm run dev              # Start backend and frontend in parallel
-npm run start:dev        # Start everything (Docker + backend + frontend)
-npm run build            # Build all applications
-npm run lint             # Lint all workspaces
-npm run lint:fix         # Lint with automatic fixes
-npm run format           # Format code with Prettier
-npm run format:check     # Check formatting without changes
-npm run type-check       # TypeScript type checking
-npm run test             # Run tests for all workspaces
-npm run docker:up        # Start Docker services
-npm run docker:down      # Stop Docker services
-npm run docker:logs      # View Docker service logs
-npm run stop             # Stop all development processes
-npm run stop:all         # Stop all development processes (detailed)
-npm run stop:api         # Stop backend only
-npm run stop:frontend    # Stop frontend only
-npm run stop:docker      # Stop Docker services only
-```
-
-### Backend Scripts (apps/api)
-
-```bash
-npm run dev:api          # Development with hot reload
-npm run build:api        # Build for production
-npm run start:api        # Start in production
-```
-
-### Frontend Scripts (apps/frontend)
-
-```bash
-npm run dev:frontend     # Development with hot reload
-npm run build:frontend   # Build for production
-npm run start:frontend   # Start in production
-```
-
-### Database Scripts (apps/api)
-
-```bash
-npm run db:generate      # Generate Prisma client
-npm run db:migrate       # Run migrations
-npm run db:studio        # Open Prisma Studio
-npm run db:deploy        # Deploy migrations (production)
-npm run db:reset         # Reset database (development)
-```
-
-## 🗄️ Banco de Dados
-
-### Available Models
-
-- **User**: System users
-- **Post**: Posts/classifieds (exemplo)
-
-### Useful Commands
-
-```bash
-# Create new migration
-cd apps/api
-npx prisma migrate dev --name migration_name
-
-# Reset database (development)
-npm run db:reset
-
-# View data
-npm run db:studio
-```
-
-## 🔧 Development Configuration
-
-### Environment Variables
-
-#### Backend (apps/api)
-
-```env
-DATABASE_URL="postgresql://local_user:local_pass@localhost:5432/local_db?schema=public"
-NODE_ENV="development"
-PORT=3000
-```
-
-#### Frontend (apps/frontend)
-
-```env
-NEXT_PUBLIC_API_URL="http://localhost:3000"
-NEXT_PUBLIC_APP_URL="http://localhost:3001"
-```
-
-### Ports
-
-- **Backend**: http://localhost:3000
 - **Frontend**: http://localhost:3001
-- **PostgreSQL**: localhost:5432
-- **Redis**: localhost:6379
+- **API**: http://localhost:3000/api
 - **Prisma Studio**: http://localhost:5555
+- **Documentação da API**: http://localhost:3000/api/docs
 
-## 🧪 Tests and Code Quality
+## 📚 Documentação
 
-### Lint and Formatting
+### Documentação Completa
 
-```bash
-# Run lint on entire project
-npm run lint
+- [🏗️ Arquitetura](./docs/ARCHITECTURE.md) - Visão geral da arquitetura
+- [🔧 API Architecture](./docs/API_ARCHITECTURE.md) - Detalhes da API
+- [🎨 Frontend Architecture](./docs/FRONTEND_ARCHITECTURE.md) - Detalhes do Frontend
+- [⚡ Quick Reference](./docs/QUICK_REFERENCE.md) - Comandos e referências rápidas
+- [🏃 Running Guide](./docs/RUNNING.md) - Como executar o projeto
+- [💻 VS Code Setup](./docs/VSCODE_SETUP.md) - Configuração do editor
 
-# Fix problems automatically
-npm run lint:fix
+### API Endpoints
 
-# Format code with Prettier
-npm run format
-
-# Check formatting without changing
-npm run format:check
-
-# Check TypeScript types
-npm run type-check
-
-# Run all quality checks (lint + format + types + tests + build)
-npm run quality
-
-# Fix quality issues automatically
-npm run quality:fix
-
-# Run CI pipeline locally
-npm run ci
-```
-
-### Tests
+#### Categories
 
 ```bash
-# Run all tests
-npm run test
-
-# Tests com coverage
-npm run test:cov
-
-# Tests em modo watch
-npm run test:watch
+GET    /api/categories           # Listar categorias
+GET    /api/categories/:id       # Buscar por ID
+GET    /api/categories/slug/:slug # Buscar por slug
+POST   /api/categories           # Criar categoria
+PUT    /api/categories/:id       # Atualizar categoria
+DELETE /api/categories/:id       # Deletar categoria
+POST   /api/categories/:id/restore # Restaurar categoria
+GET    /api/categories/hierarchy # Obter hierarquia
+GET    /api/categories/stats     # Obter estatísticas
 ```
 
-### Pre-commit Hooks
+## 🛠️ Scripts de Desenvolvimento
 
-The project uses Husky to automatically execute comprehensive quality checks:
+### Desenvolvimento
 
-#### Pre-commit (on every commit):
+```bash
+npm run dev:all      # Iniciar tudo (DB + API + Frontend)
+npm run dev:api      # Iniciar apenas API
+npm run dev:frontend # Iniciar apenas Frontend
+npm run dev:db       # Iniciar apenas Database
+```
 
-- **Lint-staged**: ESLint with auto-fix + Prettier formatting
-- **TypeScript type check**: Ensures no type errors
-- **Build check**: Quick build verification for API and Frontend
+### Database
 
-#### Pre-push (before pushing):
+```bash
+npm run db:generate     # Gerar cliente Prisma
+npm run db:migrate:dev  # Executar migrações
+npm run db:studio:dev   # Abrir Prisma Studio
+npm run db:reset        # Reset do banco
+npm run db:seed         # Seed do banco
+```
 
-- **Full lint check**: Complete project linting
-- **Format check**: Code formatting verification
-- **Type check**: TypeScript type validation
-- **All tests**: Complete test suite execution
-- **Full build**: Complete application build
+### Qualidade de Código
 
-#### Commit message validation:
+```bash
+npm run lint        # Lint
+npm run format      # Formatação
+npm run type-check  # Verificação de tipos
+npm run test        # Testes
+npm run build       # Build
+```
 
-- **Conventional Commits**: Enforces standard commit message format
-- **Types**: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert
+### Docker
 
-This ensures that **every commit** passes all quality checks and maintains code standards.
+```bash
+npm run docker:up      # Subir containers
+npm run docker:down    # Parar containers
+npm run docker:logs    # Ver logs
+npm run docker:restart # Reiniciar containers
+```
+
+## 🧪 Testes
+
+### Backend
+
+```bash
+npm run test:api    # Testes unitários da API
+npm run test:e2e    # Testes end-to-end
+npm run test:cov    # Coverage dos testes
+```
+
+### Frontend
+
+```bash
+npm run test:frontend # Testes do frontend
+npm run test:watch    # Testes com watch mode
+```
+
+## 🎨 Design System
+
+### Componentes Disponíveis
+
+- **Button**: Botão reutilizável com variantes
+- **Select**: Select com validação
+- **Modal**: Modal responsivo
+- **Card**: Card component
+- **Input**: Input com validação
+- **Badge**: Badge component
+- **Typography**: Sistema de tipografia
+- **Stack**: Componente de layout
+- **Spinner**: Loading states
+
+### Uso dos Componentes
+
+```tsx
+import { Button, Select, Modal, Card } from '@/components/ui';
+
+// Botão
+<Button variant="primary" size="md" loading={false}>
+  Click me
+</Button>
+
+// Select
+<Select
+  label="Categoria"
+  options={options}
+  placeholder="Selecione uma categoria"
+  required
+/>
+
+// Modal
+<Modal
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  title="Adicionar Categoria"
+>
+  <AddCategoryForm />
+</Modal>
+```
+
+## 🌐 Internacionalização
+
+O projeto suporta múltiplos idiomas através do sistema de internacionalização integrado:
+
+### Idiomas Suportados
+
+- 🇺🇸 English
+- 🇧🇷 Português
+
+### Adicionando Traduções
+
+```typescript
+// hooks/useTranslations.ts
+const { t } = useTranslations('admin');
+
+// Uso em componentes
+<h1>{t('categories.title')}</h1>
+```
+
+## 🔒 Segurança
+
+### API
+
+- ✅ Validação de entrada com Zod
+- ✅ Rate limiting
+- ✅ CORS configurado
+- ✅ Headers de segurança
+- ✅ Sanitização de dados
+
+### Database
+
+- ✅ Conexões seguras
+- ✅ Queries parametrizadas
+- ✅ Backup automático
+- ✅ Controle de acesso
+
+## 📊 Monitoramento
+
+### Logs
+
+- Estruturados com contexto
+- Níveis configuráveis
+- Integração com serviços externos
+
+### Métricas
+
+- Performance de queries
+- Tempo de resposta da API
+- Uso de recursos
+
+### Health Checks
+
+- Database connectivity
+- External services
+- System resources
 
 ## 🚀 Deploy
 
-### CI/CD
+### Pipeline CI/CD
 
-The project uses GitHub Actions for CI/CD:
+1. **Lint & Format**: Verificação de código
+2. **Type Check**: Verificação de tipos
+3. **Tests**: Execução de testes
+4. **Build**: Compilação
+5. **Deploy**: Deploy automático
 
-- **CI**: Executes on push/PR to main/develop
-- **Deploy**: Executes on push to main
+### Ambientes
 
-### Environment Variables (Produção)
+- **Development**: Local com Docker
+- **Staging**: Preview deployments
+- **Production**: Deploy automático
 
-Configure the following secrets in GitHub:
+## 🤝 Contribuição
 
-- `DATABASE_URL`: Production database URL
-- `API_URL`: Production API URL
-- `FRONTEND_URL`: Production frontend URL
+### Como Contribuir
 
-## 📚 Additional Documentation
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
-### Project Documentation
+### Padrões de Código
 
-- [Quick Reference](docs/QUICK_REFERENCE.md) - Most common commands at a glance
-- [Running the Project](docs/RUNNING.md) - Comprehensive guide for running the project
-- [VS Code Setup](docs/VSCODE_SETUP.md) - Configure VS Code for optimal development experience
-- [Architecture Overview](docs/ARCHITECTURE.md) - Project structure and design decisions
+- **Commits**: Seguir [Conventional Commits](https://www.conventionalcommits.org/)
+- **Código**: Seguir as regras do ESLint e Prettier
+- **Testes**: Manter cobertura de testes
+- **Documentação**: Atualizar documentação quando necessário
 
-### External Documentation
+### Estrutura de Branches
 
-- [NestJS Documentation](https://docs.nestjs.com/)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Prisma Documentation](https://www.prisma.io/docs)
-- [TailwindCSS Documentation](https://tailwindcss.com/docs)
+- `main`: Branch principal (produção)
+- `develop`: Branch de desenvolvimento
+- `feature/*`: Features novas
+- `fix/*`: Correções de bugs
+- `hotfix/*`: Correções urgentes
 
-## 🤝 Contribution
+## 📈 Roadmap
 
-1. Fork the project
-2. Create a branch for your feature (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+### Próximas Features
 
-## 📄 License
+- [ ] Sistema de autenticação (JWT)
+- [ ] Upload de imagens
+- [ ] Sistema de busca avançada
+- [ ] Notificações em tempo real
+- [ ] Sistema de avaliações
+- [ ] Dashboard de analytics
+- [ ] API mobile
+- [ ] Sistema de pagamentos
 
-This project is under the MIT license. See the file [LICENSE](LICENSE) for more details.
+### Melhorias Técnicas
 
-## 🆘 Support
+- [ ] Cache com Redis
+- [ ] Elasticsearch para busca
+- [ ] CDN para assets
+- [ ] Monitoring com APM
+- [ ] Logs centralizados
+- [ ] Backup automatizado
 
-If you encounter any problems or have questions:
+## 📞 Suporte
 
-1. Check if all prerequisites are installed
-2. Make sure Docker is running
-3. Check logs with `npm run docker:logs`
-4. Open an issue in the repository
+- **Documentação**: [docs/](./docs/)
+- **Issues**: [GitHub Issues](https://github.com/your-username/local-classifieds/issues)
+- **Discord**: [Link do servidor]
+- **Email**: support@localclassifieds.com
+
+## 📄 Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+## 🙏 Agradecimentos
+
+- [NestJS](https://nestjs.com/) - Framework Node.js
+- [Next.js](https://nextjs.org/) - Framework React
+- [Prisma](https://www.prisma.io/) - ORM moderno
+- [TailwindCSS](https://tailwindcss.com/) - Framework CSS
+- [TypeScript](https://www.typescriptlang.org/) - Superset do JavaScript
 
 ---
 
-**Developed with ❤️ for the local community**
+<div align="center">
+  <p>Feito com ❤️ pela equipe Local Classifieds</p>
+  <p>
+    <a href="#-local-classifieds">⬆️ Voltar ao topo</a>
+  </p>
+</div>
