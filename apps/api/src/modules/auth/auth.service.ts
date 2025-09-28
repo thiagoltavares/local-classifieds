@@ -87,10 +87,10 @@ export class AuthService {
 
   async refreshToken(refreshToken: string) {
     try {
-      const payload = (await this.jwt.verifyAsync(refreshToken)) as {
+      const payload = await this.jwt.verifyAsync<{
         sub: string;
         role: string;
-      };
+      }>(refreshToken);
       const user = await this.db.user.findUnique({
         where: { id: payload.sub },
       });
