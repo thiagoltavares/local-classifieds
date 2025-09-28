@@ -133,6 +133,53 @@ export class CategoriesService {
   }
 
   /**
+   * Find categories with pagination
+   */
+  async findPaginated(
+    options: CategoryQueryOptions & { limit?: number; offset?: number } = {},
+  ): Promise<{
+    data: CategoryWithChildren[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    };
+  }> {
+    const limit = options.limit || 10;
+    const offset = options.offset || 0;
+    const page = Math.floor(offset / limit) + 1;
+
+    const [data, total] = await Promise.all([
+      this.categoryRepository.findPaginated({
+        ...options,
+        limit,
+        offset,
+      }),
+      this.categoryRepository.count({
+        active: options.includeInactive ? undefined : true,
+        parentId: options.parentId,
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
+    };
+  }
+
+  /**
    * Update category
    */
   async update(id: string, data: UpdateCategoryData): Promise<Category> {

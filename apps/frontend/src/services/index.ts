@@ -11,6 +11,21 @@ export type {
   CategoryStats,
 } from './categories';
 
+// Category hooks
+export {
+  useCategories,
+  useCategoriesPaginated,
+  useCategory,
+  useCategoryBySlug,
+  useCategoryHierarchy,
+  useCategoryStats,
+  useActiveCategories,
+  useCategoriesWithChildren,
+  useRootCategories,
+  useChildCategories,
+  categoryKeys,
+} from './categories.hooks';
+
 export { usersService, UsersService } from './users';
 export type {
   User,

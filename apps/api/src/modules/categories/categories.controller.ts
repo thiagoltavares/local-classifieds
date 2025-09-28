@@ -15,7 +15,11 @@ import {
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { CategoryQueryDto } from './dto/category-query.dto';
+import {
+  CategoryQueryDto,
+  CategoryQuerySchema,
+} from './dto/category-query.dto';
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
 
 @Controller('categories')
 export class CategoriesController {
@@ -28,7 +32,13 @@ export class CategoriesController {
   }
 
   @Get()
-  async findAll(@Query() query: CategoryQueryDto) {
+  async findAll(
+    @Query(new ZodValidationPipe(CategoryQuerySchema)) query: CategoryQueryDto,
+  ) {
+    // Se houver limit ou offset, é uma requisição paginada
+    if (query.limit || query.offset) {
+      return this.categoriesService.findPaginated(query);
+    }
     return this.categoriesService.findAll(query);
   }
 

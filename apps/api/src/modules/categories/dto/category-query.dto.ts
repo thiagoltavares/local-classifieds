@@ -5,21 +5,21 @@ import { z } from 'zod';
 export const CategoryQuerySchema = z.object({
   includeChildren: z
     .string()
-    .transform((val) => val === 'true')
-    .optional(),
+    .optional()
+    .transform((val) => val === 'true'),
   includeInactive: z
     .string()
-    .transform((val) => val === 'true')
-    .optional(),
+    .optional()
+    .transform((val) => val === 'true'),
   parentId: z.string().uuid().optional(),
   limit: z
     .string()
-    .transform((val) => parseInt(val, 10))
-    .optional(),
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : undefined)),
   offset: z
     .string()
-    .transform((val) => parseInt(val, 10))
-    .optional(),
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : undefined)),
 });
 
 export type CategoryQueryDto = z.infer<typeof CategoryQuerySchema>;

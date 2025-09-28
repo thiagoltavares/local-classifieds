@@ -90,9 +90,15 @@ describe('CategoriesController', () => {
 
       mockCategoriesService.findAll.mockResolvedValue(expectedCategories);
 
-      const result = await controller.findAll({});
+      const result = await controller.findAll({
+        includeChildren: false,
+        includeInactive: false,
+      });
 
-      expect(service.findAll).toHaveBeenCalledWith({});
+      expect(service.findAll).toHaveBeenCalledWith({
+        includeChildren: false,
+        includeInactive: false,
+      });
       expect(result).toEqual(expectedCategories);
     });
   });
@@ -112,9 +118,15 @@ describe('CategoriesController', () => {
 
       mockCategoriesService.findById.mockResolvedValue(expectedCategory);
 
-      const result = await controller.findOne(categoryId, {});
+      const result = await controller.findOne(categoryId, {
+        includeChildren: false,
+        includeInactive: false,
+      });
 
-      expect(service.findById).toHaveBeenCalledWith(categoryId, {});
+      expect(service.findById).toHaveBeenCalledWith(categoryId, {
+        includeChildren: false,
+        includeInactive: false,
+      });
       expect(result).toEqual(expectedCategory);
     });
   });
@@ -134,9 +146,15 @@ describe('CategoriesController', () => {
 
       mockCategoriesService.findBySlug.mockResolvedValue(expectedCategory);
 
-      const result = await controller.findBySlug(slug, {});
+      const result = await controller.findBySlug(slug, {
+        includeChildren: false,
+        includeInactive: false,
+      });
 
-      expect(service.findBySlug).toHaveBeenCalledWith(slug, {});
+      expect(service.findBySlug).toHaveBeenCalledWith(slug, {
+        includeChildren: false,
+        includeInactive: false,
+      });
       expect(result).toEqual(expectedCategory);
     });
   });

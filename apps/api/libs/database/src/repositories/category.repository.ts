@@ -82,8 +82,15 @@ export class CategoryRepository {
     const include: Prisma.CategoryInclude = {
       translations: options.includeTranslations ?? true,
       parent: options.includeParent ?? false,
-      children: options.includeChildren ?? false,
     };
+
+    // Só inclui children se explicitamente solicitado
+    if (options.includeChildren) {
+      include.children = {
+        where: options.includeInactive ? {} : { active: true },
+        orderBy: [{ displayOrder: 'asc' }],
+      };
+    }
 
     const where: Prisma.CategoryWhereInput = {
       active: options.includeInactive ? undefined : true,
@@ -283,5 +290,40 @@ export class CategoryRepository {
 
   async findFirst(where: Record<string, unknown>): Promise<Category | null> {
     return this.prisma.category.findFirst({ where });
+  }
+
+  async findPaginated(
+    options: CategoryQueryOptions & { limit?: number; offset?: number } = {},
+  ): Promise<CategoryWithChildren[]> {
+    const where: Prisma.CategoryWhereInput = {};
+
+    if (!options.includeInactive) {
+      where.active = true;
+    }
+
+    if (options.parentId !== undefined) {
+      where.parentId = options.parentId;
+    }
+
+    const include: Prisma.CategoryInclude = {
+      translations: options.includeTranslations ?? true,
+      parent: options.includeParent ?? false,
+    };
+
+    // Só inclui children se explicitamente solicitado
+    if (options.includeChildren) {
+      include.children = {
+        where: options.includeInactive ? {} : { active: true },
+        orderBy: [{ displayOrder: 'asc' }],
+      };
+    }
+
+    return this.prisma.category.findMany({
+      where,
+      include,
+      orderBy: [{ displayOrder: 'asc' }],
+      take: options.limit,
+      skip: options.offset,
+    }) as Promise<CategoryWithChildren[]>;
   }
 }

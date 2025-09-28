@@ -61,13 +61,12 @@ class ApiClient {
         );
       }
 
-      const data = (await response.json()) as ApiResponse<T>;
+      const responseText = await response.text();
 
-      if (!data.success) {
-        throw new Error(data.message || 'API request failed');
-      }
+      // A API retorna dados diretamente, não em um wrapper ApiResponse
+      const data = JSON.parse(responseText) as T;
 
-      return data.data as T;
+      return data;
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -77,20 +76,25 @@ class ApiClient {
   }
 
   async get<T>(endpoint: string, params?: Record<string, unknown>): Promise<T> {
-    const url = new URL(`${this.baseURL}${endpoint}`);
+    let url = endpoint;
 
     if (params) {
+      const searchParams = new URLSearchParams();
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          url.searchParams.append(
+          searchParams.append(
             key,
             typeof value === 'string' ? value : JSON.stringify(value)
           );
         }
       });
+      const queryString = searchParams.toString();
+      if (queryString) {
+        url += `?${queryString}`;
+      }
     }
 
-    return this.request<T>(url.pathname + url.search);
+    return this.request<T>(url);
   }
 
   async post<T>(endpoint: string, data?: unknown): Promise<T> {
