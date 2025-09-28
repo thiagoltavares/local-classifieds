@@ -7,17 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '@api/database';
-
-interface CreateUserDto {
-  name: string;
-  email: string;
-  password: string;
-}
-
-interface LoginDto {
-  email: string;
-  password: string;
-}
+import { CreateUserDto, LoginDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -76,7 +66,42 @@ export class AuthService {
     if (!isValid) throw new UnauthorizedException('Invalid credentials');
 
     const payload = { sub: user.id, role: user.role };
-    const access_token = await this.jwt.signAsync(payload);
-    return { access_token };
+    const access_token = await this.jwt.signAsync(payload, {
+      expiresIn: '15m',
+    });
+    const refresh_token = await this.jwt.signAsync(payload, {
+      expiresIn: '7d',
+    });
+
+    return {
+      access_token,
+      refresh_token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    };
+  }
+
+  async refreshToken(refreshToken: string) {
+    try {
+      const payload = await this.jwt.verifyAsync(refreshToken);
+      const user = await this.db.user.findUnique({
+        where: { id: payload.sub },
+      });
+
+      if (!user) throw new UnauthorizedException('Invalid refresh token');
+
+      const newPayload = { sub: user.id, role: user.role };
+      const access_token = await this.jwt.signAsync(newPayload, {
+        expiresIn: '15m',
+      });
+
+      return { access_token };
+    } catch {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 }

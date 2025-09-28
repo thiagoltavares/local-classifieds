@@ -1,17 +1,7 @@
 // apps/api/src/modules/auth/auth.controller.ts
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-
-class CreateUserDto {
-  name!: string;
-  email!: string;
-  password!: string;
-}
-
-class LoginDto {
-  email!: string;
-  password!: string;
-}
+import { CreateUserDto, LoginDto } from './dto';
 
 @Controller('auth')
 export class AuthController {
@@ -26,5 +16,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto) {
     return await this.auth.login(dto);
+  }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refresh(@Body() body: { refresh_token: string }) {
+    return await this.auth.refreshToken(body.refresh_token);
   }
 }

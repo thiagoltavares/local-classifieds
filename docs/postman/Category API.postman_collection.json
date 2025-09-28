@@ -17,6 +17,11 @@
       "type": "string"
     },
     {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
       "key": "categoryId",
       "value": "",
       "type": "string"
@@ -71,7 +76,38 @@
                 "exec": [
                   "const json = pm.response.json();",
                   "if (json && json.access_token) { pm.collectionVariables.set('accessToken', json.access_token); }",
-                  "pm.test('has token', function () { pm.expect(json.access_token).to.be.a('string'); });"
+                  "if (json && json.refresh_token) { pm.collectionVariables.set('refreshToken', json.refresh_token); }",
+                  "pm.test('has tokens', function () { pm.expect(json.access_token).to.be.a('string'); pm.expect(json.refresh_token).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "refresh"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.access_token) { pm.collectionVariables.set('accessToken', json.access_token); }",
+                  "pm.test('has new token', function () { pm.expect(json.access_token).to.be.a('string'); });"
                 ]
               }
             }
