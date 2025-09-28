@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import {
+  Autocomplete,
   Button,
   H1,
   H2,
@@ -33,6 +34,7 @@ import {
 } from '../../../../services';
 import { Spinner } from '../../../../components/ui/Spinner';
 import { useToastNotifications } from '../../../../components/ui/Toast';
+import type { AutocompleteOption } from '../../../../components/ui/Autocomplete';
 
 export default function AdminPage() {
   const [activeSection, setActiveSection] = useState<string>('categories');
@@ -61,6 +63,23 @@ export default function AdminPage() {
 
   const categories = paginatedData?.data || [];
   const pagination = paginatedData?.pagination;
+
+  // Converter categorias para opções do autocomplete
+  const parentCategoryOptions: AutocompleteOption[] = [
+    {
+      value: '',
+      label: 'Nenhuma (Categoria Principal)',
+      description: 'Criar como categoria raiz',
+    },
+    ...categories
+      .filter((cat: Category) => cat.active) // Só mostrar categorias ativas como pai
+      .map((category: Category) => ({
+        value: category.id,
+        label: category.translations?.[0]?.name || category.slug,
+        description:
+          category.translations?.[0]?.description || `Slug: ${category.slug}`,
+      })),
+  ];
 
   const [formData, setFormData] = useState({
     slug: '',
@@ -465,22 +484,14 @@ export default function AdminPage() {
                 <label className='block text-sm font-medium text-neutral-text-primary mb-2'>
                   Categoria Pai
                 </label>
-                <select
+                <Autocomplete
+                  options={parentCategoryOptions}
                   value={formData.parentId || ''}
-                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                    handleInputChange('parentId', e.target.value || '')
-                  }
-                  className='flex h-10 w-full rounded-md border border-neutral-border bg-neutral-bg-card px-3 py-2 text-sm text-neutral-text-primary focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent'
-                >
-                  <option value=''>Nenhuma (Categoria Principal)</option>
-                  {categories
-                    .filter((cat: Category) => cat.active) // Só mostrar categorias ativas como pai
-                    .map((category: Category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.translations?.[0]?.name || category.slug}
-                      </option>
-                    ))}
-                </select>
+                  onChange={value => handleInputChange('parentId', value || '')}
+                  placeholder='Buscar categoria pai...'
+                  emptyMessage='Nenhuma categoria encontrada'
+                  searchable={true}
+                />
               </div>
             </Stack>
 

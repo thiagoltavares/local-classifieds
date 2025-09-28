@@ -13,7 +13,10 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
+import {
+  CreateCategoryDto,
+  CreateCategorySchema,
+} from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import {
   CategoryQueryDto,
@@ -27,7 +30,10 @@ export class CategoriesController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createCategoryDto: CreateCategoryDto) {
+  async create(
+    @Body(new ZodValidationPipe(CreateCategorySchema))
+    createCategoryDto: CreateCategoryDto,
+  ) {
     return this.categoriesService.create(createCategoryDto);
   }
 

@@ -4,6 +4,7 @@
 import React from 'react';
 
 import {
+  Autocomplete,
   Button,
   H1,
   H2,
@@ -320,6 +321,144 @@ export default function ComponentsDemo() {
             </div>
           </section>
 
+          {/* Autocomplete */}
+          <section className='mb-12'>
+            <H2 className='mb-6'>Autocomplete</H2>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+              <div className='space-y-4'>
+                <div>
+                  <H3 className='mb-4'>Autocomplete Básico</H3>
+                  <Autocomplete
+                    options={[
+                      {
+                        value: '1',
+                        label: 'React',
+                        description: 'Biblioteca JavaScript para UI',
+                      },
+                      {
+                        value: '2',
+                        label: 'Vue.js',
+                        description: 'Framework JavaScript progressivo',
+                      },
+                      {
+                        value: '3',
+                        label: 'Angular',
+                        description: 'Framework TypeScript da Google',
+                      },
+                      {
+                        value: '4',
+                        label: 'Svelte',
+                        description: 'Framework JavaScript compilado',
+                      },
+                      {
+                        value: '5',
+                        label: 'Next.js',
+                        description: 'Framework React para produção',
+                      },
+                    ]}
+                    value=''
+                    onChange={() => {}}
+                    placeholder='Buscar framework...'
+                    emptyMessage='Nenhum framework encontrado'
+                  />
+                </div>
+                <div>
+                  <H3 className='mb-4'>Autocomplete com Categorias</H3>
+                  <Autocomplete
+                    options={[
+                      {
+                        value: '',
+                        label: 'Nenhuma categoria',
+                        description: 'Categoria raiz',
+                      },
+                      {
+                        value: '1',
+                        label: 'Tecnologia',
+                        description: 'Produtos e serviços de tecnologia',
+                      },
+                      {
+                        value: '2',
+                        label: 'Casa e Jardim',
+                        description: 'Itens para casa e jardim',
+                      },
+                      {
+                        value: '3',
+                        label: 'Esportes',
+                        description: 'Equipamentos e acessórios esportivos',
+                      },
+                      {
+                        value: '4',
+                        label: 'Moda',
+                        description: 'Roupas e acessórios de moda',
+                      },
+                      {
+                        value: '5',
+                        label: 'Livros',
+                        description: 'Livros e materiais educativos',
+                      },
+                    ]}
+                    value=''
+                    onChange={() => {}}
+                    placeholder='Selecionar categoria pai...'
+                    emptyMessage='Nenhuma categoria encontrada'
+                  />
+                </div>
+              </div>
+              <div className='space-y-4'>
+                <div>
+                  <H3 className='mb-4'>Autocomplete Desabilitado</H3>
+                  <Autocomplete
+                    options={[
+                      { value: '1', label: 'Opção 1' },
+                      { value: '2', label: 'Opção 2' },
+                    ]}
+                    value=''
+                    onChange={() => {}}
+                    placeholder='Campo desabilitado'
+                    disabled
+                  />
+                </div>
+                <div>
+                  <H3 className='mb-4'>Autocomplete com Loading</H3>
+                  <Autocomplete
+                    options={[]}
+                    value=''
+                    onChange={() => {}}
+                    placeholder='Carregando opções...'
+                    loading
+                    emptyMessage='Carregando...'
+                  />
+                </div>
+                <div>
+                  <H3 className='mb-4'>Autocomplete Não Pesquisável</H3>
+                  <Autocomplete
+                    options={[
+                      {
+                        value: '1',
+                        label: 'Opção 1',
+                        description: 'Primeira opção',
+                      },
+                      {
+                        value: '2',
+                        label: 'Opção 2',
+                        description: 'Segunda opção',
+                      },
+                      {
+                        value: '3',
+                        label: 'Opção 3',
+                        description: 'Terceira opção',
+                      },
+                    ]}
+                    value=''
+                    onChange={() => {}}
+                    placeholder='Selecionar opção...'
+                    searchable={false}
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Spinner */}
           <section className='mb-12'>
             <H2 className='mb-6'>Spinner</H2>
@@ -503,6 +642,12 @@ export default function ComponentsDemo() {
             </Card>
           </section>
 
+          {/* Autocomplete Interativo */}
+          <section className='mb-12'>
+            <H2 className='mb-6'>Autocomplete Interativo</H2>
+            <AutocompleteExample />
+          </section>
+
           {/* Toast/Snackbar */}
           <section className='mb-12'>
             <H2 className='mb-6'>Toast/Snackbar</H2>
@@ -600,6 +745,202 @@ function ModalExample() {
           </div>
         </div>
       </Modal>
+    </div>
+  );
+}
+
+// Autocomplete Example Component
+function AutocompleteExample() {
+  const [selectedFramework, setSelectedFramework] = React.useState('');
+  const [selectedCategory, setSelectedCategory] = React.useState('');
+  const { showSuccess } = useToastNotifications();
+
+  const frameworkOptions = [
+    {
+      value: '1',
+      label: 'React',
+      description: 'Biblioteca JavaScript para UI',
+    },
+    {
+      value: '2',
+      label: 'Vue.js',
+      description: 'Framework JavaScript progressivo',
+    },
+    {
+      value: '3',
+      label: 'Angular',
+      description: 'Framework TypeScript da Google',
+    },
+    {
+      value: '4',
+      label: 'Svelte',
+      description: 'Framework JavaScript compilado',
+    },
+    {
+      value: '5',
+      label: 'Next.js',
+      description: 'Framework React para produção',
+    },
+    {
+      value: '6',
+      label: 'Nuxt.js',
+      description: 'Framework Vue.js para produção',
+    },
+    {
+      value: '7',
+      label: 'SvelteKit',
+      description: 'Framework Svelte para produção',
+    },
+  ];
+
+  const categoryOptions = [
+    { value: '', label: 'Nenhuma categoria', description: 'Categoria raiz' },
+    {
+      value: '1',
+      label: 'Tecnologia',
+      description: 'Produtos e serviços de tecnologia',
+    },
+    {
+      value: '2',
+      label: 'Casa e Jardim',
+      description: 'Itens para casa e jardim',
+    },
+    {
+      value: '3',
+      label: 'Esportes',
+      description: 'Equipamentos e acessórios esportivos',
+    },
+    { value: '4', label: 'Moda', description: 'Roupas e acessórios de moda' },
+    {
+      value: '5',
+      label: 'Livros',
+      description: 'Livros e materiais educativos',
+    },
+    {
+      value: '6',
+      label: 'Eletrônicos',
+      description: 'Dispositivos e acessórios eletrônicos',
+    },
+    {
+      value: '7',
+      label: 'Automóveis',
+      description: 'Veículos e peças automotivas',
+    },
+  ];
+
+  const handleSubmit = () => {
+    const framework = frameworkOptions.find(f => f.value === selectedFramework);
+    const category = categoryOptions.find(c => c.value === selectedCategory);
+
+    if (framework && category) {
+      showSuccess(
+        `Selecionado: ${framework.label} na categoria ${category.label}`
+      );
+    } else {
+      showSuccess('Formulário enviado!');
+    }
+  };
+
+  return (
+    <div className='space-y-6'>
+      <Card className='max-w-2xl'>
+        <CardHeader>
+          <H3>Exemplo de Formulário com Autocomplete</H3>
+        </CardHeader>
+        <CardContent className='space-y-4'>
+          <div>
+            <label className='block text-sm font-medium text-neutral-text-primary mb-2'>
+              Framework Preferido
+            </label>
+            <Autocomplete
+              options={frameworkOptions}
+              value={selectedFramework}
+              onChange={setSelectedFramework}
+              placeholder='Buscar framework...'
+              emptyMessage='Nenhum framework encontrado'
+            />
+          </div>
+
+          <div>
+            <label className='block text-sm font-medium text-neutral-text-primary mb-2'>
+              Categoria
+            </label>
+            <Autocomplete
+              options={categoryOptions}
+              value={selectedCategory}
+              onChange={setSelectedCategory}
+              placeholder='Selecionar categoria...'
+              emptyMessage='Nenhuma categoria encontrada'
+            />
+          </div>
+
+          <div className='flex gap-2 pt-4'>
+            <Button onClick={handleSubmit}>Enviar Seleção</Button>
+            <Button
+              variant='outline'
+              onClick={() => {
+                setSelectedFramework('');
+                setSelectedCategory('');
+              }}
+            >
+              Limpar
+            </Button>
+          </div>
+
+          {(selectedFramework || selectedCategory) && (
+            <div className='mt-4 p-3 bg-neutral-bg-card border border-neutral-border rounded-lg'>
+              <Small className='text-neutral-text-secondary mb-2 block'>
+                Seleções atuais:
+              </Small>
+              {selectedFramework && (
+                <div className='text-sm'>
+                  <strong>Framework:</strong>{' '}
+                  {
+                    frameworkOptions.find(f => f.value === selectedFramework)
+                      ?.label
+                  }
+                </div>
+              )}
+              {selectedCategory && (
+                <div className='text-sm'>
+                  <strong>Categoria:</strong>{' '}
+                  {
+                    categoryOptions.find(c => c.value === selectedCategory)
+                      ?.label
+                  }
+                </div>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className='p-4'>
+          <H3 className='mb-3'>Recursos do Autocomplete</H3>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm'>
+            <div>
+              <Body className='font-medium mb-2'>Funcionalidades:</Body>
+              <ul className='space-y-1 text-neutral-text-secondary'>
+                <li>• Busca em tempo real</li>
+                <li>• Navegação por teclado</li>
+                <li>• Suporte a descrições</li>
+                <li>• Estados de loading</li>
+                <li>• Campo desabilitado</li>
+              </ul>
+            </div>
+            <div>
+              <Body className='font-medium mb-2'>Atalhos de Teclado:</Body>
+              <ul className='space-y-1 text-neutral-text-secondary'>
+                <li>• ↑↓ Navegar opções</li>
+                <li>• Enter Selecionar</li>
+                <li>• Escape Fechar</li>
+                <li>• Tab Focar próximo campo</li>
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

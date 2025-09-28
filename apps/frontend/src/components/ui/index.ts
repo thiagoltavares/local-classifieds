@@ -1,4 +1,6 @@
 // apps/frontend/src/components/ui/index.ts
+export { Autocomplete } from './Autocomplete';
+export type { AutocompleteOption, AutocompleteProps } from './Autocomplete';
 export { Button } from './Button';
 export { H1, H2, H3, Body, Small } from './Typography';
 export { Stack } from './Stack';
