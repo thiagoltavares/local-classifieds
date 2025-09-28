@@ -28,9 +28,11 @@ import {
 import {
   useCategoriesPaginated,
   useCategoryStats,
+  useCreateCategory,
   type Category,
 } from '../../../../services';
 import { Spinner } from '../../../../components/ui/Spinner';
+import { useToastNotifications } from '../../../../components/ui/Toast';
 
 export default function AdminPage() {
   const [activeSection, setActiveSection] = useState<string>('categories');
@@ -50,6 +52,12 @@ export default function AdminPage() {
   });
 
   const { data: stats } = useCategoryStats();
+
+  // Hook para criar categoria
+  const createCategoryMutation = useCreateCategory();
+
+  // Hook para notificações
+  const { showSuccess, showError } = useToastNotifications();
 
   const categories = paginatedData?.data || [];
   const pagination = paginatedData?.pagination;
@@ -88,16 +96,53 @@ export default function AdminPage() {
     }));
   };
 
+  const validateForm = (): boolean => {
+    if (!formData.slug.trim()) {
+      showError('Slug é obrigatório', 'Validação');
+      return false;
+    }
+
+    // Verificar se slug já existe
+    const slugExists = categories.some(
+      cat => cat.slug === formData.slug.trim()
+    );
+    if (slugExists) {
+      showError('Este slug já existe. Escolha outro.', 'Validação');
+      return false;
+    }
+
+    const validTranslations = formData.translations.filter(
+      t => t.name.trim() !== ''
+    );
+    if (validTranslations.length === 0) {
+      showError('Pelo menos uma tradução com nome é obrigatória', 'Validação');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      // TODO: Implementar chamada para API para criar categoria
-      // Simular delay da API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+    if (!validateForm()) {
+      return;
+    }
 
-      // Recarregar dados após criação
-      await refetch();
+    try {
+      // Preparar dados para envio
+      const createData = {
+        slug: formData.slug.trim(),
+        parentId: formData.parentId || null,
+        displayOrder: formData.displayOrder,
+        translations: formData.translations.filter(t => t.name.trim() !== ''), // Só enviar traduções com nome
+      };
+
+      // Criar categoria usando a mutação
+      await createCategoryMutation.mutateAsync(createData);
+
+      // Mostrar toast de sucesso
+      showSuccess('Categoria criada com sucesso!', 'Sucesso');
 
       // Limpar formulário
       setFormData({
@@ -111,8 +156,14 @@ export default function AdminPage() {
         ],
       });
       setShowAddModal(false);
-    } catch {
-      // Error handling
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Erro ao criar categoria:', error);
+
+      // Mostrar toast de erro
+      const errorMessage =
+        error instanceof Error ? error.message : 'Erro ao criar categoria';
+      showError(errorMessage, 'Erro');
     }
   };
 
@@ -507,13 +558,25 @@ export default function AdminPage() {
             </div>
 
             <Stack direction='row' spacing={3} className='pt-4'>
-              <Button type='submit' variant='primary'>
-                Criar Categoria
+              <Button
+                type='submit'
+                variant='primary'
+                disabled={createCategoryMutation.isPending}
+              >
+                {createCategoryMutation.isPending ? (
+                  <>
+                    <Spinner size='sm' />
+                    <span className='ml-2'>Criando...</span>
+                  </>
+                ) : (
+                  'Criar Categoria'
+                )}
               </Button>
               <Button
                 type='button'
                 variant='outline'
                 onClick={() => setShowAddModal(false)}
+                disabled={createCategoryMutation.isPending}
               >
                 Cancelar
               </Button>

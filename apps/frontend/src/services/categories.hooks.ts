@@ -1,12 +1,19 @@
 // /Users/thiagotavares/Projects/Services/apps/frontend/src/services/categories.hooks.ts
 
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseQueryOptions,
+} from '@tanstack/react-query';
 import { categoriesService } from './categories';
 import type { PaginatedResponse } from './api';
 import type {
   Category,
   CategoryQueryParams,
   CategoryStats,
+  CreateCategoryData,
+  UpdateCategoryData,
 } from './categories';
 
 // Query keys for React Query cache
@@ -187,4 +194,53 @@ export function useChildCategories(
   options?: Omit<UseQueryOptions<Category[], Error>, 'queryKey' | 'queryFn'>
 ) {
   return useCategories({ ...params, parentId }, options);
+}
+
+// ===== MUTATION HOOKS =====
+
+/**
+ * Hook para criar uma nova categoria
+ */
+export function useCreateCategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateCategoryData) => categoriesService.create(data),
+    onSuccess: () => {
+      // Invalidar todas as queries relacionadas a categorias
+      void queryClient.invalidateQueries({ queryKey: categoryKeys.all });
+    },
+  });
+}
+
+/**
+ * Hook para atualizar uma categoria
+ */
+export function useUpdateCategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateCategoryData }) =>
+      categoriesService.update(id, data),
+    onSuccess: (_, { id }) => {
+      // Invalidar queries específicas da categoria e todas as listas
+      void queryClient.invalidateQueries({ queryKey: categoryKeys.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: categoryKeys.all });
+    },
+  });
+}
+
+/**
+ * Hook para deletar uma categoria
+ */
+export function useDeleteCategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => categoriesService.delete(id),
+    onSuccess: () => {
+      // Invalidar todas as queries relacionadas a categorias
+      void queryClient.invalidateQueries({ queryKey: categoryKeys.all });
+    },
+  });
 }

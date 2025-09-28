@@ -1,6 +1,11 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { ThemeProvider, I18nProvider, QueryProvider } from './providers';
+import {
+  ThemeProvider,
+  I18nProvider,
+  QueryProvider,
+  ToastProvider,
+} from './providers';
 
 export const metadata: Metadata = {
   title: 'Local Classifieds',
@@ -17,7 +22,9 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <I18nProvider>
-            <QueryProvider>{children}</QueryProvider>
+            <QueryProvider>
+              <ToastProvider>{children}</ToastProvider>
+            </QueryProvider>
           </I18nProvider>
         </ThemeProvider>
       </body>

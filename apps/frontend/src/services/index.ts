@@ -23,6 +23,9 @@ export {
   useCategoriesWithChildren,
   useRootCategories,
   useChildCategories,
+  useCreateCategory,
+  useUpdateCategory,
+  useDeleteCategory,
   categoryKeys,
 } from './categories.hooks';
 
