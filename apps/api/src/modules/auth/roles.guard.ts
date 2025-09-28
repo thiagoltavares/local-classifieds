@@ -4,17 +4,14 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
+  SetMetadata,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserRole } from '@prisma/client';
 
 export const ROLES_KEY = 'roles';
 
-export const Roles = (...roles: UserRole[]) => {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { SetMetadata } = require('@nestjs/common');
-  return SetMetadata(ROLES_KEY, roles);
-};
+export const Roles = (...roles: UserRole[]) => SetMetadata(ROLES_KEY, roles);
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -30,7 +27,9 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    const { user } = context.switchToHttp().getRequest();
+    const { user } = context.switchToHttp().getRequest<{
+      user: { userId: string; role: UserRole };
+    }>();
 
     if (!user) {
       throw new ForbiddenException('User not authenticated');
