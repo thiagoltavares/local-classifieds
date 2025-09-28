@@ -1,12 +1,13 @@
 'use client';
 
-import { useTranslations } from '../hooks/useTranslations';
+import { useI18n } from '../app/providers/I18nProvider';
+import { Language } from '../types/enums';
 
 export default function LanguageSwitcher() {
-  const { t, locale, router } = useTranslations();
+  const { t, locale, setLocale } = useI18n();
 
-  const switchLanguage = (newLocale: string) => {
-    router.push(`/${newLocale}`);
+  const switchLanguage = (newLocale: Language) => {
+    setLocale(newLocale);
   };
 
   return (
@@ -14,19 +15,29 @@ export default function LanguageSwitcher() {
       <span className='text-sm text-gray-600'>{t('language')}:</span>
       <div className='flex gap-2'>
         <button
-          onClick={() => switchLanguage('pt-BR')}
+          onClick={() => switchLanguage(Language.PT_BR)}
           className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-            locale === 'pt-BR'
+            locale === String(Language.PT_BR)
               ? 'bg-blue-500 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
         >
-          {t('portuguese')}
+          {t('portuguese_br')}
         </button>
         <button
-          onClick={() => switchLanguage('en-US')}
+          onClick={() => switchLanguage(Language.PT_PT)}
           className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-            locale === 'en-US'
+            locale === String(Language.PT_PT)
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          {t('portuguese_pt')}
+        </button>
+        <button
+          onClick={() => switchLanguage(Language.EN_US)}
+          className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+            locale === String(Language.EN_US)
               ? 'bg-blue-500 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}

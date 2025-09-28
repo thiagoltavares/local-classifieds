@@ -25,6 +25,10 @@ model Category {
 
   translations  CategoryTranslation[]
 
+  // Índices para performance
+  @@index([parentId, active]) // Para listagem de categorias ativas por grupo
+  @@index([active, displayOrder]) // Para ordenação de categorias ativas
+  @@index([slug]) // Já existe como unique, mas explícito para clareza
   @@map("categories")
 }
 

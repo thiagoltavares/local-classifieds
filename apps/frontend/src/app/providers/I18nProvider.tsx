@@ -1,90 +1,74 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { createContext, useContext, useState } from 'react';
+import { Language } from '../../types/enums';
 
-type Locale = 'en' | 'pt' | 'es';
+// Import all translations statically
+import ptBRCommon from '../../i18n/pt-BR/common.json';
+import ptPTCommon from '../../i18n/pt-PT/common.json';
+import enUSCommon from '../../i18n/en-US/common.json';
+
+type Locale = Language;
 
 interface I18nContextType {
   locale: Locale;
   setLocale: (locale: Locale) => void;
   t: (key: string, params?: Record<string, string>) => string;
-  loadNamespace: (namespace: string) => Promise<void>;
   isLoading: boolean;
 }
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
+// Static translations object (namespace -> key -> value)
+const translations: Record<Locale, Record<string, Record<string, unknown>>> = {
+  [Language.PT_BR]: { common: ptBRCommon as Record<string, unknown> },
+  [Language.PT_PT]: { common: ptPTCommon as Record<string, unknown> },
+  [Language.EN_US]: { common: enUSCommon as Record<string, unknown> },
+};
+
 export function I18nProvider({
   children,
-  initialLocale = 'en',
+  initialLocale = Language.PT_BR,
 }: {
   children: React.ReactNode;
   initialLocale?: Locale;
 }) {
   const [locale, setLocale] = useState<Locale>(initialLocale);
-  const [translations, setTranslations] = useState<
-    Record<string, Record<string, string>>
-  >({});
-  const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
-
-  useEffect(() => {
-    const loadTranslations = async () => {
-      setIsLoading(true);
-      try {
-        // Load common translations
-        const commonData = await import(`../../i18n/${locale}/common.json`);
-        setTranslations(prev => ({
-          ...prev,
-          common: commonData.default as unknown as Record<string, string>,
-        }));
-      } catch (error) {
-        console.error(`Failed to load translations for ${locale}:`, error);
-        // Fallback to English
-        if (locale !== 'en') {
-          try {
-            const fallbackData = await import(`../../i18n/en/common.json`);
-            setTranslations(prev => ({
-              ...prev,
-              common: fallbackData.default as unknown as Record<string, string>,
-            }));
-          } catch (fallbackError) {
-            console.error(
-              'Failed to load fallback translations:',
-              fallbackError
-            );
-          }
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    void loadTranslations();
-  }, [locale]);
-
-  const loadNamespace = async (namespace: string) => {
-    try {
-      const data = await import(`../../i18n/${locale}/${namespace}.json`);
-      setTranslations(prev => ({
-        ...prev,
-        [namespace]: data.default as Record<string, string>,
-      }));
-    } catch (error) {
-      console.error(`Failed to load ${namespace} translations:`, error);
-    }
-  };
 
   const t = (key: string, params?: Record<string, string>) => {
     const [namespace, ...keyParts] = key.split('.');
     const translationKey = keyParts.join('.');
 
-    let translation: string = translations[namespace]?.[translationKey] || key;
+    // Try to get translation from current locale
+    const direct = translations[locale]?.[namespace]?.[translationKey];
+    let translation: string | undefined =
+      typeof direct === 'string' ? direct : undefined;
+
+    // If not found, try common namespace as fallback
+    if (!translation && namespace !== 'common') {
+      const commonVal = translations[locale]?.common?.[translationKey];
+      translation = typeof commonVal === 'string' ? commonVal : translation;
+    }
+
+    // If still not found, try English as fallback
+    if (!translation && locale !== Language.EN_US) {
+      const enDirect =
+        translations[Language.EN_US]?.[namespace]?.[translationKey];
+      translation = typeof enDirect === 'string' ? enDirect : translation;
+      if (!translation && namespace !== 'common') {
+        const enCommon = translations[Language.EN_US]?.common?.[translationKey];
+        translation = typeof enCommon === 'string' ? enCommon : translation;
+      }
+    }
+
+    // If still not found, return the key itself
+    if (!translation) {
+      translation = key;
+    }
 
     if (params) {
       Object.entries(params).forEach(([param, value]) => {
-        translation = translation.replace(`{{${param}}}`, value);
+        translation = translation?.replace(`{{${param}}}`, value);
       });
     }
 
@@ -93,18 +77,13 @@ export function I18nProvider({
 
   const handleSetLocale = (newLocale: Locale) => {
     setLocale(newLocale);
-    // Update URL with new locale
-    const currentPath = window.location.pathname;
-    const pathWithoutLocale = currentPath.replace(/^\/[a-z]{2}/, '');
-    router.push(`/${newLocale}${pathWithoutLocale}`);
   };
 
   const value = {
     locale,
     setLocale: handleSetLocale,
     t,
-    isLoading,
-    loadNamespace,
+    isLoading: false, // No loading needed with static imports
   };
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
@@ -118,13 +97,9 @@ export function useI18n() {
   return context;
 }
 
-// Hook for loading specific namespaces
+// Hook for loading specific namespaces (simplified)
 export function useTranslations(namespace: string) {
-  const { t, loadNamespace, isLoading } = useI18n();
-
-  useEffect(() => {
-    void loadNamespace(namespace);
-  }, [namespace, loadNamespace]);
+  const { t, isLoading } = useI18n();
 
   return {
     t: (key: string, params?: Record<string, string>) =>

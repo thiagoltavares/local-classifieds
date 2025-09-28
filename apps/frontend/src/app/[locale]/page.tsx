@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { useTranslations } from '../../hooks/useTranslations';
+import { useTranslations } from '../../app/providers/I18nProvider';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import { Button, Card, CardContent, H1, H2, Body } from '../../components/ui';
 
 export default function Home() {
-  const { t } = useTranslations();
+  const { t } = useTranslations('common');
 
   const routes = [
     {

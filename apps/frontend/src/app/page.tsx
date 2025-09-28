@@ -1,10 +1,10 @@
 'use client';
 import React from 'react';
-import { useTranslations } from '../hooks/useTranslations';
+import { useTranslations } from '../app/providers/I18nProvider';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function Home() {
-  const { t } = useTranslations();
+  const { t } = useTranslations('common');
 
   return (
     <div className='min-h-screen bg-gray-50'>

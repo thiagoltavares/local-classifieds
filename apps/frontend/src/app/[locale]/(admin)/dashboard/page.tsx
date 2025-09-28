@@ -42,9 +42,17 @@ import {
 import { Spinner } from '../../../../components/ui/Spinner';
 import { useToastNotifications } from '../../../../components/ui/Toast';
 import type { AutocompleteOption } from '../../../../components/ui/Autocomplete';
+import { getCategoryName } from '../../../../hooks/useTranslations';
+import {
+  CategorySortField,
+  SortOrder,
+  AdminSection,
+} from '../../../../types/enums';
 
 export default function AdminPage() {
-  const [activeSection, setActiveSection] = useState<string>('categories');
+  const [activeSection, setActiveSection] = useState<AdminSection>(
+    AdminSection.CATEGORIES
+  );
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [page, setPage] = useState(1);
@@ -59,10 +67,10 @@ export default function AdminPage() {
   const [showInactive, setShowInactive] = useState(false);
 
   // Estados para ordenação
-  const [sortBy, setSortBy] = useState<'name' | 'createdAt' | 'displayOrder'>(
-    'displayOrder'
+  const [sortBy, setSortBy] = useState<CategorySortField>(
+    CategorySortField.DISPLAY_ORDER
   );
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.ASC);
 
   // Estados para formulário de edição
   const [editFormData, setEditFormData] = useState({
@@ -137,22 +145,22 @@ export default function AdminPage() {
       let bValue: string | number;
 
       switch (sortBy) {
-        case 'name':
-          aValue = a.translations?.[0]?.name || a.slug;
-          bValue = b.translations?.[0]?.name || b.slug;
+        case CategorySortField.NAME:
+          aValue = getCategoryName(a.translations);
+          bValue = getCategoryName(b.translations);
           break;
-        case 'createdAt':
+        case CategorySortField.CREATED_AT:
           aValue = new Date(a.createdAt).getTime();
           bValue = new Date(b.createdAt).getTime();
           break;
-        case 'displayOrder':
+        case CategorySortField.DISPLAY_ORDER:
         default:
           aValue = a.displayOrder;
           bValue = b.displayOrder;
           break;
       }
 
-      if (sortOrder === 'asc') {
+      if (sortOrder === SortOrder.ASC) {
         return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
       } else {
         return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
@@ -171,7 +179,7 @@ export default function AdminPage() {
     },
     ...allCategories.map((category: Category) => ({
       value: category.id,
-      label: category.translations?.[0]?.name || category.slug,
+      label: getCategoryName(category.translations),
       description:
         category.translations?.[0]?.description || `Slug: ${category.slug}`,
     })),
@@ -330,7 +338,7 @@ export default function AdminPage() {
         data: { active: !category.active },
       });
       showSuccess(
-        `Categoria "${category.translations?.[0]?.name || category.slug}" ${
+        `Categoria "${getCategoryName(category.translations)}" ${
           category.active ? 'desativada' : 'ativada'
         } com sucesso!`
       );
@@ -349,7 +357,7 @@ export default function AdminPage() {
     try {
       await deleteCategoryMutation.mutateAsync(category.id);
       showSuccess(
-        `Categoria "${category.translations?.[0]?.name || category.slug}" excluída com sucesso!`
+        `Categoria "${getCategoryName(category.translations)}" excluída com sucesso!`
       );
       setCategoryToDelete(null);
     } catch (error) {
@@ -365,7 +373,7 @@ export default function AdminPage() {
     try {
       await restoreCategoryMutation.mutateAsync(category.id);
       showSuccess(
-        `Categoria "${category.translations?.[0]?.name || category.slug}" restaurada com sucesso!`
+        `Categoria "${getCategoryName(category.translations)}" restaurada com sucesso!`
       );
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -382,12 +390,14 @@ export default function AdminPage() {
     setPage(1);
   };
 
-  const handleSort = (column: 'name' | 'createdAt' | 'displayOrder') => {
+  const handleSort = (column: CategorySortField) => {
     if (sortBy === column) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortOrder(
+        sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC
+      );
     } else {
       setSortBy(column);
-      setSortOrder('asc');
+      setSortOrder(SortOrder.ASC);
     }
   };
 
@@ -440,8 +450,8 @@ export default function AdminPage() {
           />
         </svg>
       ),
-      onClick: () => setActiveSection('categories'),
-      active: activeSection === 'categories',
+      onClick: () => setActiveSection(AdminSection.CATEGORIES),
+      active: activeSection === AdminSection.CATEGORIES,
     },
   ];
 
@@ -461,7 +471,7 @@ export default function AdminPage() {
                 Gerencie categorias e configurações do sistema
               </Body>
             </div>
-            {activeSection === 'categories' && (
+            {activeSection === AdminSection.CATEGORIES && (
               <Button onClick={() => setShowAddModal(true)} variant='primary'>
                 Adicionar Categoria
               </Button>
@@ -471,7 +481,7 @@ export default function AdminPage() {
 
         {/* Content Area */}
         <div className='flex-1 p-6'>
-          {activeSection === 'categories' && (
+          {activeSection === AdminSection.CATEGORIES && (
             <>
               {/* Estatísticas */}
               {stats && (
@@ -611,8 +621,12 @@ export default function AdminPage() {
                         <TableRow>
                           <TableHead
                             sortable
-                            sortDirection={sortBy === 'name' ? sortOrder : null}
-                            onSort={() => handleSort('name')}
+                            sortDirection={
+                              sortBy === CategorySortField.NAME
+                                ? sortOrder
+                                : null
+                            }
+                            onSort={() => handleSort(CategorySortField.NAME)}
                           >
                             Nome
                           </TableHead>
@@ -621,18 +635,26 @@ export default function AdminPage() {
                           <TableHead
                             sortable
                             sortDirection={
-                              sortBy === 'displayOrder' ? sortOrder : null
+                              sortBy === CategorySortField.DISPLAY_ORDER
+                                ? sortOrder
+                                : null
                             }
-                            onSort={() => handleSort('displayOrder')}
+                            onSort={() =>
+                              handleSort(CategorySortField.DISPLAY_ORDER)
+                            }
                           >
                             Ordem
                           </TableHead>
                           <TableHead
                             sortable
                             sortDirection={
-                              sortBy === 'createdAt' ? sortOrder : null
+                              sortBy === CategorySortField.CREATED_AT
+                                ? sortOrder
+                                : null
                             }
-                            onSort={() => handleSort('createdAt')}
+                            onSort={() =>
+                              handleSort(CategorySortField.CREATED_AT)
+                            }
                           >
                             Criado em
                           </TableHead>
@@ -651,8 +673,7 @@ export default function AdminPage() {
                               <TableCell>
                                 <div>
                                   <div className='font-medium'>
-                                    {category.translations?.[0]?.name ||
-                                      category.slug}
+                                    {getCategoryName(category.translations)}
                                   </div>
                                   {category.translations?.[0]?.description && (
                                     <div className='text-sm text-neutral-500'>
@@ -908,9 +929,9 @@ export default function AdminPage() {
               <Button
                 type='submit'
                 variant='primary'
-                disabled={createCategoryMutation.isPending}
+                disabled={createCategoryMutation?.isPending}
               >
-                {createCategoryMutation.isPending ? (
+                {createCategoryMutation?.isPending ? (
                   <>
                     <Spinner size='sm' />
                     <span className='ml-2'>Criando...</span>
@@ -923,7 +944,7 @@ export default function AdminPage() {
                 type='button'
                 variant='outline'
                 onClick={() => setShowAddModal(false)}
-                disabled={createCategoryMutation.isPending}
+                disabled={createCategoryMutation?.isPending}
               >
                 Cancelar
               </Button>
@@ -1070,9 +1091,9 @@ export default function AdminPage() {
               <Button
                 type='submit'
                 variant='primary'
-                disabled={updateCategoryMutation.isPending}
+                disabled={updateCategoryMutation?.isPending}
               >
-                {updateCategoryMutation.isPending ? (
+                {updateCategoryMutation?.isPending ? (
                   <>
                     <Spinner size='sm' />
                     <span className='ml-2'>Salvando...</span>
@@ -1088,7 +1109,7 @@ export default function AdminPage() {
                   setShowEditModal(false);
                   setCategoryToEdit(null);
                 }}
-                disabled={updateCategoryMutation.isPending}
+                disabled={updateCategoryMutation?.isPending}
               >
                 Cancelar
               </Button>
@@ -1108,8 +1129,9 @@ export default function AdminPage() {
           <Body>
             Tem certeza que deseja excluir a categoria{' '}
             <strong>
-              {categoryToDelete?.translations?.[0]?.name ||
-                categoryToDelete?.slug}
+              {categoryToDelete
+                ? getCategoryName(categoryToDelete.translations)
+                : ''}
             </strong>
             ?
           </Body>
@@ -1121,7 +1143,7 @@ export default function AdminPage() {
             <Button
               variant='outline'
               onClick={() => setCategoryToDelete(null)}
-              disabled={deleteCategoryMutation.isPending}
+              disabled={deleteCategoryMutation?.isPending}
             >
               Cancelar
             </Button>
@@ -1131,9 +1153,9 @@ export default function AdminPage() {
               onClick={() =>
                 categoryToDelete && void handleDeleteCategory(categoryToDelete)
               }
-              disabled={deleteCategoryMutation.isPending}
+              disabled={deleteCategoryMutation?.isPending}
             >
-              {deleteCategoryMutation.isPending ? (
+              {deleteCategoryMutation?.isPending ? (
                 <>
                   <Spinner size='sm' />
                   <span className='ml-2'>Excluindo...</span>

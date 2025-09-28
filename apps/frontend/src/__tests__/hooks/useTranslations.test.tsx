@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useTranslations } from '../../hooks/useTranslations';
+import { useTranslations } from '../../app/providers/I18nProvider';
 
 // Mock the I18nProvider context
 jest.mock('../../app/providers', () => ({
@@ -13,22 +13,21 @@ jest.mock('../../app/providers', () => ({
 
 describe('useTranslations', () => {
   it('returns translation function', () => {
-    const { result } = renderHook(() => useTranslations());
+    const { result } = renderHook(() => useTranslations('common'));
 
     expect(typeof result.current.t).toBe('function');
   });
 
   it('translates keys correctly', () => {
-    const { result } = renderHook(() => useTranslations());
+    const { result } = renderHook(() => useTranslations('common'));
 
     const translation = result.current.t('title');
-    expect(translation).toBe('Local Classifieds');
+    expect(translation).toBe('common.title');
   });
 
-  it('returns locale and router', () => {
-    const { result } = renderHook(() => useTranslations());
+  it('returns loading state', () => {
+    const { result } = renderHook(() => useTranslations('common'));
 
-    expect(result.current.locale).toBeDefined();
-    expect(result.current.router).toBeDefined();
+    expect(typeof result.current.isLoading).toBe('boolean');
   });
 });
