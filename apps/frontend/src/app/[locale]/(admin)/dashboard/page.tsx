@@ -28,6 +28,7 @@ import {
 } from '../../../../components/ui';
 import {
   useCategoriesPaginated,
+  useCategories,
   useCategoryStats,
   useCreateCategory,
   type Category,
@@ -55,6 +56,12 @@ export default function AdminPage() {
 
   const { data: stats } = useCategoryStats();
 
+  // Hook para buscar todas as categorias (sem paginação) para o Autocomplete
+  const { data: allCategories = [] } = useCategories({
+    includeInactive: false, // Só categorias ativas para o Autocomplete
+    includeChildren: false,
+  });
+
   // Hook para criar categoria
   const createCategoryMutation = useCreateCategory();
 
@@ -71,14 +78,12 @@ export default function AdminPage() {
       label: 'Nenhuma (Categoria Principal)',
       description: 'Criar como categoria raiz',
     },
-    ...categories
-      .filter((cat: Category) => cat.active) // Só mostrar categorias ativas como pai
-      .map((category: Category) => ({
-        value: category.id,
-        label: category.translations?.[0]?.name || category.slug,
-        description:
-          category.translations?.[0]?.description || `Slug: ${category.slug}`,
-      })),
+    ...allCategories.map((category: Category) => ({
+      value: category.id,
+      label: category.translations?.[0]?.name || category.slug,
+      description:
+        category.translations?.[0]?.description || `Slug: ${category.slug}`,
+    })),
   ];
 
   const [formData, setFormData] = useState({
@@ -122,7 +127,7 @@ export default function AdminPage() {
     }
 
     // Verificar se slug já existe
-    const slugExists = categories.some(
+    const slugExists = allCategories.some(
       cat => cat.slug === formData.slug.trim()
     );
     if (slugExists) {
