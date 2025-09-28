@@ -34,7 +34,9 @@ import {
   useCategories,
   useCategoryStats,
   useCreateCategory,
+  useUpdateCategory,
   useDeleteCategory,
+  useRestoreCategory,
   type Category,
 } from '../../../../services';
 import { Spinner } from '../../../../components/ui/Spinner';
@@ -50,6 +52,16 @@ export default function AdminPage() {
     null
   );
 
+  // Estados para filtros
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showInactive, setShowInactive] = useState(false);
+
+  // Estados para ordenação
+  const [sortBy, setSortBy] = useState<'name' | 'createdAt' | 'displayOrder'>(
+    'displayOrder'
+  );
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
   // Hooks para buscar dados reais da API
   const {
     data: paginatedData,
@@ -57,7 +69,7 @@ export default function AdminPage() {
     error,
     refetch,
   } = useCategoriesPaginated(page, limit, {
-    includeInactive: true, // Incluir inativas no admin
+    includeInactive: showInactive,
     includeChildren: false,
   });
 
@@ -72,14 +84,69 @@ export default function AdminPage() {
   // Hook para criar categoria
   const createCategoryMutation = useCreateCategory();
 
+  // Hook para atualizar categoria
+  const updateCategoryMutation = useUpdateCategory();
+
   // Hook para deletar categoria
   const deleteCategoryMutation = useDeleteCategory();
+
+  // Hook para restaurar categoria
+  const restoreCategoryMutation = useRestoreCategory();
 
   // Hook para notificações
   const { showSuccess, showError } = useToastNotifications();
 
-  const categories = paginatedData?.data || [];
+  const allCategoriesFromAPI = paginatedData?.data || [];
   const pagination = paginatedData?.pagination;
+
+  // Filtrar categorias localmente
+  const filteredCategories = allCategoriesFromAPI.filter(
+    (category: Category) => {
+      // Filtro por busca
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+        const nameMatch = category.translations?.some(t =>
+          t.name.toLowerCase().includes(searchLower)
+        );
+        const slugMatch = category.slug.toLowerCase().includes(searchLower);
+        if (!nameMatch && !slugMatch) return false;
+      }
+
+      return true;
+    }
+  );
+
+  // Ordenar categorias
+  const sortedCategories = [...filteredCategories].sort(
+    (a: Category, b: Category) => {
+      let aValue: string | number;
+      let bValue: string | number;
+
+      switch (sortBy) {
+        case 'name':
+          aValue = a.translations?.[0]?.name || a.slug;
+          bValue = b.translations?.[0]?.name || b.slug;
+          break;
+        case 'createdAt':
+          aValue = new Date(a.createdAt).getTime();
+          bValue = new Date(b.createdAt).getTime();
+          break;
+        case 'displayOrder':
+        default:
+          aValue = a.displayOrder;
+          bValue = b.displayOrder;
+          break;
+      }
+
+      if (sortOrder === 'asc') {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      } else {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      }
+    }
+  );
+
+  const categories = sortedCategories;
 
   // Converter categorias para opções do autocomplete
   const parentCategoryOptions: AutocompleteOption[] = [
@@ -201,10 +268,26 @@ export default function AdminPage() {
     }
   };
 
-  const toggleCategoryStatus = (_id: string) => {
-    // TODO: Implementar chamada para API para toggle de status
-    // Por enquanto, apenas recarregar os dados
-    void refetch();
+  const toggleCategoryStatus = async (category: Category) => {
+    try {
+      await updateCategoryMutation.mutateAsync({
+        id: category.id,
+        data: { active: !category.active },
+      });
+      showSuccess(
+        `Categoria "${category.translations?.[0]?.name || category.slug}" ${
+          category.active ? 'desativada' : 'ativada'
+        } com sucesso!`
+      );
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Erro ao alterar status da categoria:', error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Erro ao alterar status da categoria';
+      showError(errorMessage, 'Erro');
+    }
   };
 
   const handleDeleteCategory = async (category: Category) => {
@@ -220,6 +303,36 @@ export default function AdminPage() {
       const errorMessage =
         error instanceof Error ? error.message : 'Erro ao excluir categoria';
       showError(errorMessage, 'Erro');
+    }
+  };
+
+  const handleRestoreCategory = async (category: Category) => {
+    try {
+      await restoreCategoryMutation.mutateAsync(category.id);
+      showSuccess(
+        `Categoria "${category.translations?.[0]?.name || category.slug}" restaurada com sucesso!`
+      );
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Erro ao restaurar categoria:', error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Erro ao restaurar categoria';
+      showError(errorMessage, 'Erro');
+    }
+  };
+
+  const clearFilters = () => {
+    setSearchTerm('');
+    setShowInactive(false);
+    setPage(1);
+  };
+
+  const handleSort = (column: 'name' | 'createdAt' | 'displayOrder') => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(column);
+      setSortOrder('asc');
     }
   };
 
@@ -342,6 +455,54 @@ export default function AdminPage() {
                     </Button>
                   </div>
                 </CardHeader>
+
+                {/* Filtros */}
+                <div className='px-6 py-4 border-b border-neutral-200 bg-neutral-50'>
+                  <div className='flex items-center gap-4'>
+                    {/* Busca */}
+                    <div className='flex-1'>
+                      <Input
+                        placeholder='Buscar por nome ou slug...'
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+
+                    {/* Checkbox para mostrar inativas */}
+                    <div className='flex items-center gap-2'>
+                      <input
+                        type='checkbox'
+                        id='showInactive'
+                        checked={showInactive}
+                        onChange={e => setShowInactive(e.target.checked)}
+                        className='rounded border-neutral-300'
+                      />
+                      <label
+                        htmlFor='showInactive'
+                        className='text-sm text-neutral-700'
+                      >
+                        Mostrar inativas
+                      </label>
+                    </div>
+
+                    {/* Botão limpar */}
+                    <Button variant='outline' size='sm' onClick={clearFilters}>
+                      Limpar
+                    </Button>
+                  </div>
+
+                  {/* Contador de resultados */}
+                  <div className='mt-3 text-sm text-neutral-600'>
+                    Mostrando {categories.length} de{' '}
+                    {allCategoriesFromAPI.length} categorias
+                    {searchTerm && (
+                      <span className='ml-2'>
+                        (filtrado por "{searchTerm}")
+                      </span>
+                    )}
+                  </div>
+                </div>
+
                 <CardContent>
                   {isLoading ? (
                     <div className='flex items-center justify-center py-8'>
@@ -364,11 +525,33 @@ export default function AdminPage() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Nome</TableHead>
+                          <TableHead
+                            sortable
+                            sortDirection={sortBy === 'name' ? sortOrder : null}
+                            onSort={() => handleSort('name')}
+                          >
+                            Nome
+                          </TableHead>
                           <TableHead>Slug</TableHead>
                           <TableHead>Status</TableHead>
-                          <TableHead>Ordem</TableHead>
-                          <TableHead>Criado em</TableHead>
+                          <TableHead
+                            sortable
+                            sortDirection={
+                              sortBy === 'displayOrder' ? sortOrder : null
+                            }
+                            onSort={() => handleSort('displayOrder')}
+                          >
+                            Ordem
+                          </TableHead>
+                          <TableHead
+                            sortable
+                            sortDirection={
+                              sortBy === 'createdAt' ? sortOrder : null
+                            }
+                            onSort={() => handleSort('createdAt')}
+                          >
+                            Criado em
+                          </TableHead>
                           <TableHead>Ações</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -444,7 +627,7 @@ export default function AdminPage() {
                                       id: 'toggle-status',
                                       label: category.active
                                         ? 'Desativar'
-                                        : 'Ativar',
+                                        : 'Restaurar',
                                       icon: category.active ? (
                                         <svg
                                           className='w-4 h-4'
@@ -470,12 +653,17 @@ export default function AdminPage() {
                                             strokeLinecap='round'
                                             strokeLinejoin='round'
                                             strokeWidth={2}
-                                            d='M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z'
+                                            d='M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15'
                                           />
                                         </svg>
                                       ),
-                                      onClick: () =>
-                                        toggleCategoryStatus(category.id),
+                                      onClick: () => {
+                                        if (category.active) {
+                                          void toggleCategoryStatus(category);
+                                        } else {
+                                          void handleRestoreCategory(category);
+                                        }
+                                      },
                                     },
                                     { id: 'divider', label: '', divider: true },
                                     createDropdownItems.delete(() => {

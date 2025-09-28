@@ -98,7 +98,7 @@ export class CategoriesService {
   }
 
   async restore(id: string): Promise<Category> {
-    return apiClient.post<Category>(`${this.basePath}/${id}/restore`);
+    return apiClient.put<Category>(`${this.basePath}/${id}/restore`);
   }
 
   async getHierarchy(): Promise<Category[]> {

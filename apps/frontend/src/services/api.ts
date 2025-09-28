@@ -63,6 +63,11 @@ class ApiClient {
 
       const responseText = await response.text();
 
+      // Se não há conteúdo (como em DELETE 204), retorna undefined
+      if (!responseText) {
+        return undefined as T;
+      }
+
       // A API retorna dados diretamente, não em um wrapper ApiResponse
       const data = JSON.parse(responseText) as T;
 

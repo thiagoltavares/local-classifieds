@@ -244,3 +244,18 @@ export function useDeleteCategory() {
     },
   });
 }
+
+/**
+ * Hook para restaurar uma categoria
+ */
+export function useRestoreCategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => categoriesService.restore(id),
+    onSuccess: () => {
+      // Invalidar todas as queries relacionadas a categorias
+      void queryClient.invalidateQueries({ queryKey: categoryKeys.all });
+    },
+  });
+}

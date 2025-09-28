@@ -26,6 +26,7 @@ export {
   useCreateCategory,
   useUpdateCategory,
   useDeleteCategory,
+  useRestoreCategory,
   categoryKeys,
 } from './categories.hooks';
 
