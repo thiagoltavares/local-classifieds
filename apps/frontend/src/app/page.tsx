@@ -17,15 +17,10 @@ export default function Home() {
     },
     {
       title: 'Demo de Componentes',
-      description: 'Demonstração de todos os componentes UI disponíveis',
+      description:
+        'Demonstração de todos os componentes UI disponíveis e sistema de cores',
       href: '/marketing/components-demo',
       variant: 'secondary' as const,
-    },
-    {
-      title: 'Teste de Cores',
-      description: 'Visualização do sistema de cores e temas',
-      href: '/color-test',
-      variant: 'outline' as const,
     },
   ];
 
