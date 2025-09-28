@@ -21,6 +21,8 @@ export default [
       '**/*.config.mjs',
       '**/*.config.js',
       '**/next-env.d.ts',
+      '**/libs/**/*.js',
+      '**/libs/**/*.d.ts',
     ],
   },
 
@@ -98,6 +100,7 @@ export default [
     files: ['**/*.test.ts', '**/*.spec.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/unbound-method': 'off',
     },
   },
 

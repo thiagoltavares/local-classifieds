@@ -9,9 +9,11 @@
   "scripts": {
     "// === DEVELOPMENT ===": "",
     "dev": "concurrently \"npm run dev:api\" \"npm run dev:frontend\"",
+    "dev:all": "concurrently \"npm run dev:db\" \"npm run dev:api\" \"npm run dev:frontend\"",
     "start:dev": "./scripts/start.sh",
     "dev:api": "npm run dev --workspace=apps/api",
     "dev:frontend": "npm run dev --workspace=apps/frontend",
+    "dev:db": "docker-compose up -d",
     "// === PRODUCTION BUILD ===": "",
     "build": "npm run build --workspaces",
     "build:api": "npm run build --workspace=apps/api",
@@ -41,9 +43,12 @@
     "// === DATABASE ===": "",
     "db:generate": "npm run db:generate --workspace=apps/api",
     "db:migrate": "npm run db:migrate --workspace=apps/api",
-    "studio": "npm run db:studio --workspace=apps/api",
+    "db:migrate:dev": "prisma migrate dev --schema libs/database/prisma/schema.prisma",
+    "db:studio": "npm run db:studio --workspace=apps/api",
+    "db:studio:dev": "prisma studio --schema libs/database/prisma/schema.prisma",
     "db:reset": "npm run db:reset --workspace=apps/api",
     "db:deploy": "npm run db:deploy --workspace=apps/api",
+    "db:seed": "npm run db:seed --workspace=apps/api",
     "// === DOCKER ===": "",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
@@ -97,7 +102,7 @@
   },
   "lint-staged": {
     "apps/api/**/*.{ts,js}": [
-      "eslint --fix",
+      "eslint --config apps/api/eslint.config.mjs --fix",
       "prettier --write"
     ],
     "apps/frontend/**/*.{ts,tsx,js,jsx}": [
@@ -105,10 +110,6 @@
       "prettier --write"
     ],
     "*.{json,md,yml,yaml}": [
-      "prettier --write"
-    ],
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --fix",
       "prettier --write"
     ]
   }

@@ -30,6 +30,12 @@ export interface CreateCategoryData {
   slug: string;
   parentId?: string | null;
   displayOrder?: number;
+  active?: boolean;
+  translations?: Array<{
+    language: string;
+    name: string;
+    description?: string;
+  }>;
 }
 
 export interface UpdateCategoryData {
@@ -37,12 +43,19 @@ export interface UpdateCategoryData {
   parentId?: string | null;
   active?: boolean;
   displayOrder?: number;
+  translations?: Array<{
+    language: string;
+    name: string;
+    description?: string;
+  }>;
 }
 
 // Category query options
 export interface CategoryQueryOptions {
   includeInactive?: boolean;
   includeChildren?: boolean;
+  includeParent?: boolean;
+  includeTranslations?: boolean;
   parentId?: string | null;
   limit?: number;
   offset?: number;

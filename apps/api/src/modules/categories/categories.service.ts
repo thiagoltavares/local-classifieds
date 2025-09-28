@@ -1,7 +1,7 @@
 // /Users/thiagotavares/Projects/Services/apps/api/src/modules/categories/categories.service.ts
 
 import { Injectable } from '@nestjs/common';
-import { CategoryRepository } from '../../database/repositories/category.repository';
+import { CategoryRepository } from '../../../libs/database/src/repositories/category.repository';
 import type { Category } from '@prisma/client';
 import {
   CategoryWithChildren,

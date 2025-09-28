@@ -2,7 +2,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesService } from '../categories.service';
-import { CategoryRepository } from '../../../database/repositories/category.repository';
+import { CategoryRepository } from '../../../../libs/database/src/repositories/category.repository';
 import { CreateCategoryData } from '../../../../libs/database/src/types';
 
 describe('CategoriesService', () => {
