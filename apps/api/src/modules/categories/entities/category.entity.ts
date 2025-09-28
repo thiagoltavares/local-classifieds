@@ -66,7 +66,43 @@ export class CategoryDomainEntity {
     return this.name;
   }
 
-  static fromPrisma(prismaCategory: any): CategoryDomainEntity {
+  static fromPrisma(prismaCategory: {
+    id: string;
+    slug: string;
+    parentId: string | null;
+    displayOrder: number;
+    active: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date | null;
+    translations?: CategoryTranslation[];
+    parent?: {
+      id: string;
+      slug: string;
+      parentId: string | null;
+      displayOrder: number;
+      active: boolean;
+      createdAt: Date;
+      updatedAt: Date;
+      deletedAt: Date | null;
+      translations?: CategoryTranslation[];
+      parent?: never;
+      children?: never[];
+    };
+    children?: Array<{
+      id: string;
+      slug: string;
+      parentId: string | null;
+      displayOrder: number;
+      active: boolean;
+      createdAt: Date;
+      updatedAt: Date;
+      deletedAt: Date | null;
+      translations?: CategoryTranslation[];
+      parent?: never;
+      children?: never[];
+    }>;
+  }): CategoryDomainEntity {
     return new CategoryDomainEntity(
       prismaCategory.id,
       prismaCategory.slug,
@@ -80,7 +116,7 @@ export class CategoryDomainEntity {
       prismaCategory.parent
         ? CategoryDomainEntity.fromPrisma(prismaCategory.parent)
         : null,
-      prismaCategory.children?.map((child: any) =>
+      prismaCategory.children?.map((child) =>
         CategoryDomainEntity.fromPrisma(child),
       ) || [],
     );

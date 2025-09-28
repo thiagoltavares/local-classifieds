@@ -1,4 +1,4 @@
-// apps/frontend/src/app/[locale]/color-test/page.tsx
+// apps/frontend/src/app/color-test/page.tsx
 'use client';
 
 export default function ColorTest() {

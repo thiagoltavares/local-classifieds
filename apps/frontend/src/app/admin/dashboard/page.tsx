@@ -1,4 +1,4 @@
-// apps/frontend/src/app/[locale]/(admin)/dashboard/page.tsx
+// apps/frontend/src/app/admin/dashboard/page.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -28,7 +28,7 @@ import {
   Dropdown,
   MenuButton,
   createDropdownItems,
-} from '../../../../components/ui';
+} from '../../../components/ui';
 import {
   useCategoriesPaginated,
   useCategories,
@@ -38,16 +38,16 @@ import {
   useDeleteCategory,
   useRestoreCategory,
   type Category,
-} from '../../../../services';
-import { Spinner } from '../../../../components/ui/Spinner';
-import { useToastNotifications } from '../../../../components/ui/Toast';
-import type { AutocompleteOption } from '../../../../components/ui/Autocomplete';
-import { getCategoryName } from '../../../../hooks/useTranslations';
+} from '../../../services';
+import { Spinner } from '../../../components/ui/Spinner';
+import { useToastNotifications } from '../../../components/ui/Toast';
+import type { AutocompleteOption } from '../../../components/ui/Autocomplete';
+import { getCategoryName } from '../../../hooks/useTranslations';
 import {
   CategorySortField,
   SortOrder,
   AdminSection,
-} from '../../../../types/enums';
+} from '../../../types/enums';
 
 export default function AdminPage() {
   const [activeSection, setActiveSection] = useState<AdminSection>(

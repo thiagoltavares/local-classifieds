@@ -17,7 +17,7 @@ export default function LanguageSwitcher() {
         <button
           onClick={() => switchLanguage(Language.PT_BR)}
           className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-            locale === String(Language.PT_BR)
+            locale === Language.PT_BR
               ? 'bg-blue-500 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
@@ -27,7 +27,7 @@ export default function LanguageSwitcher() {
         <button
           onClick={() => switchLanguage(Language.PT_PT)}
           className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-            locale === String(Language.PT_PT)
+            locale === Language.PT_PT
               ? 'bg-blue-500 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
@@ -37,7 +37,7 @@ export default function LanguageSwitcher() {
         <button
           onClick={() => switchLanguage(Language.EN_US)}
           className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-            locale === String(Language.EN_US)
+            locale === Language.EN_US
               ? 'bg-blue-500 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}

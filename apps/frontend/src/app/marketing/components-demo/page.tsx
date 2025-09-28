@@ -1,4 +1,4 @@
-// apps/frontend/src/app/[locale]/components-demo/page.tsx
+// apps/frontend/src/app/marketing/components-demo/page.tsx
 'use client';
 
 import React from 'react';
@@ -36,7 +36,7 @@ import {
   createDropdownItems,
   ToastProvider,
   useToastNotifications,
-} from '../../../../components/ui';
+} from '../../../components/ui';
 
 export default function ComponentsDemo() {
   return (
@@ -491,7 +491,7 @@ export default function ComponentsDemo() {
               <CardContent className='p-6'>
                 <Form
                   initialValues={{ name: '', email: '', message: '' }}
-                  onSubmit={values => console.log('Form submitted:', values)}
+                  onSubmit={() => {}}
                 >
                   <FormField name='name' label='Nome' required>
                     <Input name='name' placeholder='Seu nome' />
@@ -542,9 +542,11 @@ export default function ComponentsDemo() {
                       <Dropdown
                         trigger={<MenuButton>⋮</MenuButton>}
                         items={[
-                          createDropdownItems.edit(() => console.log('Edit')),
-                          createDropdownItems.delete(() =>
-                            console.log('Delete')
+                          createDropdownItems.edit(
+                            () => /* console.log */ 'Edit'
+                          ),
+                          createDropdownItems.delete(
+                            () => /* console.log */ 'Delete'
                           ),
                         ]}
                       />
@@ -560,9 +562,11 @@ export default function ComponentsDemo() {
                       <Dropdown
                         trigger={<MenuButton>⋮</MenuButton>}
                         items={[
-                          createDropdownItems.edit(() => console.log('Edit')),
-                          createDropdownItems.delete(() =>
-                            console.log('Delete')
+                          createDropdownItems.edit(
+                            () => /* console.log */ 'Edit'
+                          ),
+                          createDropdownItems.delete(
+                            () => /* console.log */ 'Delete'
                           ),
                         ]}
                       />
@@ -583,18 +587,18 @@ export default function ComponentsDemo() {
                   {
                     id: 'profile',
                     label: 'Perfil',
-                    onClick: () => console.log('Profile'),
+                    onClick: () => /* console.log */ 'Profile',
                   },
                   {
                     id: 'settings',
                     label: 'Configurações',
-                    onClick: () => console.log('Settings'),
+                    onClick: () => /* console.log */ 'Settings',
                   },
                   { id: 'divider', label: '', divider: true },
                   {
                     id: 'logout',
                     label: 'Sair',
-                    onClick: () => console.log('Logout'),
+                    onClick: () => /* console.log */ 'Logout',
                     variant: 'danger',
                   },
                 ]}
@@ -602,9 +606,9 @@ export default function ComponentsDemo() {
               <Dropdown
                 trigger={<MenuButton>⋮</MenuButton>}
                 items={[
-                  createDropdownItems.edit(() => console.log('Edit')),
-                  createDropdownItems.view(() => console.log('View')),
-                  createDropdownItems.delete(() => console.log('Delete')),
+                  createDropdownItems.edit(() => /* console.log */ 'Edit'),
+                  createDropdownItems.view(() => /* console.log */ 'View'),
+                  createDropdownItems.delete(() => /* console.log */ 'Delete'),
                 ]}
               />
             </div>

@@ -1,15 +1,22 @@
 import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import {
-  ThemeProvider,
   I18nProvider,
   QueryProvider,
+  ThemeProvider,
   ToastProvider,
 } from './providers';
 
+const inter = Inter({
+  variable: '--font-inter',
+  subsets: ['latin'],
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   title: 'Local Classifieds',
-  description: 'A local classifieds SaaS platform',
+  description: 'Local classifieds and service marketplace platform.',
 };
 
 export default function RootLayout({
@@ -18,15 +25,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en' suppressHydrationWarning>
-      <body>
-        <ThemeProvider>
-          <I18nProvider>
-            <QueryProvider>
+    <html>
+      <body className={`${inter.variable} font-sans antialiased`}>
+        <I18nProvider>
+          <QueryProvider>
+            <ThemeProvider>
               <ToastProvider>{children}</ToastProvider>
-            </QueryProvider>
-          </I18nProvider>
-        </ThemeProvider>
+            </ThemeProvider>
+          </QueryProvider>
+        </I18nProvider>
       </body>
     </html>
   );
