@@ -1,14 +1,14 @@
 // /Users/thiagotavares/Projects/Services/apps/api/src/database/repositories/category.repository.ts
 
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../libs/database/src/prisma.service';
-import type { Category } from '@prisma/client';
+import { PrismaService } from '../../../libs/database/src/prisma.service';
+import type { Category, Prisma } from '@prisma/client';
 import {
   CategoryWithChildren,
   CreateCategoryData,
   UpdateCategoryData,
   CategoryQueryOptions,
-} from '../../libs/database/src/types';
+} from '../../../libs/database/src/types';
 
 @Injectable()
 export class CategoryRepository {
@@ -150,22 +150,24 @@ export class CategoryRepository {
     });
   }
 
-  async findMany(where: any): Promise<Category[]> {
+  async findMany(where: Record<string, unknown>): Promise<Category[]> {
     return this.prisma.category.findMany({
       where,
       orderBy: [{ displayOrder: 'asc' }],
     });
   }
 
-  async count(where: any): Promise<number> {
+  async count(where: Record<string, unknown>): Promise<number> {
     return this.prisma.category.count({ where });
   }
 
-  async findUnique(where: any): Promise<Category | null> {
+  async findUnique(
+    where: Prisma.CategoryWhereUniqueInput,
+  ): Promise<Category | null> {
     return this.prisma.category.findUnique({ where });
   }
 
-  async findFirst(where: any): Promise<Category | null> {
+  async findFirst(where: Record<string, unknown>): Promise<Category | null> {
     return this.prisma.category.findFirst({ where });
   }
 }

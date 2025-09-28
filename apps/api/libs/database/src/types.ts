@@ -28,13 +28,13 @@ export interface CategoryHierarchyValidation {
 // Category creation/update data
 export interface CreateCategoryData {
   slug: string;
-  parentId?: string;
+  parentId?: string | null;
   displayOrder?: number;
 }
 
 export interface UpdateCategoryData {
   slug?: string;
-  parentId?: string;
+  parentId?: string | null;
   active?: boolean;
   displayOrder?: number;
 }

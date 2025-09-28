@@ -37,7 +37,7 @@ src/
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - PostgreSQL 15+
 - npm or yarn
 
@@ -143,6 +143,7 @@ The API uses PostgreSQL with Prisma ORM. Key models include:
 #### Example Requests
 
 **Create Category:**
+
 ```json
 POST /categories
 {
@@ -155,7 +156,7 @@ POST /categories
       "description": "Produtos eletrônicos e tecnologia"
     },
     {
-      "language": "en", 
+      "language": "en",
       "name": "Electronics",
       "description": "Electronic products and technology"
     }
@@ -164,6 +165,7 @@ POST /categories
 ```
 
 **Get Categories with Hierarchy:**
+
 ```
 GET /categories?includeChildren=true&includeInactive=false
 ```
@@ -225,7 +227,10 @@ export const appConfig = {
 export const databaseConfig = {
   url: process.env.DATABASE_URL,
   maxConnections: parseInt(process.env.DATABASE_MAX_CONNECTIONS || '10', 10),
-  connectionTimeout: parseInt(process.env.DATABASE_CONNECTION_TIMEOUT || '10000', 10),
+  connectionTimeout: parseInt(
+    process.env.DATABASE_CONNECTION_TIMEOUT || '10000',
+    10,
+  ),
   queryTimeout: parseInt(process.env.DATABASE_QUERY_TIMEOUT || '30000', 10),
 };
 ```

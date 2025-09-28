@@ -47,13 +47,6 @@ describe('CategoriesService', () => {
       const createData: CreateCategoryData = {
         slug: 'test-category',
         displayOrder: 0,
-        translations: [
-          {
-            language: 'pt',
-            name: 'Categoria Teste',
-            description: 'Descrição da categoria teste',
-          },
-        ],
       };
 
       const expectedCategory = {
@@ -71,7 +64,9 @@ describe('CategoriesService', () => {
 
       const result = await service.create(createData);
 
-      expect(repository.findUnique).toHaveBeenCalledWith({ slug: 'test-category' });
+      expect(repository.findUnique).toHaveBeenCalledWith({
+        slug: 'test-category',
+      });
       expect(repository.create).toHaveBeenCalledWith(createData);
       expect(result).toEqual(expectedCategory);
     });
@@ -80,12 +75,6 @@ describe('CategoriesService', () => {
       const createData: CreateCategoryData = {
         slug: 'existing-category',
         displayOrder: 0,
-        translations: [
-          {
-            language: 'pt',
-            name: 'Categoria Existente',
-          },
-        ],
       };
 
       const existingCategory = {

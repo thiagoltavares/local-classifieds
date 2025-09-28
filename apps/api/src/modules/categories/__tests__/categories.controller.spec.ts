@@ -162,7 +162,10 @@ describe('CategoriesController', () => {
 
       const result = await controller.update(categoryId, updateCategoryDto);
 
-      expect(service.update).toHaveBeenCalledWith(categoryId, updateCategoryDto);
+      expect(service.update).toHaveBeenCalledWith(
+        categoryId,
+        updateCategoryDto,
+      );
       expect(result).toEqual(expectedCategory);
     });
   });
@@ -233,7 +236,9 @@ describe('CategoriesController', () => {
         },
       ];
 
-      mockCategoriesService.getHierarchyTree.mockResolvedValue(expectedHierarchy);
+      mockCategoriesService.getHierarchyTree.mockResolvedValue(
+        expectedHierarchy,
+      );
 
       const result = await controller.getHierarchy('false');
 
