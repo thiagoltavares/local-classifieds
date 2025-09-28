@@ -16,7 +16,9 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
+      "@fe/*": ["./src/*"],
       "@/*": ["./src/*"]
     }
   },
@@ -25,6 +27,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "tailwind.config.ts",
+    "next.config.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]

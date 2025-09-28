@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { ThemeProvider, I18nProvider, QueryProvider } from './providers';
 
 export const metadata: Metadata = {
   title: 'Local Classifieds',
@@ -12,8 +13,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en'>
-      <body>{children}</body>
+    <html lang='en' suppressHydrationWarning>
+      <body>
+        <ThemeProvider>
+          <I18nProvider>
+            <QueryProvider>{children}</QueryProvider>
+          </I18nProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

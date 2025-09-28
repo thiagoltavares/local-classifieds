@@ -2,25 +2,39 @@
 
 ## 📋 Visão Geral
 
-O frontend do Local Classifieds é construído com Next.js 13+ utilizando App Router, TypeScript, TailwindCSS e um design system consistente. A arquitetura é modular, escalável e otimizada para performance e SEO.
+O frontend do Local Classifieds é construído com Next.js 13+ utilizando App Router, TypeScript, TailwindCSS e um design system completo. A arquitetura é modular, escalável e otimizada para performance e SEO, seguindo as melhores práticas de desenvolvimento moderno.
 
-## 🏗️ Estrutura de Diretórios
+## 🏗️ Estrutura de Diretórios Refinada
 
 ```
 apps/frontend/src/
 ├── app/                    # App Router (Next.js 13+)
 │   ├── [locale]/          # Internacionalização
-│   │   ├── admin/         # Dashboard administrativo
-│   │   │   └── page.tsx   # Página de administração
-│   │   ├── components-demo/ # Demonstração de componentes
-│   │   │   └── page.tsx   # Página de demonstração
+│   │   ├── (admin)/       # Grupo de rotas administrativas
+│   │   │   ├── dashboard/ # Dashboard principal
+│   │   │   │   └── page.tsx
+│   │   │   ├── users/     # Gerenciamento de usuários
+│   │   │   │   └── page.tsx
+│   │   │   └── categories/ # Gerenciamento de categorias
+│   │   │       └── page.tsx
+│   │   ├── (marketing)/   # Grupo de rotas de marketing
+│   │   │   ├── home/      # Página inicial
+│   │   │   │   └── page.tsx
+│   │   │   ├── about/     # Sobre nós
+│   │   │   │   └── page.tsx
+│   │   │   └── components-demo/ # Demonstração de componentes
+│   │   │       └── page.tsx
 │   │   ├── layout.tsx     # Layout com sidebar
 │   │   └── page.tsx       # Página inicial
+│   ├── providers/         # Context/Providers globais
+│   │   ├── ThemeProvider.tsx
+│   │   ├── I18nProvider.tsx
+│   │   ├── QueryProvider.tsx
+│   │   └── index.ts
 │   ├── globals.css        # Estilos globais
-│   ├── layout.tsx         # Layout raiz
-│   └── page.tsx           # Página raiz
+│   └── layout.tsx         # Layout raiz
 ├── components/            # Componentes React
-│   ├── ui/               # Design System
+│   ├── ui/               # Design System completo
 │   │   ├── Button.tsx    # Botão reutilizável
 │   │   ├── Select.tsx    # Select com validação
 │   │   ├── Modal.tsx     # Modal responsivo
@@ -32,467 +46,322 @@ apps/frontend/src/
 │   │   ├── Stack.tsx     # Layout component
 │   │   ├── Divider.tsx   # Divider component
 │   │   ├── Sidebar.tsx   # Sidebar navigation
+│   │   ├── Form.tsx      # Form system
+│   │   ├── Table.tsx     # Table component
+│   │   ├── Toast.tsx     # Toast notifications
+│   │   ├── Dropdown.tsx  # Dropdown menu
 │   │   └── index.ts      # Exports centralizados
 │   └── LanguageSwitcher.tsx # Seletor de idioma
 ├── hooks/                # Custom Hooks
 │   └── useTranslations.ts # Hook de tradução
+├── i18n/                 # Arquivos de tradução
+│   ├── en/              # Inglês
+│   │   ├── common.json
+│   │   └── admin.json
+│   └── pt/              # Português
+│       ├── common.json
+│       └── admin.json
+├── services/             # Camada de API
+│   ├── api.ts           # Cliente API base
+│   ├── categories.ts    # Serviço de categorias
+│   ├── users.ts         # Serviço de usuários
+│   ├── listings.ts      # Serviço de anúncios
+│   └── index.ts         # Exports centralizados
 ├── utils/                # Utilitários
 │   └── cn.ts            # Class name helper
+├── __tests__/           # Estrutura de testes
+│   ├── components/      # Testes de componentes
+│   ├── hooks/          # Testes de hooks
+│   └── pages/          # Testes de páginas
 └── middleware.ts         # Middleware do Next.js
 ```
 
-## 🎨 Design System
+## 🎯 Melhorias Implementadas
 
-### Componentes Base
+### 1. **Organização de Features com Grupos de Rotas**
 
-#### Button Component
+#### Antes (Estrutura Linear)
 
-```typescript
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  loading?: boolean;
-  children: React.ReactNode;
-}
-
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', size = 'md', loading, children, ...props }, ref) => {
-    return (
-      <button
-        ref={ref}
-        className={cn(
-          'inline-flex items-center justify-center rounded-md font-medium transition-colors',
-          'focus:outline-none focus:ring-2 focus:ring-offset-2',
-          'disabled:opacity-50 disabled:pointer-events-none',
-          variants[variant],
-          sizes[size],
-        )}
-        disabled={loading}
-        {...props}
-      >
-        {loading && <Spinner size="sm" className="mr-2" />}
-        {children}
-      </button>
-    );
-  }
-);
+```
+app/[locale]/
+├── admin/
+├── components-demo/
+└── page.tsx
 ```
 
-#### Select Component
+#### Depois (Grupos de Rotas)
 
-```typescript
-export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
-  label?: string;
-  error?: string;
-  helperText?: string;
-  options: SelectOption[];
-  placeholder?: string;
-  required?: boolean;
-}
-
-export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, error, helperText, options, placeholder, required, ...props }, ref) => {
-    return (
-      <div className="w-full">
-        {label && (
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
-            {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
-          </label>
-        )}
-
-        <select
-          ref={ref}
-          className={cn(
-            'w-full px-3 py-2 border rounded-md shadow-sm transition-colors',
-            'focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500',
-            error
-              ? 'border-red-300 text-red-900'
-              : 'border-neutral-300 text-neutral-900',
-          )}
-          {...props}
-        >
-          {placeholder && (
-            <option value="" disabled>{placeholder}</option>
-          )}
-          {options.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-
-        {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
-        {helperText && !error && <p className="mt-1 text-sm text-neutral-500">{helperText}</p>}
-      </div>
-    );
-  }
-);
+```
+app/[locale]/
+├── (admin)/           # Grupo administrativo
+│   ├── dashboard/
+│   ├── users/
+│   └── categories/
+├── (marketing)/       # Grupo de marketing
+│   ├── home/
+│   ├── about/
+│   └── components-demo/
+└── page.tsx
 ```
 
-#### Modal Component
+**Benefícios:**
+
+- ✅ Organização clara por funcionalidade
+- ✅ Layouts específicos por grupo
+- ✅ Escalabilidade para novas features
+- ✅ Separação de responsabilidades
+
+### 2. **Design System Completo**
+
+#### Componentes Base
+
+- **Button**: Botão reutilizável com variantes
+- **Select**: Select com validação
+- **Modal**: Modal responsivo
+- **Spinner**: Loading states
+- **Card**: Card component
+- **Input**: Input com validação
+- **Badge**: Badge component
+- **Typography**: Sistema de tipografia
+- **Stack**: Componente de layout
+- **Divider**: Divider component
+- **Sidebar**: Sidebar navigation
+
+#### Componentes Avançados
+
+- **Form**: Sistema completo de formulários
+- **Table**: Tabela com sorting e paginação
+- **Toast**: Notificações toast
+- **Dropdown**: Menu dropdown
+
+### 3. **Camada de Providers**
+
+#### ThemeProvider
 
 ```typescript
-export interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title?: string;
-  children: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-}
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setTheme] = useState<Theme>('system');
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
-export const Modal: React.FC<ModalProps> = ({
-  isOpen,
-  onClose,
-  title,
+  // Gerenciamento de tema com suporte a system preference
+  // Persistência no localStorage
+  // Aplicação automática de classes CSS
+}
+```
+
+#### I18nProvider
+
+```typescript
+export function I18nProvider({
   children,
-  size = 'md',
-}) => {
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div
-        className="fixed inset-0 bg-black bg-opacity-50"
-        onClick={onClose}
-      />
-      <div className={cn(
-        'relative bg-white rounded-lg shadow-xl max-h-[90vh] overflow-y-auto',
-        sizeClasses[size]
-      )}>
-        {title && (
-          <div className="px-6 py-4 border-b border-neutral-200">
-            <h2 className="text-lg font-semibold text-neutral-900">{title}</h2>
-          </div>
-        )}
-        <div className="p-6">{children}</div>
-      </div>
-    </div>
-  );
-};
-```
-
-### Sistema de Cores
-
-```typescript
-// tailwind.config.ts
-export default {
-  theme: {
-    extend: {
-      colors: {
-        brand: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
-        },
-        neutral: {
-          50: '#fafafa',
-          100: '#f5f5f5',
-          200: '#e5e5e5',
-          300: '#d4d4d4',
-          400: '#a3a3a3',
-          500: '#737373',
-          600: '#525252',
-          700: '#404040',
-          800: '#262626',
-          900: '#171717',
-        },
-        status: {
-          success: '#10b981',
-          warning: '#f59e0b',
-          error: '#ef4444',
-          info: '#3b82f6',
-        },
-      },
-    },
-  },
-};
-```
-
-## 🌐 Internacionalização (i18n)
-
-### Estrutura de Traduções
-
-```
-translations/
-├── en/
-│   ├── common.json
-│   ├── navigation.json
-│   └── admin.json
-└── pt/
-    ├── common.json
-    ├── navigation.json
-    └── admin.json
-```
-
-### Hook de Tradução
-
-```typescript
-// hooks/useTranslations.ts
-export const useTranslations = (namespace: string) => {
-  const { locale } = useRouter();
-  const [translations, setTranslations] = useState<Record<string, any>>({});
-
-  useEffect(() => {
-    const loadTranslations = async () => {
-      try {
-        const data = await import(
-          `../../translations/${locale}/${namespace}.json`
-        );
-        setTranslations(data.default);
-      } catch (error) {
-        console.error(`Failed to load translations for ${namespace}:`, error);
-      }
-    };
-
-    loadTranslations();
-  }, [locale, namespace]);
-
-  const t = (key: string, params?: Record<string, string>) => {
-    let translation = translations[key] || key;
-
-    if (params) {
-      Object.entries(params).forEach(([param, value]) => {
-        translation = translation.replace(`{{${param}}}`, value);
-      });
-    }
-
-    return translation;
-  };
-
-  return { t, locale };
-};
-```
-
-### Uso em Componentes
-
-```typescript
-// components/LanguageSwitcher.tsx
-export const LanguageSwitcher: React.FC = () => {
-  const { locale } = useRouter();
-  const { t } = useTranslations('common');
-
-  const changeLanguage = (newLocale: string) => {
-    router.push(router.asPath, router.asPath, { locale: newLocale });
-  };
-
-  return (
-    <Select
-      value={locale}
-      onChange={(e) => changeLanguage(e.target.value)}
-      options={[
-        { value: 'en', label: t('languages.english') },
-        { value: 'pt', label: t('languages.portuguese') },
-      ]}
-    />
-  );
-};
-```
-
-## 🎯 Páginas e Roteamento
-
-### App Router Structure
-
-```typescript
-// app/[locale]/layout.tsx
-export default function LocaleLayout({
-  children,
-  params,
+  initialLocale,
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  initialLocale?: Locale;
 }) {
-  return (
-    <html lang={params.locale}>
-      <body className="min-h-screen bg-neutral-50">
-        <div className="flex">
-          <Sidebar />
-          <main className="flex-1 p-6">
-            {children}
-          </main>
-        </div>
-      </body>
-    </html>
-  );
+  const [locale, setLocale] = useState<Locale>(initialLocale);
+  const [translations, setTranslations] = useState<Record<string, any>>({});
+
+  // Carregamento dinâmico de traduções
+  // Fallback para inglês
+  // Suporte a namespaces
 }
 ```
 
-### Página de Administração
+#### QueryProvider
 
 ```typescript
-// app/[locale]/admin/page.tsx
-export default function AdminPage() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const { t } = useTranslations('admin');
-
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <H1>{t('categories.title')}</H1>
-        <Button onClick={() => setShowAddModal(true)}>
-          {t('categories.add')}
-        </Button>
-      </div>
-
-      <Card>
-        <CardContent>
-          {categories.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-neutral-500">{t('categories.empty')}</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {categories.map(category => (
-                <CategoryItem key={category.id} category={category} />
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      <Modal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title={t('categories.add')}
-      >
-        <AddCategoryForm onSuccess={() => setShowAddModal(false)} />
-      </Modal>
-    </div>
-  );
-}
-```
-
-## 🎨 Styling e Design
-
-### TailwindCSS Configuration
-
-```typescript
-// tailwind.config.ts
-import type { Config } from 'tailwindcss';
-
-const config: Config = {
-  content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
-  theme: {
-    extend: {
-      colors: {
-        brand: {
-          50: '#f0f9ff',
-          // ... outras cores
+export function QueryProvider({ children }: { children: React.ReactNode }) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 5 * 60 * 1000, // 5 minutes
+        retry: (failureCount, error) => {
+          // Não retry em erros 4xx
+          if (error?.status >= 400 && error?.status < 500) return false;
+          return failureCount < 3;
         },
       },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-      },
-      spacing: {
-        '18': '4.5rem',
-        '88': '22rem',
-      },
-      animation: {
-        'fade-in': 'fadeIn 0.5s ease-in-out',
-        'slide-up': 'slideUp 0.3s ease-out',
-      },
     },
-  },
-  plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
-};
-
-export default config;
-```
-
-### Utility Functions
-
-```typescript
-// utils/cn.ts
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+  });
 }
 ```
 
-## 🧪 Testes
+### 4. **Camada de Data Fetching**
 
-### Component Testing
+#### API Client Base
 
 ```typescript
-// components/ui/__tests__/Button.test.tsx
-import { render, screen, fireEvent } from '@testing-library/react';
-import { Button } from '../Button';
+class ApiClient {
+  private baseURL: string;
 
+  async get<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
+    // Implementação com tratamento de erros
+    // Headers automáticos
+    // Validação de resposta
+  }
+
+  async post<T>(endpoint: string, data?: any): Promise<T> {
+    // Implementação para POST
+  }
+}
+```
+
+#### Services Específicos
+
+```typescript
+export class CategoriesService {
+  private basePath = '/categories';
+
+  async getAll(params?: CategoryQueryParams): Promise<Category[]> {
+    return apiClient.get<Category[]>(this.basePath, params);
+  }
+
+  async create(data: CreateCategoryData): Promise<Category> {
+    return apiClient.post<Category>(this.basePath, data);
+  }
+
+  async getPaginated(
+    page: number,
+    limit: number
+  ): Promise<PaginatedResponse<Category>> {
+    // Implementação com paginação
+  }
+}
+```
+
+### 5. **Internacionalização Centralizada**
+
+#### Estrutura de Traduções
+
+```
+i18n/
+├── en/
+│   ├── common.json      # Traduções comuns
+│   └── admin.json       # Traduções administrativas
+└── pt/
+    ├── common.json      # Traduções comuns
+    └── admin.json       # Traduções administrativas
+```
+
+#### Hook de Tradução
+
+```typescript
+export function useTranslations(namespace: string) {
+  const { t, loadNamespace, isLoading } = useI18n();
+
+  useEffect(() => {
+    loadNamespace(namespace);
+  }, [namespace, loadNamespace]);
+
+  return {
+    t: (key: string, params?: Record<string, string>) =>
+      t(`${namespace}.${key}`, params),
+    isLoading,
+  };
+}
+```
+
+### 6. **Estrutura de Testes**
+
+#### Organização de Testes
+
+```
+__tests__/
+├── components/          # Testes de componentes
+│   └── Button.test.tsx
+├── hooks/              # Testes de hooks
+│   └── useTranslations.test.tsx
+└── pages/              # Testes de páginas
+    └── admin.test.tsx
+```
+
+#### Exemplo de Teste
+
+```typescript
 describe('Button', () => {
   it('renders with correct text', () => {
     render(<Button>Click me</Button>);
     expect(screen.getByText('Click me')).toBeInTheDocument();
   });
 
-  it('handles click events', () => {
-    const handleClick = jest.fn();
-    render(<Button onClick={handleClick}>Click me</Button>);
-
-    fireEvent.click(screen.getByText('Click me'));
-    expect(handleClick).toHaveBeenCalledTimes(1);
-  });
-
   it('shows loading state', () => {
     render(<Button loading>Loading</Button>);
-    expect(screen.getByRole('button')).toBeDisabled();
+    const button = screen.getByRole('button');
+    expect(button).toBeDisabled();
   });
 });
 ```
 
-### Page Testing
+## 🎨 Design System Detalhado
+
+### Form System
 
 ```typescript
-// app/[locale]/admin/__tests__/page.test.tsx
-import { render, screen } from '@testing-library/react';
-import AdminPage from '../page';
-
-// Mock do hook de tradução
-jest.mock('../../../hooks/useTranslations', () => ({
-  useTranslations: () => ({
-    t: (key: string) => key,
-  }),
-}));
-
-describe('AdminPage', () => {
-  it('renders admin page', () => {
-    render(<AdminPage />);
-    expect(screen.getByText('categories.title')).toBeInTheDocument();
-  });
-});
+<Form
+  initialValues={{ name: '', email: '' }}
+  validate={(values) => {
+    const errors: Record<string, string> = {};
+    if (!values.name) errors.name = 'Name is required';
+    if (!values.email) errors.email = 'Email is required';
+    return errors;
+  }}
+  onSubmit={(values) => console.log(values)}
+>
+  <FormField name="name" label="Name" required>
+    <Input name="name" />
+  </FormField>
+  <FormField name="email" label="Email" required>
+    <Input name="email" type="email" />
+  </FormField>
+  <Button type="submit">Submit</Button>
+</Form>
 ```
 
-## 🚀 Performance
+### Table System
+
+```typescript
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead sortable sortDirection="asc" onSort={() => {}}>
+        Name
+      </TableHead>
+      <TableHead>Email</TableHead>
+      <TableHead>Actions</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {users.map(user => (
+      <TableRow key={user.id}>
+        <TableCell>{user.name}</TableCell>
+        <TableCell>{user.email}</TableCell>
+        <TableCell>
+          <Dropdown
+            trigger={<MenuButton>⋮</MenuButton>}
+            items={[
+              createDropdownItems.edit(() => editUser(user.id)),
+              createDropdownItems.delete(() => deleteUser(user.id)),
+            ]}
+          />
+        </TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
+```
+
+### Toast System
+
+```typescript
+const { showSuccess, showError } = useToastNotifications();
+
+// Uso
+showSuccess('User created successfully');
+showError('Failed to create user');
+```
+
+## 🚀 Performance e Otimização
 
 ### Code Splitting
 
@@ -507,27 +376,152 @@ const ComponentsDemo = lazy(() => import('./components-demo/page'));
 </Suspense>
 ```
 
-### Image Optimization
+### React Query Integration
 
 ```typescript
-import Image from 'next/image';
+function useCategories() {
+  return useQuery({
+    queryKey: ['categories'],
+    queryFn: () => categoriesService.getAll(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+}
 
-// Otimização automática de imagens
-<Image
-  src="/logo.png"
-  alt="Logo"
-  width={200}
-  height={100}
-  priority // Para imagens acima da dobra
-/>
+function CategoriesList() {
+  const { data: categories, isLoading, error } = useCategories();
+
+  if (isLoading) return <Spinner />;
+  if (error) return <div>Error loading categories</div>;
+
+  return (
+    <div>
+      {categories?.map(category => (
+        <CategoryItem key={category.id} category={category} />
+      ))}
+    </div>
+  );
+}
 ```
 
-### Bundle Analysis
+## 🔧 Configuração e Setup
 
-```bash
-# Análise do bundle
-npm run build
-npm run analyze
+### TailwindCSS Configuration
+
+```typescript
+// tailwind.config.ts
+export default {
+  content: [
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          // ... outras cores
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
+    },
+  },
+  plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
+};
+```
+
+### TypeScript Configuration
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["dom", "dom.iterable", "ES6"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+## 🧪 Estratégia de Testes
+
+### Configuração de Testes
+
+```typescript
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/__tests__/setup.ts'],
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+});
+```
+
+### Testes de Componentes
+
+```typescript
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Button } from '@/components/ui';
+
+describe('Button', () => {
+  it('renders with correct text', () => {
+    render(<Button>Click me</Button>);
+    expect(screen.getByText('Click me')).toBeInTheDocument();
+  });
+
+  it('handles click events', () => {
+    const handleClick = jest.fn();
+    render(<Button onClick={handleClick}>Click me</Button>);
+
+    fireEvent.click(screen.getByText('Click me'));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+### Testes de Hooks
+
+```typescript
+import { renderHook } from '@testing-library/react';
+import { useTranslations } from '@/hooks/useTranslations';
+
+describe('useTranslations', () => {
+  it('returns translation function', () => {
+    const { result } = renderHook(() => useTranslations('admin'));
+
+    expect(typeof result.current.t).toBe('function');
+    expect(result.current.isLoading).toBe(false);
+  });
+});
 ```
 
 ## 📱 Responsive Design
@@ -535,7 +529,6 @@ npm run analyze
 ### Breakpoints
 
 ```typescript
-// TailwindCSS breakpoints
 const breakpoints = {
   sm: '640px', // Mobile landscape
   md: '768px', // Tablet
@@ -548,7 +541,6 @@ const breakpoints = {
 ### Responsive Components
 
 ```typescript
-// Componente responsivo
 export const ResponsiveGrid: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -609,36 +601,16 @@ export default [
 ];
 ```
 
-### TypeScript Configuration
+### Prettier Configuration
 
 ```json
-// tsconfig.json
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["dom", "dom.iterable", "ES6"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false
 }
 ```
 
@@ -672,6 +644,24 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api
 NEXT_PUBLIC_APP_NAME=Local Classifieds
 ```
 
+## 🎯 Próximos Passos
+
+### Melhorias Futuras
+
+1. **Storybook**: Documentação interativa de componentes
+2. **E2E Testing**: Testes end-to-end com Playwright
+3. **Performance Monitoring**: Web Vitals e APM
+4. **Accessibility**: Melhorias de a11y
+5. **PWA**: Progressive Web App features
+6. **Micro-frontends**: Arquitetura modular
+
+### Otimizações
+
+1. **Bundle Analysis**: Análise de bundle size
+2. **Image Optimization**: Otimização de imagens
+3. **Caching Strategy**: Estratégia de cache
+4. **CDN Integration**: Integração com CDN
+
 ---
 
 ## 📚 Recursos Adicionais
@@ -680,3 +670,5 @@ NEXT_PUBLIC_APP_NAME=Local Classifieds
 - [TailwindCSS Documentation](https://tailwindcss.com/docs)
 - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [TanStack Query](https://tanstack.com/query/latest)
+- [Vitest Documentation](https://vitest.dev/)

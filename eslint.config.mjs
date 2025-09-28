@@ -95,15 +95,44 @@ export default [
     },
   },
 
-  // Test files
+  // TypeScript recommended rules (only for TS files)
+  ...tseslint.configs.recommendedTypeChecked,
+
+  // Test files - must come after TypeScript rules to override them
   {
-    files: ['**/*.test.ts', '**/*.spec.ts'],
+    files: [
+      '**/*.test.ts',
+      '**/*.spec.ts',
+      '**/*.test.tsx',
+      '**/*.spec.tsx',
+      '**/__tests__/**/*.ts',
+      '**/__tests__/**/*.tsx',
+    ],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/unbound-method': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      'no-console': 'off',
     },
   },
-
-  // TypeScript recommended rules (only for TS files)
-  ...tseslint.configs.recommendedTypeChecked,
+  {
+    files: ['apps/frontend/src/utils/cn.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+    },
+  },
+  {
+    files: ['apps/frontend/src/app/providers/I18nProvider.tsx'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      'no-console': ['error', { allow: ['error'] }],
+    },
+  },
 ];

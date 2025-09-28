@@ -44,6 +44,8 @@ O Local Classifieds é uma plataforma completa de classificados locais que permi
 - **Styling**: TailwindCSS
 - **Testes**: React Testing Library
 - **i18n**: Internacionalização integrada
+- **Data Fetching**: TanStack Query
+- **Design System**: Componentes customizados
 
 #### Infraestrutura
 
@@ -231,6 +233,10 @@ npm run test:watch    # Testes com watch mode
 - **Typography**: Sistema de tipografia
 - **Stack**: Componente de layout
 - **Spinner**: Loading states
+- **Form**: Sistema completo de formulários
+- **Table**: Tabela com sorting e paginação
+- **Toast**: Notificações toast
+- **Dropdown**: Menu dropdown
 
 ### Uso dos Componentes
 

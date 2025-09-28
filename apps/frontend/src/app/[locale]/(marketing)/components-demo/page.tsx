@@ -10,7 +10,7 @@ import {
   Small,
   Stack,
   Divider,
-} from '../../../components/ui';
+} from '../../../../components/ui';
 
 export default function ComponentsDemo() {
   return (

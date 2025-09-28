@@ -17,7 +17,7 @@ import {
   Input,
   Modal,
   Sidebar,
-} from '../../../components/ui';
+} from '../../../../components/ui';
 
 interface Category {
   id: string;
@@ -413,7 +413,9 @@ export default function AdminPage() {
                 label='Slug'
                 placeholder='Ex: eletronicos'
                 value={formData.slug}
-                onChange={e => handleInputChange('slug', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleInputChange('slug', e.target.value)
+                }
                 required
               />
               <div className='w-full'>
@@ -422,7 +424,7 @@ export default function AdminPage() {
                 </label>
                 <select
                   value={formData.parentId || ''}
-                  onChange={e =>
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                     handleInputChange('parentId', e.target.value || '')
                   }
                   className='flex h-10 w-full rounded-md border border-neutral-border bg-neutral-bg-card px-3 py-2 text-sm text-neutral-text-primary focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent'
@@ -442,7 +444,7 @@ export default function AdminPage() {
                 label='Ordem de Exibição'
                 type='number'
                 value={formData.displayOrder}
-                onChange={e =>
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   handleInputChange('displayOrder', parseInt(e.target.value))
                 }
                 required
@@ -452,7 +454,9 @@ export default function AdminPage() {
                   type='checkbox'
                   id='active'
                   checked={formData.active}
-                  onChange={e => handleInputChange('active', e.target.checked)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleInputChange('active', e.target.checked)
+                  }
                   className='rounded border-neutral-border'
                 />
                 <label
@@ -481,7 +485,7 @@ export default function AdminPage() {
                           label='Nome'
                           placeholder={`Nome em ${trans.language === 'pt' ? 'Português' : 'English'}`}
                           value={trans.name}
-                          onChange={e =>
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleTranslationChange(
                               index,
                               'name',
@@ -493,7 +497,7 @@ export default function AdminPage() {
                           label='Descrição'
                           placeholder={`Descrição em ${trans.language === 'pt' ? 'Português' : 'English'}`}
                           value={trans.description}
-                          onChange={e =>
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleTranslationChange(
                               index,
                               'description',

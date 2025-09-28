@@ -40,31 +40,65 @@ O Local Classifieds é uma plataforma de classificados locais construída com um
 apps/frontend/src/
 ├── app/                    # App Router (Next.js 13+)
 │   ├── [locale]/          # Internacionalização
-│   │   ├── admin/         # Dashboard administrativo
-│   │   ├── components-demo/ # Demonstração de componentes
-│   │   └── layout.tsx     # Layout principal
-│   └── globals.css        # Estilos globais
+│   │   ├── (admin)/       # Grupo de rotas administrativas
+│   │   │   ├── dashboard/ # Dashboard principal
+│   │   │   ├── users/     # Gerenciamento de usuários
+│   │   │   └── categories/ # Gerenciamento de categorias
+│   │   ├── (marketing)/   # Grupo de rotas de marketing
+│   │   │   ├── home/      # Página inicial
+│   │   │   ├── about/     # Sobre nós
+│   │   │   └── components-demo/ # Demonstração de componentes
+│   │   ├── layout.tsx     # Layout com sidebar
+│   │   └── page.tsx       # Página inicial
+│   ├── providers/         # Context/Providers globais
+│   │   ├── ThemeProvider.tsx
+│   │   ├── I18nProvider.tsx
+│   │   ├── QueryProvider.tsx
+│   │   └── index.ts
+│   ├── globals.css        # Estilos globais
+│   └── layout.tsx         # Layout raiz
 ├── components/            # Componentes React
-│   ├── ui/               # Design System
+│   ├── ui/               # Design System completo
 │   │   ├── Button.tsx    # Botão reutilizável
 │   │   ├── Select.tsx    # Select com validação
 │   │   ├── Modal.tsx     # Modal responsivo
 │   │   ├── Spinner.tsx   # Loading states
+│   │   ├── Form.tsx      # Form system
+│   │   ├── Table.tsx     # Table component
+│   │   ├── Toast.tsx     # Toast notifications
+│   │   ├── Dropdown.tsx  # Dropdown menu
 │   │   └── index.ts      # Exports centralizados
 │   └── LanguageSwitcher.tsx
 ├── hooks/                # Custom Hooks
 │   └── useTranslations.ts
-└── utils/                # Utilitários
-    └── cn.ts            # Class name helper
+├── i18n/                 # Arquivos de tradução
+│   ├── en/              # Inglês
+│   └── pt/              # Português
+├── services/             # Camada de API
+│   ├── api.ts           # Cliente API base
+│   ├── categories.ts    # Serviço de categorias
+│   ├── users.ts         # Serviço de usuários
+│   └── listings.ts      # Serviço de anúncios
+├── utils/                # Utilitários
+│   └── cn.ts            # Class name helper
+├── __tests__/           # Estrutura de testes
+│   ├── components/      # Testes de componentes
+│   ├── hooks/          # Testes de hooks
+│   └── pages/          # Testes de páginas
+└── middleware.ts         # Middleware do Next.js
 ```
 
 **Características:**
 
 - ✅ App Router com roteamento baseado em arquivos
+- ✅ Grupos de rotas para organização modular
 - ✅ Internacionalização (i18n) integrada
-- ✅ Design System consistente
+- ✅ Design System completo e consistente
+- ✅ Providers globais (Theme, I18n, Query)
+- ✅ Camada de Data Fetching com services
 - ✅ Componentes reutilizáveis e tipados
 - ✅ Responsive design com TailwindCSS
+- ✅ Estrutura de testes organizada
 
 ### 2. 🔧 API Layer (NestJS)
 

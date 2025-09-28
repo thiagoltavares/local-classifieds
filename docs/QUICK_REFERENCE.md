@@ -95,11 +95,29 @@ apps/api/src/
 ```
 apps/frontend/src/
 ├── app/[locale]/        # App Router com i18n
-│   ├── admin/          # Dashboard administrativo
-│   └── components-demo/ # Demonstração de componentes
-├── components/ui/       # Design System
+│   ├── (admin)/        # Grupo de rotas administrativas
+│   │   ├── dashboard/  # Dashboard principal
+│   │   ├── users/      # Gerenciamento de usuários
+│   │   └── categories/ # Gerenciamento de categorias
+│   ├── (marketing)/    # Grupo de rotas de marketing
+│   │   ├── home/       # Página inicial
+│   │   ├── about/      # Sobre nós
+│   │   └── components-demo/ # Demonstração de componentes
+│   └── layout.tsx      # Layout com sidebar
+├── app/providers/      # Context/Providers globais
+│   ├── ThemeProvider.tsx
+│   ├── I18nProvider.tsx
+│   └── QueryProvider.tsx
+├── components/ui/       # Design System completo
+│   ├── Button.tsx      # Botão reutilizável
+│   ├── Form.tsx        # Form system
+│   ├── Table.tsx       # Table component
+│   ├── Toast.tsx       # Toast notifications
+│   └── Dropdown.tsx    # Dropdown menu
 ├── hooks/              # Custom Hooks
-└── utils/              # Utilitários
+├── i18n/               # Arquivos de tradução
+├── services/           # Camada de API
+└── __tests__/          # Estrutura de testes
 ```
 
 ### Libraries
@@ -206,6 +224,64 @@ GET /api/categories/stats
   </CardHeader>
   <CardContent>Conteúdo do card</CardContent>
 </Card>
+```
+
+### Form
+
+```tsx
+<Form
+  initialValues={{ name: '', email: '' }}
+  onSubmit={values => console.log(values)}
+>
+  <FormField name='name' label='Name' required>
+    <Input name='name' />
+  </FormField>
+  <FormField name='email' label='Email' required>
+    <Input name='email' type='email' />
+  </FormField>
+  <Button type='submit'>Submit</Button>
+</Form>
+```
+
+### Table
+
+```tsx
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead sortable>Name</TableHead>
+      <TableHead>Email</TableHead>
+      <TableHead>Actions</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {users.map(user => (
+      <TableRow key={user.id}>
+        <TableCell>{user.name}</TableCell>
+        <TableCell>{user.email}</TableCell>
+        <TableCell>
+          <Dropdown
+            trigger={<MenuButton>⋮</MenuButton>}
+            items={[
+              createDropdownItems.edit(() => editUser(user.id)),
+              createDropdownItems.delete(() => deleteUser(user.id)),
+            ]}
+          />
+        </TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
+```
+
+### Toast
+
+```tsx
+const { showSuccess, showError } = useToastNotifications();
+
+// Uso
+showSuccess('User created successfully');
+showError('Failed to create user');
 ```
 
 ## 🔧 Configurações
