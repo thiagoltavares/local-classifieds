@@ -83,7 +83,7 @@ function ToastContainer() {
   if (toasts.length === 0) return null;
 
   return (
-    <div className='fixed top-4 right-4 z-50 space-y-2'>
+    <div className='fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2'>
       {toasts.map(toast => (
         <ToastItem key={toast.id} toast={toast} />
       ))}
@@ -112,17 +112,17 @@ function ToastItem({ toast }: ToastItemProps) {
   };
 
   const typeStyles = {
-    success: 'bg-green-50 border-green-200 text-green-800',
-    error: 'bg-red-50 border-red-200 text-red-800',
-    warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
-    info: 'bg-blue-50 border-blue-200 text-blue-800',
+    success: 'bg-white border-green-500 text-neutral-800 shadow-lg',
+    error: 'bg-white border-red-500 text-neutral-800 shadow-lg',
+    warning: 'bg-white border-yellow-500 text-neutral-800 shadow-lg',
+    info: 'bg-white border-blue-500 text-neutral-800 shadow-lg',
   };
 
   const iconStyles = {
-    success: 'text-green-400',
-    error: 'text-red-400',
-    warning: 'text-yellow-400',
-    info: 'text-blue-400',
+    success: 'text-green-500',
+    error: 'text-red-500',
+    warning: 'text-yellow-500',
+    info: 'text-blue-500',
   };
 
   const icons = {
@@ -167,9 +167,9 @@ function ToastItem({ toast }: ToastItemProps) {
   return (
     <div
       className={cn(
-        'max-w-sm w-full border rounded-lg shadow-lg pointer-events-auto transition-all duration-150 ease-in-out',
+        'w-96 max-w-[calc(100vw-2rem)] border rounded-lg shadow-lg pointer-events-auto transition-all duration-300 ease-in-out',
         typeStyles[toast.type],
-        isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
       )}
     >
       <div className='p-4'>
@@ -195,10 +195,10 @@ function ToastItem({ toast }: ToastItemProps) {
               </div>
             )}
           </div>
-          <div className='ml-4 flex-shrink-0 flex'>
+          <div className='ml-4 flex-shrink-0 flex items-start'>
             <button
               onClick={handleRemove}
-              className='inline-flex text-neutral-400 hover:text-neutral-600 focus:outline-none focus:text-neutral-600 transition ease-in-out duration-150'
+              className='inline-flex items-center justify-center text-neutral-400 hover:text-neutral-600 focus:outline-none focus:text-neutral-600 transition ease-in-out duration-150'
             >
               <svg className='w-4 h-4' fill='currentColor' viewBox='0 0 20 20'>
                 <path

@@ -11,6 +11,7 @@ export interface DropdownItem {
   href?: string;
   disabled?: boolean;
   divider?: boolean;
+  variant?: 'default' | 'danger';
 }
 
 export interface DropdownProps {
@@ -166,24 +167,23 @@ export const Dropdown: React.FC<DropdownProps> = ({
 };
 
 // Menu Button Component (commonly used with Dropdown)
-export interface MenuButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface MenuButtonProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
-export const MenuButton = forwardRef<HTMLButtonElement, MenuButtonProps>(
+export const MenuButton = forwardRef<HTMLDivElement, MenuButtonProps>(
   ({ children, className, ...props }, ref) => {
     return (
-      <button
+      <div
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center w-8 h-8 rounded-full text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2',
+          'inline-flex items-center justify-center w-10 h-10 rounded-lg border border-neutral-200 bg-white text-neutral-600 hover:text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 cursor-pointer text-lg shadow-sm hover:shadow-md transition-all duration-200',
           className
         )}
         {...props}
       >
         {children}
-      </button>
+      </div>
     );
   }
 );

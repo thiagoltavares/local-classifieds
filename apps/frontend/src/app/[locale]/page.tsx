@@ -1,24 +1,78 @@
 'use client';
 
+import Link from 'next/link';
 import { useTranslations } from '../../hooks/useTranslations';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
+import { Button, Card, CardContent, H1, H2, Body } from '../../components/ui';
 
 export default function Home() {
   const { t } = useTranslations();
 
+  const routes = [
+    {
+      title: 'Dashboard Admin',
+      description: 'Painel administrativo para gerenciar categorias e usuários',
+      href: '/dashboard',
+      variant: 'primary' as const,
+    },
+    {
+      title: 'Demo de Componentes',
+      description: 'Demonstração de todos os componentes UI disponíveis',
+      href: '/components-demo',
+      variant: 'secondary' as const,
+    },
+    {
+      title: 'Teste de Cores',
+      description: 'Visualização do sistema de cores e temas',
+      href: '/color-test',
+      variant: 'outline' as const,
+    },
+  ];
+
   return (
-    <div className='min-h-screen bg-gray-50'>
+    <div className='min-h-screen bg-neutral-bg-light'>
       <div className='container mx-auto px-4 py-8'>
         <div className='flex justify-between items-center mb-8'>
-          <h1 className='text-3xl font-bold text-gray-900'>{t('title')}</h1>
+          <H1>{t('title')}</H1>
           <LanguageSwitcher />
         </div>
 
-        <div className='bg-white rounded-lg shadow p-6'>
-          <h2 className='text-xl font-semibold text-gray-800 mb-4'>
-            {t('welcome')}
-          </h2>
-          <p className='text-gray-600'>{t('description')}</p>
+        <div className='mb-8'>
+          <Card>
+            <CardContent className='p-6'>
+              <H2 className='mb-4'>{t('welcome')}</H2>
+              <Body className='text-neutral-600'>{t('description')}</Body>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+          {routes.map(route => (
+            <Card
+              key={route.href}
+              className='hover:shadow-lg transition-shadow'
+            >
+              <CardContent className='p-6'>
+                <H2 className='text-lg mb-3'>{route.title}</H2>
+                <Body className='text-neutral-600 mb-4'>
+                  {route.description}
+                </Body>
+                <Link href={route.href}>
+                  <Button variant={route.variant} className='w-full'>
+                    Acessar
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className='mt-8 p-4 bg-neutral-100 rounded-lg'>
+          <H2 className='text-lg mb-2'>🚧 Em Desenvolvimento</H2>
+          <Body className='text-neutral-600'>
+            As seguintes seções estão sendo desenvolvidas: About, Home,
+            Categories, Users
+          </Body>
         </div>
       </div>
     </div>
