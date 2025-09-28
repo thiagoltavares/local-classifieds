@@ -12,6 +12,100 @@ datasource db {
 
 // Add your models here
 
+// =====================
+// User
+// =====================
+model User {
+  id           String     @id @default(uuid()) @db.Uuid
+  name         String     @db.VarChar(120)
+  email        String     @unique @db.VarChar(140)
+  passwordHash String
+  role         UserRole   @default(CLIENT)
+  document     String?    @unique @db.VarChar(20) // CPF/CNPJ (opcional)
+  createdAt    DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime   @default(now()) @updatedAt @db.Timestamptz(6)
+
+  provider     Provider?
+  client       Client?
+
+  @@map("users")
+}
+
+enum UserRole {
+  CLIENT
+  PROVIDER
+  ADMIN
+}
+
+// =====================
+// Provider
+// =====================
+model Provider {
+  id        String     @id @default(uuid()) @db.Uuid
+  userId    String     @unique @db.Uuid
+  bio       String?    @db.Text
+  phone     String?    @db.VarChar(20)
+  whatsapp  String?    @db.VarChar(20)
+  address   String?    @db.VarChar(255)
+  rating    Float?     @default(0)
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  services  Service[]
+  categories Category[] @relation("ProviderCategories")
+
+  createdAt DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime   @default(now()) @updatedAt @db.Timestamptz(6)
+
+  @@map("providers")
+}
+
+// =====================
+// Client
+// =====================
+model Client {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @unique @db.Uuid
+  address   String?  @db.VarChar(255)
+  phone     String?  @db.VarChar(20) // opcional
+  favorites String[] // lista de Providers (UUIDs)
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
+  @@map("clients")
+}
+
+// =====================
+// Service
+// =====================
+model Service {
+  id          String   @id @default(uuid()) @db.Uuid
+  providerId  String   @db.Uuid
+  categoryId  String   @db.Uuid
+  title       String   @db.VarChar(140)
+  description String?  @db.Text
+  price       Decimal? @db.Decimal(10,2)
+  status      ServiceStatus @default(ACTIVE)
+
+  provider    Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
+  @@map("services")
+}
+
+enum ServiceStatus {
+  ACTIVE
+  INACTIVE
+}
+
+// =====================
+// Category
+// =====================
 model Category {
   id            String                  @id @default(uuid()) @db.Uuid
   slug          String                  @unique @db.VarChar(140)
@@ -24,6 +118,8 @@ model Category {
   updatedAt     DateTime                @default(now()) @updatedAt @db.Timestamptz(6)
 
   translations  CategoryTranslation[]
+  providers     Provider[]              @relation("ProviderCategories")
+  services      Service[]
 
   // Índices para performance
   @@index([parentId, active]) // Para listagem de categorias ativas por grupo
