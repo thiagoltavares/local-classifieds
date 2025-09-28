@@ -46,11 +46,13 @@ import type { AutocompleteOption } from '../../../../components/ui/Autocomplete'
 export default function AdminPage() {
   const [activeSection, setActiveSection] = useState<string>('categories');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [page, setPage] = useState(1);
   const limit = 10;
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
     null
   );
+  const [categoryToEdit, setCategoryToEdit] = useState<Category | null>(null);
 
   // Estados para filtros
   const [searchTerm, setSearchTerm] = useState('');
@@ -61,6 +63,18 @@ export default function AdminPage() {
     'displayOrder'
   );
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  // Estados para formulário de edição
+  const [editFormData, setEditFormData] = useState({
+    slug: '',
+    parentId: '',
+    displayOrder: 0,
+    active: true,
+    translations: [
+      { language: 'pt', name: '', description: '' },
+      { language: 'en', name: '', description: '' },
+    ],
+  });
 
   // Hooks para buscar dados reais da API
   const {
@@ -268,6 +282,47 @@ export default function AdminPage() {
     }
   };
 
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!categoryToEdit) return;
+
+    // Validação básica
+    if (!editFormData.slug.trim()) {
+      showError('Slug é obrigatório', 'Erro de Validação');
+      return;
+    }
+
+    if (!editFormData.translations.some(t => t.name.trim())) {
+      showError('Pelo menos um nome é obrigatório', 'Erro de Validação');
+      return;
+    }
+
+    try {
+      const updateData = {
+        slug: editFormData.slug.trim(),
+        parentId: editFormData.parentId || null,
+        displayOrder: editFormData.displayOrder,
+        active: editFormData.active,
+        translations: editFormData.translations.filter(t => t.name.trim()),
+      };
+
+      await updateCategoryMutation.mutateAsync({
+        id: categoryToEdit.id,
+        data: updateData,
+      });
+      showSuccess('Categoria atualizada com sucesso!');
+      setShowEditModal(false);
+      setCategoryToEdit(null);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Erro ao atualizar categoria:', error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Erro ao atualizar categoria';
+      showError(errorMessage, 'Erro');
+    }
+  };
+
   const toggleCategoryStatus = async (category: Category) => {
     try {
       await updateCategoryMutation.mutateAsync({
@@ -334,6 +389,35 @@ export default function AdminPage() {
       setSortBy(column);
       setSortOrder('asc');
     }
+  };
+
+  const openEditModal = (category: Category) => {
+    setCategoryToEdit(category);
+    setEditFormData({
+      slug: category.slug,
+      parentId: category.parentId || '',
+      displayOrder: category.displayOrder,
+      active: category.active,
+      translations: [
+        {
+          language: 'pt',
+          name:
+            category.translations?.find(t => t.language === 'pt')?.name || '',
+          description:
+            category.translations?.find(t => t.language === 'pt')
+              ?.description || '',
+        },
+        {
+          language: 'en',
+          name:
+            category.translations?.find(t => t.language === 'en')?.name || '',
+          description:
+            category.translations?.find(t => t.language === 'en')
+              ?.description || '',
+        },
+      ],
+    });
+    setShowEditModal(true);
   };
 
   // Sidebar menu items
@@ -616,12 +700,7 @@ export default function AdminPage() {
                                   trigger={<MenuButton>⋮</MenuButton>}
                                   items={[
                                     createDropdownItems.edit(() => {
-                                      // TODO: Implementar edição
-                                      // eslint-disable-next-line no-console
-                                      console.log(
-                                        'Editar categoria:',
-                                        category.id
-                                      );
+                                      openEditModal(category);
                                     }),
                                     {
                                       id: 'toggle-status',
@@ -845,6 +924,171 @@ export default function AdminPage() {
                 variant='outline'
                 onClick={() => setShowAddModal(false)}
                 disabled={createCategoryMutation.isPending}
+              >
+                Cancelar
+              </Button>
+            </Stack>
+          </Stack>
+        </form>
+      </Modal>
+
+      {/* Edit Category Modal */}
+      <Modal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setCategoryToEdit(null);
+        }}
+        title='Editar Categoria'
+        size='xl'
+      >
+        <form onSubmit={e => void handleEditSubmit(e)}>
+          <Stack spacing={6}>
+            {/* Basic Info */}
+            <Stack spacing={4}>
+              <H3 className='text-lg font-semibold text-neutral-text-primary'>
+                Informações Básicas
+              </H3>
+              <Stack direction='row' spacing={3}>
+                <Input
+                  label='Slug'
+                  placeholder='categoria-exemplo'
+                  value={editFormData.slug}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setEditFormData(prev => ({
+                      ...prev,
+                      slug: e.target.value,
+                    }))
+                  }
+                  required
+                />
+                <Input
+                  label='Ordem de Exibição'
+                  type='number'
+                  min='0'
+                  value={editFormData.displayOrder}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setEditFormData(prev => ({
+                      ...prev,
+                      displayOrder: parseInt(e.target.value) || 0,
+                    }))
+                  }
+                />
+              </Stack>
+
+              {/* Parent Category */}
+              <div>
+                <label className='block text-sm font-medium text-neutral-text-primary mb-2'>
+                  Categoria Pai
+                </label>
+                <Autocomplete
+                  options={parentCategoryOptions}
+                  value={editFormData.parentId}
+                  onChange={value =>
+                    setEditFormData(prev => ({
+                      ...prev,
+                      parentId: value,
+                    }))
+                  }
+                  placeholder='Selecione uma categoria pai (opcional)'
+                  searchable
+                />
+              </div>
+
+              {/* Active Status */}
+              <div className='flex items-center space-x-2'>
+                <input
+                  type='checkbox'
+                  id='editActive'
+                  checked={editFormData.active}
+                  onChange={e =>
+                    setEditFormData(prev => ({
+                      ...prev,
+                      active: e.target.checked,
+                    }))
+                  }
+                  className='rounded border-neutral-300'
+                />
+                <label
+                  htmlFor='editActive'
+                  className='text-sm font-medium text-neutral-text-primary'
+                >
+                  Categoria ativa
+                </label>
+              </div>
+            </Stack>
+
+            {/* Translations */}
+            <div>
+              <H3 className='mb-4'>Traduções</H3>
+              <Stack spacing={4}>
+                {editFormData.translations.map((trans, index) => (
+                  <Card key={index} variant='outlined' padding='sm'>
+                    <Stack spacing={3}>
+                      <div className='flex items-center space-x-2'>
+                        <Badge variant='info' size='sm'>
+                          {trans.language.toUpperCase()}
+                        </Badge>
+                      </div>
+                      <Stack direction='row' spacing={3}>
+                        <Input
+                          label='Nome'
+                          placeholder={`Nome em ${trans.language === 'pt' ? 'Português' : 'English'}`}
+                          value={trans.name}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setEditFormData(prev => ({
+                              ...prev,
+                              translations: prev.translations.map((t, i) =>
+                                i === index ? { ...t, name: e.target.value } : t
+                              ),
+                            }))
+                          }
+                        />
+                        <Input
+                          label='Descrição'
+                          placeholder={`Descrição em ${trans.language === 'pt' ? 'Português' : 'English'}`}
+                          value={trans.description}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setEditFormData(prev => ({
+                              ...prev,
+                              translations: prev.translations.map((t, i) =>
+                                i === index
+                                  ? { ...t, description: e.target.value }
+                                  : t
+                              ),
+                            }))
+                          }
+                        />
+                      </Stack>
+                    </Stack>
+                  </Card>
+                ))}
+              </Stack>
+            </div>
+
+            <Stack direction='row' spacing={3} className='pt-4'>
+              <Button
+                type='submit'
+                variant='primary'
+                disabled={updateCategoryMutation.isPending}
+              >
+                {updateCategoryMutation.isPending ? (
+                  <>
+                    <Spinner size='sm' />
+                    <span className='ml-2'>Salvando...</span>
+                  </>
+                ) : (
+                  'Salvar Alterações'
+                )}
+              </Button>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={() => {
+                  setShowEditModal(false);
+                  setCategoryToEdit(null);
+                }}
+                disabled={updateCategoryMutation.isPending}
               >
                 Cancelar
               </Button>
