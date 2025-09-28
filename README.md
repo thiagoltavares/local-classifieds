@@ -143,6 +143,8 @@ npm run dev:all
 - [🏗️ Arquitetura](./docs/ARCHITECTURE.md) - Visão geral da arquitetura
 - [🔧 API Architecture](./docs/API_ARCHITECTURE.md) - Detalhes da API
 - [🎨 Frontend Architecture](./docs/FRONTEND_ARCHITECTURE.md) - Detalhes do Frontend
+- [🗄️ Database Schema](./docs/DATABASE_SCHEMA.md) - Esquema completo do banco de dados
+- [📊 Database README](./docs/DATABASE_README.md) - Guia do banco de dados
 - [⚡ Quick Reference](./docs/QUICK_REFERENCE.md) - Comandos e referências rápidas
 - [🏃 Running Guide](./docs/RUNNING.md) - Como executar o projeto
 - [💻 VS Code Setup](./docs/VSCODE_SETUP.md) - Configuração do editor

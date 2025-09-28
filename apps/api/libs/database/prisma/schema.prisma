@@ -44,14 +44,15 @@ model Provider {
   id        String     @id @default(uuid()) @db.Uuid
   userId    String     @unique @db.Uuid
   bio       String?    @db.Text
-  phone     String?    @db.VarChar(20)
-  whatsapp  String?    @db.VarChar(20)
+  phone     String?    @db.VarChar(30)
+  whatsapp  String?    @db.VarChar(30)
   address   String?    @db.VarChar(255)
   rating    Float?     @default(0)
 
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   services  Service[]
   categories Category[] @relation("ProviderCategories")
+  favorites ClientFavorite[]
 
   createdAt DateTime   @default(now()) @db.Timestamptz(6)
   updatedAt DateTime   @default(now()) @updatedAt @db.Timestamptz(6)
@@ -66,8 +67,8 @@ model Client {
   id        String   @id @default(uuid()) @db.Uuid
   userId    String   @unique @db.Uuid
   address   String?  @db.VarChar(255)
-  phone     String?  @db.VarChar(20) // opcional
-  favorites String[] // lista de Providers (UUIDs)
+  phone     String?  @db.VarChar(30) // opcional
+  favorites ClientFavorite[]
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -75,6 +76,21 @@ model Client {
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(6)
 
   @@map("clients")
+}
+
+// =====================
+// Client Favorite
+// =====================
+model ClientFavorite {
+  clientId   String   @db.Uuid
+  providerId String   @db.Uuid
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  provider   Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@id([clientId, providerId]) // unique composto
+  @@map("client_favorites")
 }
 
 // =====================
@@ -86,7 +102,7 @@ model Service {
   categoryId  String   @db.Uuid
   title       String   @db.VarChar(140)
   description String?  @db.Text
-  price       Decimal? @db.Decimal(10,2)
+  price       Decimal? @db.Decimal(10, 2) // CORRETO
   status      ServiceStatus @default(ACTIVE)
 
   provider    Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
